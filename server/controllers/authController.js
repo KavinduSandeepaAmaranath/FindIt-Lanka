@@ -1,4 +1,4 @@
-import { sendOTP, verifyOTP, registerUser, loginUser } from "../services/authService.js";
+import { sendOTP, verifyOTP, registerUser, loginUser, logoutUser } from "../services/authService.js";
 
 export const sendOTPController = async (req, res) => {
     try {
@@ -57,6 +57,20 @@ export const login = async (req, res) => {
         
     } catch (error) {
         res.status(401).json({
+            message: error.message,
+        });
+    }
+};
+
+export const logout = async (req, res) => {
+    try {
+        await logoutUser(req.user.userId);
+
+        res.status(200).json({
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
             message: error.message,
         });
     }

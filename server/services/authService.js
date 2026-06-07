@@ -168,3 +168,11 @@ export const loginUser = async ({ email, password }) => {
             refreshToken,
         }
 };
+
+export const logoutUser = async (userId) => {
+    return await User.findByIdAndUpdate(
+        userId,
+        { refreshToken: null },
+        { returnDocument: "after" }
+    );
+};
