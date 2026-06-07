@@ -136,3 +136,35 @@ export const registerUser = async ({
     return user;
 
 };
+
+export const loginUser = async ({ email, password }) => {
+    email = email.toLowerCase().trim();
+    
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            throw new Error("Invalid email or password");
+        }
+
+        if (user.status === "suspended") {
+            throw new Error("Account has been suspended");
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            throw new Error("Invalid email or password");
+        }
+
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        user.refreshToken = refreshToken;
+
+        await user.save();
+
+        return {
+            accessToken,
+            refreshToken,
+        }
+};
