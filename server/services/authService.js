@@ -30,7 +30,7 @@ export const sendOTP = async (email) => {
         },
         {
             upsert: true,
-            new: true,
+            returnDocument: "after",
         }
     );
 
