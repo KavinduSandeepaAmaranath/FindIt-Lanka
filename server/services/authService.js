@@ -1,5 +1,8 @@
 import User from "../models/User.js";
+import EmailVerification from "../models/EmailVerification.js";
 import bcrypt from "bcryptjs";
+import { generateOTP } from "../utils/generateOTP.js";
+import { sendEmail } from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 import { generateAccessToken } from "../utils/generateAccessToken.js";
 import { generateRefreshToken } from "../utils/generateRefreshToken.js";
