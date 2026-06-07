@@ -51,6 +51,37 @@ export const sendOTP = async (email) => {
     
 };
 
+export const verifyOTP = async (email, otp) => {
+    email = email.toLowerCase().trim();
+    
+    const verification = await EmailVerification.findOne({ email });
+
+    if (!verification) {
+        throw new Error("Verification record not found");
+    }
+
+    if (verification.verified) {
+        throw new Error("Email is already verified");
+    }
+
+    if (verification.expiresAt < new Date()) {
+        throw new Error("OTP has expired");
+    }
+
+    if (verification.otp !== String(otp)) {
+        throw new Error("Invalid OTP");
+    }
+
+    verification.verified = true;
+
+    await verification.save();
+
+    return {
+        message: "Email verified successfully"
+    };
+    
+};
+
 export const registerUser = async ({ 
     name, 
     email, 
