@@ -7,6 +7,50 @@ import jwt from "jsonwebtoken";
 import { generateAccessToken } from "../utils/generateAccessToken.js";
 import { generateRefreshToken } from "../utils/generateRefreshToken.js";
 
+export const sendOTP = async (email) => {
+    email = email.toLowerCase().trim();
+    
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+        throw new Error("Email is already registered");
+    }
+
+    const otp = generateOTP();
+
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await EmailVerification.findOneAndUpdate(
+        { email },
+        {
+            email,
+            otp,
+            verified: false,
+            expiresAt,
+        },
+        {
+            upsert: true,
+            new: true,
+        }
+    );
+
+    await sendEmail({
+        to: email,
+        subject: "FindIt Lanka Email Verification",
+        html: `
+            <h2>Email Verification</h2>
+            <p>Your verification code is:</p>
+            <h1>${otp}</h1>
+            <p>This code will expire in 5 minutes.</p>
+        `,
+    });
+
+    return {
+        message: "Verification code sent successfully",
+    };
+    
+};
+
 export const registerUser = async ({ 
     name, 
     email, 
