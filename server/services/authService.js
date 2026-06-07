@@ -88,9 +88,21 @@ export const registerUser = async ({
     phoneNumber, 
     district, 
     password, 
-    confirmPassword 
+    confirmPassword, 
 }) => {
 
+    email = email.toLowerCase().trim();
+
+    const verification = await EmailVerification.findOne({ email });
+
+    if (!verification) {
+        throw new Error("Email has not been verified");
+    }
+
+    if (!verification.verified) {
+        throw new Error("Please verify your email first");
+    }
+    
     if (password !== confirmPassword) {
         throw new Error("Password does not match");
     }
@@ -118,6 +130,8 @@ export const registerUser = async ({
         district, 
         password: hashedPassword 
     });
+
+    await EmailVerification.deleteOne({ email });
 
     return user;
 
