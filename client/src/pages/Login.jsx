@@ -1,3 +1,16 @@
+import React, { useState } from "react";
+
+import {
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaGoogle,
+  FaFacebook,
+} from "react-icons/fa";
+
+
+
 function Login() {
   return (
     <div className="p-10">
