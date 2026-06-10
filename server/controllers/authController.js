@@ -1,4 +1,13 @@
-import { sendOTP, verifyOTP, registerUser, loginUser, logoutUser } from "../services/authService.js";
+import { 
+    sendOTP, 
+    verifyOTP, 
+    registerUser, 
+    loginUser, 
+    logoutUser, 
+    sendResetOTP, 
+    verifyResetOTP, 
+    resetPassword 
+} from "../services/authService.js";
 
 export const sendOTPController = async (req, res) => {
     try {
@@ -71,6 +80,52 @@ export const logout = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+export const sendResetOTPController = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const result = await sendResetOTP(email);
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+export const verifyResetOTPController = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        
+        const result = await verifyResetOTP(email, otp);
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+export const resetPasswordController = async (req, res) => {
+    try {
+        const { email, password, confirmPassword } = req.body;
+
+        const result = await resetPassword (
+            email,
+            password,
+            confirmPassword,
+        );
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({
             message: error.message,
         });
     }
