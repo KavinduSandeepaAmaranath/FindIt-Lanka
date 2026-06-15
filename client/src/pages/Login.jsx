@@ -1,22 +1,38 @@
 import React, { useState } from "react";
 
-import {FaEnvelope, FaLock,FaEye,FaEyeSlash,FaArrowRight,} from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaArrowRight,
+} from "react-icons/fa";
+
 
 import logo from "../assets/images/Loginlogo.png";
 import Loginimage from "../assets/images/Loginimage.png";
 import googleIcon from "../assets/icons/google.png";
 import facebookIcon from "../assets/icons/facebook.png";
+import LoginBgImage from "../assets/images/LoginBgImage.png";
+import curveShape from "../assets/images/shapebg.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-r from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen flex bg-gradient-to-b from-white via-blue-100 to-blue-300">
       {/*Left side */}
-      <div className="flex w-1/2 items-center justify-center p-10">
-        <div className="bg-white/80 backdrop-blur-md shadow-xl rounded-3xl p-12 text-center w-[90%] max-w-xl">
-          <div className="flex justify-center mb-6">
-            <img src={Loginimage} alt="Login" className="w-90 mx-auto mb-8" />
+      <div className="w-3/4 relative flex items-center justify-center p-10 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center scale-110 blur-sm"
+          style={{ backgroundImage: `url(${LoginBgImage})` }}
+        ></div>
+
+        <div className="relative bg-gradient-to-b from-white via-blue-100 to-blue-300 backdrop-blur-md shadow-xl rounded-3xl p-12 text-center w-[90%] max-w-xl min-h-[850px] flex flex-col justify-center">
+          
+          <div className="flex justify-center mb-6 overflow-hidden">
+            <img src={Loginimage} alt="Login" className="w-90 mx-auto mb-8 opacity-100 drop-shadow-sm mix-blend-multiply" />
+
           </div>
 
           <div className="flex flex-col gap-6 items-center">
@@ -50,7 +66,16 @@ const Login = () => {
       </div>
 
       {/* Right side*/}
-      <div className="w-1/2 flex items-center justify-center px-6">
+      <div className="  w-3/5 relative flex items-center justify-center px-6 bg-[#EAF1FB] min-h-screen flex bg-gradient-to-b from-white via-blue- to-blue-200">
+
+      {/* Curve Shape */}
+  <img
+    src={curveShape}
+    alt="curve"
+    className="absolute top-0 left-0 h-full w-[calc(100%+170px)] object-fill z-0"
+  /> 
+<div className="relative z-10 w-full max-w-md flex flex-col justify-center gap-8 py-12">
+
         <div className="w-full max-w-md flex flex-col justify-center gap-8 py-12">
           <div className="flex justify-center mb-8">
             <div className="bg-white shadow-lg rounded-2xl p-4">
@@ -167,6 +192,8 @@ const Login = () => {
             </div>
           </form>
         </div>
+      
+      </div>
       </div>
     </div>
   );
