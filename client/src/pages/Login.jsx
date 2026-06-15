@@ -14,7 +14,6 @@ import Loginimage from "../assets/images/Loginimage.png";
 import googleIcon from "../assets/icons/google.png";
 import facebookIcon from "../assets/icons/facebook.png";
 import LoginBgImage from "../assets/images/LoginBgImage.png";
-import curveShape from "../assets/images/shapebg.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +21,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-b from-white via-blue-100 to-blue-300">
       {/*Left side */}
-      <div className="w-3/4 relative flex items-center justify-center p-10 overflow-hidden">
+      <div className="w-1/2 relative flex items-center justify-center p-10 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center scale-110 blur-sm"
           style={{ backgroundImage: `url(${LoginBgImage})` }}
@@ -66,14 +65,9 @@ const Login = () => {
       </div>
 
       {/* Right side*/}
-      <div className="  w-3/5 relative flex items-center justify-center px-6 bg-[#EAF1FB] min-h-screen flex bg-gradient-to-b from-white via-blue- to-blue-200">
+      <div className="  w-1/2 relative flex items-center justify-center px-6 bg-[#EAF1FB] min-h-screen flex bg-gradient-to-b from-white via-blue- to-blue-200">
 
-      {/* Curve Shape */}
-  <img
-    src={curveShape}
-    alt="curve"
-    className="absolute top-0 left-0 h-full w-[calc(100%+170px)] object-fill z-0"
-  /> 
+    
 <div className="relative z-10 w-full max-w-md flex flex-col justify-center gap-8 py-12">
 
         <div className="w-full max-w-md flex flex-col justify-center gap-8 py-12">
