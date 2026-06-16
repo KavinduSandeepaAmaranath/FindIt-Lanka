@@ -1,5 +1,4 @@
 import express from "express";
-import { } from "../controllers/lostItemController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { createLostItem } from "../services/lostItemService";
 
