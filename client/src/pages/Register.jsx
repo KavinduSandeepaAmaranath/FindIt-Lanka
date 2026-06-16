@@ -22,6 +22,34 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const districts = [
+  "Ampara",
+  "Anuradhapura",
+  "Badulla",
+  "Batticaloa",
+  "Colombo",
+  "Galle",
+  "Gampaha",
+  "Hambantota",
+  "Jaffna",
+  "Kalutara",
+  "Kandy",
+  "Kegalle",
+  "Kilinochchi",
+  "Kurunegala",
+  "Mannar",
+  "Matale",
+  "Matara",
+  "Monaragala",
+  "Mullaitivu",
+  "Nuwara Eliya",
+  "Polonnaruwa",
+  "Puttalam",
+  "Ratnapura",
+  "Trincomalee",
+  "Vavuniya",
+];
+
   return (
     <div className="min-h-screen flex bg-cover bg-center bg-no-repeat relative">
       {/* Left side */}
@@ -41,6 +69,7 @@ const Register = () => {
           </div>
 
           <div className="flex flex-col gap-6 items-center">
+            <div>
             <h1
               className="text-[48px] font-bold text-[#2A3B63]"
               style={{ fontFamily: "Poppins" }}
@@ -54,8 +83,9 @@ const Register = () => {
             >
               What's Lost
             </h1>
+            </div>
 
-            <p className="text-[#29292D] text-[16px] mt-5 leading-[1.6] ">
+            <p className="text-[#29292D] text-[16px] mt-5 leading-[1.6] text-center mx-auto max-w-md">
               Join our community to help others and recover what matters most. A
               safer, more connected way to manage lost items.
             </p>
@@ -73,9 +103,7 @@ const Register = () => {
       {/* Right side */}
       <div className="w-1/2 relative flex items-center justify-center px-6 bg-[#EAF1FB] min-h-screen bg-gradient-to-b from-white to-blue-200">
 
-      <div className="relative z-10 w-full max-w-2xl h-[900px] bg-gradient-to-br from-white/80 via-blue-50/60 to-blue-100/60 backdrop-blur-md shadow-xl rounded-3xl px-10 py-10 flex flex-col justify-center transition duration-300 hover:scale-[1.02] hover:shadow-2xl">
-        
-
+      <div className="relative z-10 w-full max-w-2xl h-[900px] bg-gradient-to-br from-white/85 via-blue-100/70 to-blue-200/70 backdrop-blur-md shadow-xl rounded-3xl px-10 py-10 flex flex-col justify-center transition duration-300 hover:scale-[1.02] hover:shadow-2xl">
         
           <div className="flex justify-center mb-8">
             <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -127,12 +155,23 @@ const Register = () => {
                 <div className="relative mt-2">
                   <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
 
-                  <input
-                    type="text"
-                    placeholder="e.g. Galle"
-                    style={{ paddingLeft: "40px" }}
-                    className="w-full h-10 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]"
-                  />
+                  <select
+      defaultValue=""
+      style={{ paddingLeft: "40px" }}
+      className="w-full h-10 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]"
+    >
+      <option value="" disabled>
+        Select your district
+      </option>
+
+      {districts.map((district, index) => (
+        <option key={index} value={district}>
+          {district}
+        </option>
+      ))}
+    </select>
+
+    
                 </div>
               </div>
 
