@@ -21,3 +21,7 @@ export const createLostItem = async ({
         userId,
     });
 };
+
+export const getAllLostItems = async () => {
+    return await LostItem.find();
+};
