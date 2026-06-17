@@ -25,3 +25,7 @@ export const createLostItem = async ({
 export const getAllLostItems = async () => {
     return await LostItem.find();
 };
+
+export const getMyLostItems = async (userId) => {
+    return await LostItem.find({ userId });
+};
