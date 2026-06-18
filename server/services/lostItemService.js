@@ -29,3 +29,13 @@ export const getAllLostItems = async () => {
 export const getMyLostItems = async (userId) => {
     return await LostItem.find({ userId });
 };
+
+export const getLostItemById = async (itemId) => {
+    const lostItem = await LostItem.findById(itemId);
+
+    if (!lostItem) {
+        throw new Error("Lost item not found");
+    }
+
+    return lostItem;
+};
