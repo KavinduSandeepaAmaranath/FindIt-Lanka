@@ -39,3 +39,16 @@ export const getLostItemById = async (itemId) => {
 
     return lostItem;
 };
+
+export const getSingleLostItem = async (itemId, userId) => {
+    const lostItem = await LostItem.findOne({
+        _id: itemId,
+        userId,
+    });
+
+    if (!lostItem) {
+        throw new Error("Lost item not found");
+    };
+
+    return lostItem;
+};

@@ -1,4 +1,4 @@
-import { createLostItem, getAllLostItems, getLostItemById, getMyLostItems } from "../services/lostItemService.js";
+import { createLostItem, getAllLostItems, getLostItemById, getMyLostItems, getSingleLostItem } from "../services/lostItemService.js";
 
 export const create = async (req, res) => {
     try {
@@ -53,6 +53,24 @@ export const getMyLostItemsController = async (req, res) => {
 export const getLostItemByIdController = async (req, res) => {
     try {
         const lostItem = await getLostItemById(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            lostItem,
+        });
+    } catch (error) {
+        res.status(404).json({
+            message: error.message,
+        });
+    }
+};
+
+export const getSingleLostItemController = async (req, res) => {
+    try {
+        const lostItem = await getSingleLostItem(
+            req.params.id,
+            req.user.userId,
+        );
 
         res.status(200).json({
             success: true,
