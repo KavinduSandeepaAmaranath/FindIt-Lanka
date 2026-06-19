@@ -70,3 +70,16 @@ export const updateLostItem = async (itemId, userId, updateData) => {
 
     return lostItem;
 };
+
+export const deleteLostItem = async (itemId, userId) => {
+    const lostItem = await LostItem.findOneAndDelete({
+        _id: itemId,
+        userId,
+    });
+
+    if (!lostItem) {
+        throw new Error("Lost item not found");
+    }
+
+    return lostItem;
+};

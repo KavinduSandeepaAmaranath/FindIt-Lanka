@@ -1,4 +1,4 @@
-import { createLostItem, getAllLostItems, getLostItemById, getMyLostItems, getSingleLostItem, updateLostItem } from "../services/lostItemService.js";
+import { createLostItem, deleteLostItem, getAllLostItems, getLostItemById, getMyLostItems, getSingleLostItem, updateLostItem } from "../services/lostItemService.js";
 
 export const create = async (req, res) => {
     try {
@@ -95,6 +95,23 @@ export const update = async (req, res) => {
             success: true,
             message: "Item updated successfully",
             item,
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+export const remove = async (req, res) => {
+    try {
+        await deleteLostItem(
+            req.params.id,
+            req.user.userId,
+        );
+
+        res.status(200).json({
+            message: "Lost Item deleted successfully",
         });
     } catch (error) {
         res.status(400).json({
