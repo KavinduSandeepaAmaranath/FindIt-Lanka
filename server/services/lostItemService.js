@@ -52,3 +52,21 @@ export const getSingleLostItem = async (itemId, userId) => {
 
     return lostItem;
 };
+
+export const updateLostItem = async (itemId, userId, updateData) => {
+    const lostItem = await LostItem.findOneAndUpdate({
+        _id: itemId,
+        userId,            
+    },
+    updateData,
+    {
+        new: true,
+        runValidators: true,
+    });
+
+    if (!lostItem) {
+        throw new Error("Item not found");
+    }
+
+    return lostItem;
+};
