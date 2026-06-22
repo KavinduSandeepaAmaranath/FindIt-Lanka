@@ -1,5 +1,5 @@
 import express from "express";
-import { create, getAllLostItemsController, getLostItemByIdController, getMyLostItemsController, getSingleLostItemController, remove, update } from "../controllers/lostItemController.js";
+import { create, getAllLostItemsController, getLostItemByIdController, getMyLostItemsController, getSingleLostItemController, markAsRecovered, remove, update } from "../controllers/lostItemController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -11,5 +11,6 @@ router.get("/my-items/:id", protect, getSingleLostItemController);
 router.get("/:id", getLostItemByIdController);
 router.put("/:id", protect, update);
 router.delete("/:id", protect, remove);
+router.patch("/:id/recover", protect, markAsRecovered);
 
 export default router;

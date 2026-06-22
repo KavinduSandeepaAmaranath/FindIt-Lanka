@@ -83,3 +83,24 @@ export const deleteLostItem = async (itemId, userId) => {
 
     return lostItem;
 };
+
+export const markLostItemAsRecovered = async (itemId, userId) => {
+    const lostItem = await LostItem.findOne({
+        _id: itemId,
+        userId,
+    });
+
+    if (!lostItem) {
+        throw new Error("Lost item not found or unauthorized");
+    }
+
+    if (lostItem.status !== "lost") {
+        throw new Error("Only lost items can be marked as recovered");
+    }
+
+    lostItem.status = "recovered";
+
+    await lostItem.save();
+
+    return lostItem;
+};
