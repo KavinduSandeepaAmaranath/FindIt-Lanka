@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { Link } from "react-router-dom";
 
 import {
   FaEnvelope,
@@ -180,9 +180,12 @@ const Login = () => {
                 {/* Signup */}
                 <p className="text-center text-[#64748B] text-sm">
                   Don't have an account?{" "}
-                  <span className="text-[#2563EB] font-medium cursor-pointer hover:underline">
-                    Sign Up
-                  </span>
+                  <Link
+    to="/register"
+    className="text-[#2563EB] font-medium cursor-pointer hover:underline"
+  >
+    Sign Up
+  </Link>
                 </p>
 
               </div>

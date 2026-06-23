@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   FaUser,
@@ -298,9 +299,10 @@ const Register = () => {
               <div className="flex flex-col items-center gap-3">
                 <p className="text-[#64748B] text-[14px] leading-none m-0">
                   Already have an account?{" "}
-                  <span className="text-[#2563EB] font-medium cursor-pointer hover:underline">
+                  <Link 
+                  to="/login" className="text-[#2563EB] font-medium cursor-pointer hover:underline">
                     Log In
-                  </span>
+                  </Link>
                 </p>
 
                 <div className="flex items-center justify-center gap-1 text-[#64748B] text-[13px] leading-none">
