@@ -55,7 +55,7 @@ const Register = () => {
 
       {/* Left side */}
       <div
-        className="w-full lg:w-4/7 h-[60vh] sm:h-[70vh] lg:h-screen relative bg-cover bg-bottom lg:bg-center bg-no-repeat flex items-end justify-center"
+        className="w-full lg:w-4/7 min-h-[60vh] sm:min-h-[70vh] lg:min-h-screen relative bg-cover bg-center bg-no-repeat flex items-end justify-center"
         style={{
           backgroundImage: `url(${RegisterBgImage})`,
         }}

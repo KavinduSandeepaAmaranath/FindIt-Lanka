@@ -19,10 +19,9 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      
       {/* Left side */}
       <div
-        className="w-full lg:w-4/7 h-[60vh] sm:h-[70vh] lg:h-screen relative bg-cover bg-center bg-no-repeat flex items-end justify-center"
+        className="w-full lg:w-4/7 min-h-[60vh] sm:min-h-[70vh] lg:min-h-screen relative bg-cover bg-center bg-no-repeat flex items-end justify-center"
         style={{
           backgroundImage: `url(${LoginBgImage})`,
         }}
@@ -49,11 +48,8 @@ const Login = () => {
 
       {/* Right side */}
       <div className="w-full lg:w-3/7 flex items-center justify-center px-5 sm:px-8 md:px-10 lg:px-8 py-8 bg-gradient-to-b from-white to-blue-200 min-h-screen">
-        
         <div className="w-full sm:w-[92%] md:w-[85%] lg:w-full max-w-xl min-h-[750px] bg-gradient-to-br from-white/85 via-blue-100/70 to-blue-200/70 backdrop-blur-md shadow-xl rounded-3xl px-5 sm:px-6 md:px-8 py-6 flex flex-col items-center justify-center transition duration-300">
-          
           <div className="w-full max-w-md flex flex-col gap-6 sm:gap-8">
-            
             {/* Logo */}
             <div className="flex justify-center">
               <div className="bg-white shadow-lg rounded-2xl p-4">
@@ -77,7 +73,6 @@ const Login = () => {
 
             <form>
               <div className="flex flex-col gap-6">
-
                 {/* Email */}
                 <div>
                   <label className="text-[#64748B] text-sm font-medium">
@@ -93,9 +88,6 @@ const Login = () => {
                       style={{ paddingLeft: "48px" }}
                       className="w-full h-12 pl-12 pr-4 border rounded-xl text-sm sm:text-base text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-lg hover:-translate-y-2"
                     />
-
-
-
                   </div>
                 </div>
 
@@ -137,9 +129,7 @@ const Login = () => {
                 {/* Remember me */}
                 <div className="flex items-center gap-2">
                   <input type="checkbox" className="w-4 h-4" />
-                  <span className="text-[#64748B] text-sm">
-                    Remember me
-                  </span>
+                  <span className="text-[#64748B] text-sm">Remember me</span>
                 </div>
 
                 {/* Login Button */}
@@ -163,7 +153,11 @@ const Login = () => {
                 {/* Social Buttons */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <button className="border h-12 rounded-xl flex items-center justify-center gap-2 sm:gap-3 hover:bg-gray-50 transition duration-300 hover:shadow-lg hover:-translate-y-2">
-                    <img src={googleIcon} alt="Google" className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <img
+                      src={googleIcon}
+                      alt="Google"
+                      className="w-5 h-5 sm:w-6 sm:h-6"
+                    />
                     <span className="text-sm sm:text-base">Google</span>
                   </button>
 
@@ -181,16 +175,14 @@ const Login = () => {
                 <p className="text-center text-[#64748B] text-sm">
                   Don't have an account?{" "}
                   <Link
-    to="/register"
-    className="text-[#2563EB] font-medium cursor-pointer hover:underline"
-  >
-    Sign Up
-  </Link>
+                    to="/register"
+                    className="text-[#2563EB] font-medium cursor-pointer hover:underline"
+                  >
+                    Sign Up
+                  </Link>
                 </p>
-
               </div>
             </form>
-
           </div>
         </div>
       </div>
