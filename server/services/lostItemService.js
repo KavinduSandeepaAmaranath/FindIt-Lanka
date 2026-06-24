@@ -48,7 +48,7 @@ export const getSingleLostItem = async (itemId, userId) => {
 
     if (!lostItem) {
         throw new Error("Lost item not found");
-    };
+    }
 
     return lostItem;
 };
