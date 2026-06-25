@@ -20,6 +20,6 @@ router.get("/my-items/:id", protect, getSingleFoundItemController);
 router.get("/:id", getFoundItemByIdController);
 router.put("/:id", protect, update);
 router.delete("/:id", protect, remove);
-router.patch("/:id/recover", protect, markAsReturned);
+router.patch("/:id/returned", protect, markAsReturned);
 
 export default router;
