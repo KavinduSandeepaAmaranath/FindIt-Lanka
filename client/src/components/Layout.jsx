@@ -1,11 +1,20 @@
+import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 function Layout({ children }) {
+  const location = useLocation();
+
+  const hideNavbar =
+    location.pathname === "/login" ||
+    location.pathname === "/register";
+
   return (
     <>
-      <Navbar />
+      {!hideNavbar && <Navbar />}
+
       <main className="min-h-screen">{children}</main>
+
       <Footer />
     </>
   );
