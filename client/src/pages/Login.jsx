@@ -47,9 +47,21 @@ const Login = () => {
       </div>
 
       {/* Right side */}
-      <div className="w-full lg:w-3/7 flex items-center justify-center px-5 sm:px-8 md:px-10 lg:px-8 py-8 bg-gradient-to-b from-white to-blue-200 min-h-screen">
-        <div className="w-full sm:w-[92%] md:w-[85%] lg:w-full max-w-xl min-h-[750px] bg-gradient-to-br from-white/85 via-blue-100/70 to-blue-200/70 backdrop-blur-md shadow-xl rounded-3xl px-5 sm:px-6 md:px-8 py-6 flex flex-col items-center justify-center transition duration-300">
-          <div className="w-full max-w-md flex flex-col gap-6 sm:gap-8">
+      <div className="w-full lg:w-3/7 flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-10 py-6 sm:py-8 md:py-10 bg-gradient-to-b from-white to-blue-200 min-h-screen">
+  
+  <div className="
+    relative z-10
+    w-[92%] sm:w-[85%] md:w-[75%] lg:w-full
+    max-w-md sm:max-w-lg lg:max-w-xl
+    min-h-[580px] sm:min-h-[620px] md:min-h-[680px] lg:min-h-[700px]
+    bg-gradient-to-br from-white/85 via-blue-100/70 to-blue-200/70
+    backdrop-blur-md shadow-xl rounded-3xl
+    px-4 sm:px-6 md:px-8
+    py-6 sm:py-8
+    flex flex-col items-center justify-center
+    
+  ">
+          <div className="w-full max-w-md flex flex-col gap-7 sm:gap-6">
             {/* Logo */}
             <div className="flex justify-center">
               <div className="bg-white shadow-lg rounded-2xl p-4">
@@ -86,7 +98,7 @@ const Login = () => {
                       type="email"
                       placeholder="name@example.com"
                       style={{ paddingLeft: "48px" }}
-                      className="w-full h-12 pl-12 pr-4 border rounded-xl text-sm sm:text-base text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-lg hover:-translate-y-2"
+                      className="w-[90%] sm:w-full h-12 pl-12 pr-4 border rounded-xl text-sm sm:text-base text-[#2d2929] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                     />
                   </div>
                 </div>
@@ -113,7 +125,7 @@ const Login = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="•••••••••••••"
                       style={{ paddingLeft: "48px" }}
-                      className="w-full h-12 pl-12 pr-12 border rounded-xl text-sm sm:text-base text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-lg hover:-translate-y-2"
+                      className="w-full h-12 pl-12 pr-12 border rounded-xl text-sm sm:text-base text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                     />
 
                     <button

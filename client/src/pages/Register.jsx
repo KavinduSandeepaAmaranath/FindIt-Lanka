@@ -121,7 +121,7 @@ const Register = () => {
                     type="text"
                     placeholder="e.g. Kasun Perera"
                     style={{ paddingLeft: "40px" }}
-                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]              transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                   />
                 </div>
               </div>
@@ -138,7 +138,7 @@ const Register = () => {
                   <select
                     defaultValue=""
                     style={{ paddingLeft: "40px" }}
-                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                   >
                     <option value="" disabled>
                       Select your district
@@ -166,7 +166,7 @@ const Register = () => {
                     type="text"
                     placeholder="+94 7X XXX XXXX"
                     style={{ paddingLeft: "40px" }}
-                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                   />
                 </div>
               </div>
@@ -184,7 +184,7 @@ const Register = () => {
                     type="email"
                     placeholder="name@example.com"
                     style={{ paddingLeft: "40px" }}
-                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                    className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                   />
                 </div>
               </div>
@@ -205,7 +205,7 @@ const Register = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       style={{ paddingLeft: "40px" }}
-                      className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                      className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                     />
 
                     <button
@@ -234,7 +234,7 @@ const Register = () => {
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="••••••••"
                       style={{ paddingLeft: "40px" }}
-                      className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                      className="w-full h-12 border rounded-xl text-[16px] text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
                     />
 
                     <button
