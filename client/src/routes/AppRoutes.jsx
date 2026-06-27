@@ -6,6 +6,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
+import RegisterOtp from "../pages/RegisterOtp";
 
 function AppRoutes() {
   return (
@@ -18,6 +19,9 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
 
         <Route path="*" element={<NotFound />} />
+
+        <Route path="/verify-otp" element={<RegisterOtp email="user@example.com" />} />
+        
       </Routes>
     </Layout>
   );
