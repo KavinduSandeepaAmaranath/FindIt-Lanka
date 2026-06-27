@@ -27,8 +27,7 @@ const Register = () => {
   ];
 
   return (
-    <div className="min-h-screen w-screen flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden">
-
+    <div className="h-screen w-screen max-w-screen max-h-screen flex flex-col lg:flex-row overflow-hidden">
       {/* ── Left side - Desktop only ── */}
       <div
         className="hidden lg:flex lg:w-[58%] h-full bg-cover bg-center bg-no-repeat flex-col items-center justify-end pb-10"
@@ -65,14 +64,14 @@ const Register = () => {
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-sm flex flex-col">
 
           {/* Icon */}
-          <div className="flex justify-center mb-3 sm:mb-4">
+          <div className="flex justify-center mb-2">
             <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-600 rounded-xl flex items-center justify-center">
               <FaUserPlus className="text-white text-xl sm:text-2xl" />
             </div>
           </div>
 
           {/* Heading */}
-          <div className="text-center mb-4 sm:mb-5">
+          <div className="text-center mb-3">
             <h2 className="text-xl sm:text-2xl font-bold text-[#2A3B63] font-['Poppins']">
               Create Your Account
             </h2>
@@ -81,7 +80,7 @@ const Register = () => {
             </p>
           </div>
 
-          <div className="flex flex-col gap-2.5 sm:gap-3">
+         <div className="flex flex-col gap-2">
 
             {/* Full Name */}
             <div>
@@ -98,50 +97,53 @@ const Register = () => {
             </div>
 
             {/* District */}
+<div>
+  <label className="text-[#64748B] text-xs font-medium">District</label>
+  <div className="relative mt-1">
+    <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] z-10 pointer-events-none" />
 
-<div className="relative mt-2">
-  <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] z-10 pointer-events-none" />
-
-  <button
-    type="button"
-    onClick={() => setIsOpen(!isOpen)}
-    className="relative w-full h-10 border border-gray-200 rounded-xl pr-4 flex items-center justify-end bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-  >
-    <span
-      className={`absolute left-10 top-1/2 -translate-y-1/2 text-[16px] ${
-        selectedDistrict === "Select your district"
-          ? "text-[#6B7280]"
-          : "text-[#29292D]"
-      }`}
+    <button
+      type="button"
+      onClick={() => setIsOpen(!isOpen)}
+      className="relative w-full h-10 border border-gray-200 rounded-xl pr-4 flex items-center justify-end bg-white focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
     >
-      {selectedDistrict}
-    </span>
+      <span
+        className={`absolute left-10 top-1/2 -translate-y-1/2 text-sm ${
+          selectedDistrict === "Select your district"
+            ? "text-[#6B7280]"
+            : "text-[#29292D]"
+        }`}
+      >
+        {selectedDistrict}
+      </span>
 
-    <FaChevronDown
-      className={`text-[#64748B] transition-transform ${
-        isOpen ? "rotate-180" : ""
-      }`}
-    />
-  </button>
+      <FaChevronDown
+        className={`text-[#64748B] transition-transform ${
+          isOpen ? "rotate-180" : ""
+        }`}
+      />
+    </button>
 
-
-  {isOpen && (
-    <div className="absolute top-full left-0 right-0 mt-1 bg-blue-100/70 backdrop-blur-md rounded-xl shadow-lg max-h-60 overflow-y-auto z-50">
-      {districts.map((district) => (
-        <div
-          key={district}
-          onClick={() => {
-            setSelectedDistrict(district);
-            setIsOpen(false);
-          }}
-          className="px-10 py-3 text-[16px] text-[#29292D] cursor-pointer hover:bg-blue-200/70 transition-colors duration-200"
-        >
-          {district}
-        </div>
-      ))}
-    </div>
-  )}
+    {isOpen && (
+      <div className="absolute top-full left-0 right-0 mt-1 bg-blue-100/70 backdrop-blur-md rounded-xl shadow-lg max-h-60 overflow-y-auto z-50">
+        {districts.map((district) => (
+          <div
+            key={district}
+            onClick={() => {
+              setSelectedDistrict(district);
+              setIsOpen(false);
+            }}
+            className="px-10 py-3 text-sm text-[#29292D] cursor-pointer hover:bg-blue-200/70 transition-colors duration-200"
+          >
+            {district}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
 </div>
+
+   
 
 
             {/* Phone */}
