@@ -54,5 +54,4 @@ export const createClaim = async ({
 
     return claim;
 
-
 };
