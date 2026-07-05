@@ -1,5 +1,14 @@
 import express from "express";
-import { create, getAllLostItemsController, getLostItemByIdController, getMyLostItemsController, getSingleLostItemController, markAsRecovered, remove, update } from "../controllers/lostItemController.js";
+import { 
+    create, 
+    getAllLostItemsController, 
+    getLostItemByIdController, 
+    getMyLostItemsController, 
+    getSingleLostItemController, 
+    markAsRecovered, 
+    remove, 
+    update 
+} from "../controllers/lostItemController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
