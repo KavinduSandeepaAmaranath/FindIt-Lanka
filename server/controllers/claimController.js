@@ -1,4 +1,4 @@
-import { createClaim } from "../services/claimService.js";
+import { createClaim, getMyClaims } from "../services/claimService.js";
 
 export const createClaimController = async (req, res) => {
     try {
@@ -14,6 +14,22 @@ export const createClaimController = async (req, res) => {
         })
     } catch (error) {
         res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+export const getMyClaimsController = async (req, res) => {
+    try {
+        const claims = await getMyClaims(req.user.userId);
+
+        res.status(200).json({
+            success: true,
+            count: claims.length,
+            claims,
+        });
+    } catch (error) {
+        res.status(500).json({
             message: error.message,
         });
     }

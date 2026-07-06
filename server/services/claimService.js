@@ -55,3 +55,10 @@ export const createClaim = async ({
     return claim;
 
 };
+
+export const getMyClaims = async (claimantId) => {
+    return await Claim.find({ claimantId })
+    .populate("claimantId")
+    .populate("foundItemId")
+    .populate("lostItemId");
+};
