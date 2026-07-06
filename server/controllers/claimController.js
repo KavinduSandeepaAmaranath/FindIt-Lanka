@@ -1,4 +1,9 @@
-import { createClaim, getMyClaims } from "../services/claimService.js";
+import Claim from "../models/Claim.js";
+import { 
+    createClaim, 
+    getMyClaims,
+    getAllClaims 
+} from "../services/claimService.js";
 
 export const createClaimController = async (req, res) => {
     try {
@@ -16,6 +21,22 @@ export const createClaimController = async (req, res) => {
         res.status(400).json({
             message: error.message,
         });
+    }
+};
+
+export const getAllClaimsController = async (req, res) => {
+    try {
+        const claims = await getAllClaims();
+
+        res.status(200).json({
+            success: true,
+            count: claims.length,
+            claims,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        })
     }
 };
 
