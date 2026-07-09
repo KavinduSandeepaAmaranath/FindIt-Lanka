@@ -7,7 +7,9 @@ function Layout({ children }) {
 
   const hideNavbar =
     location.pathname === "/login" ||
-    location.pathname === "/register";
+    location.pathname === "/register" ||
+    location.pathname === "/register-otp";
+
 
   return (
     <>
