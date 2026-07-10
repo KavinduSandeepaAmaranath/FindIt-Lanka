@@ -2,7 +2,8 @@ import Claim from "../models/Claim.js";
 import { 
     createClaim, 
     getMyClaims,
-    getAllClaims 
+    getAllClaims,
+    getClaimsForFoundItem
 } from "../services/claimService.js";
 
 export const createClaimController = async (req, res) => {
@@ -43,6 +44,22 @@ export const getAllClaimsController = async (req, res) => {
 export const getMyClaimsController = async (req, res) => {
     try {
         const claims = await getMyClaims(req.user.userId);
+
+        res.status(200).json({
+            success: true,
+            count: claims.length,
+            claims,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+export const getClaimsForFoundItemController = async (req, res) => {
+    try {
+        const claims = await getClaimsForFoundItem(req.params.id);
 
         res.status(200).json({
             success: true,

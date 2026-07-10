@@ -69,3 +69,15 @@ export const getMyClaims = async (claimantId) => {
     .populate("foundItemId")
     .populate("lostItemId");
 };
+
+export const getClaimsForFoundItem = async (foundItemId) => {
+    const claims = await Claim.find({ foundItemId })
+    .populate("claimantId")
+    .populate("foundItemId")
+    .populate("lostItemId");
+
+    if(claims.length === 0) {
+        throw new Error("No claims found for this found item");
+    }
+    return claims;
+};
