@@ -150,7 +150,7 @@ const RegisterOTP = () => {
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-hidden bg-cover bg-center bg-no-repeat flex items-center justify-center px-4 py-10 sm:px-6"
+      className="fixed inset-0 overflow-y-auto flex items-center justify-center bg-cover bg-center bg-no-repeat px-4 py-10 sm:px-6"
       style={{ backgroundImage: `url(${otpBackground})` }}
     >
 
