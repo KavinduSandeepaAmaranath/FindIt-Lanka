@@ -157,7 +157,7 @@ const RegisterOTP = () => {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-[#1D4ED8]/10" />
 
       <div
-        className="relative z-10 flex flex-col items-center gap-6 justify-center w-full max-w-lg min-h-[760px] rounded-3xl border border-white/40 bg-white/90 px-8 py-10 shadow-2xl backdrop-blur-xl sm:px-10 sm:py-12"
+        className="relative z-10 flex w-full max-w-lg flex-col items-center justify-center gap-6 min-h-[760px] rounded-3xl border border-white/40 bg-white/90 px-6 py-8 shadow-2xl backdrop-blur-xl sm:px-10 sm:py-12"
         a
         aria-labelledby="otp-heading"
       >

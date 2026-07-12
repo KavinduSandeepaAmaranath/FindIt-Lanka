@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 import RegisterOTP from "../pages/RegisterOTP";
+import ForgotPassword from "../pages/ForgotPassword";
 
 function AppRoutes() {
   return (
@@ -21,6 +22,8 @@ function AppRoutes() {
         <Route path="*" element={<NotFound />} />
 
         <Route path="/register-otp" element={<RegisterOTP />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
       </Routes>
     </Layout>
