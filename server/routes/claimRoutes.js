@@ -18,6 +18,6 @@ router.get("/my", protect, getMyClaimsController);
 router.get("/:id/claims-item", getClaimsForFoundItemController);
 router.patch("/:id/approve", protect, approveClaimController);
 router.patch("/:id/reject", protect, rejectClaimController);
-router.patch("/id:/cancel", protect, cancelClaimController);
+router.patch("/:id/cancel", protect, cancelClaimController);
 
 export default router;
