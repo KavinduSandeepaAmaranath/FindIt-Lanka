@@ -81,3 +81,128 @@ export const getClaimsForFoundItem = async (foundItemId) => {
     }
     return claims;
 };
+
+export const approveClaim = async (claimId, userId, reviewNote) => {
+    const claim = await Claim.findById(claimId);
+
+    if (!claim) {
+        throw new Error("Claim not found");
+    }
+    if (claim.status !== "pending") {
+        throw new Error("Only pending claims can be approved");
+    }
+
+    const foundItem = await FoundItem.findById(claim.foundItemId);
+
+    if (!foundItem) {
+        throw new Error("Found item not found");
+    }
+    if (foundItem.status !== "found") {
+        throw new Error("This found item is no longer available");
+    }
+    if (foundItem.userId.toString() !== userId.toString()) {
+        throw new Error("You are not authorized to approve this claim");
+    }
+
+    const lostItem = await LostItem.findById(claim.lostItemId);
+
+    if (!lostItem) {
+        throw new Error("Lost item not found");
+    }
+    if (lostItem.status !== "lost") {
+        throw new Error("This lost item is no longer available");
+    }
+
+    claim.status = "approved";
+
+    if (!reviewNote || !reviewNote.trim()) {
+        throw new Error("A review note is required when approving a claim");
+    }
+
+    claim.reviewNote = reviewNote.trim();
+    
+    foundItem.status = "returned";
+    lostItem.status = "recovered";
+
+    await claim.save();
+
+    await Claim.updateMany(
+        {
+            foundItemId: claim.foundItemId,
+            _id: { $ne: claim._id },
+            status: "pending",
+        },
+        {
+            status: "rejected",
+            reviewNote: "Another claim has already been approved for this item.",
+        }
+    );
+    
+    await foundItem.save();
+    await lostItem.save();
+
+    return claim;
+};
+
+export const rejectClaim = async (claimId, userId, reviewNote) => {
+    const claim = await Claim.findById(claimId);
+
+    if (!claim) {
+        throw new Error("Claim not found");
+    }
+    if (claim.status !== "pending"){
+        throw new Error("Only pending claims can be rejected");
+    }
+
+    const foundItem = await FoundItem.findById(claim.foundItemId);
+    
+    if (!foundItem) {
+        throw new Error("Found item not found");
+    }
+    if (foundItem.status !== "found"){
+        throw new Error("This found item is no longer available");
+    }
+    if (foundItem.userId.toString() !== userId.toString()) {
+        throw new Error("You are not authorized to reject this claim");
+    }
+
+    const lostItem = await LostItem.findById(claim.lostItemId);
+    if (!lostItem) {
+        throw new Error("Lost item not found");
+    }
+    if (lostItem.status !== "lost") {
+        throw new Error("This lost item is no longer available");
+    }
+
+    claim.status = "rejected";
+
+    if (!reviewNote || !reviewNote.trim()) {
+        throw new Error("A review note is required when rejecting a claim");
+    }
+
+    claim.reviewNote = reviewNote.trim();
+
+    await claim.save();
+
+    return claim;
+};
+
+export const cancelClaim = async (claimId, userId) => {
+    const claim = await Claim.findById(claimId);
+
+    if(!claim) {
+        throw new Error("Claim not found");
+    }
+    if(claim.claimantId.toString() !== userId.toString()) {
+        throw new Error("You are not authorized to cancel this claim");
+    }
+    if(claim.status !== "pending") {
+        throw new Error("Only pending claims can be cancelled");
+    }
+
+    claim.status = "cancelled";
+
+    await claim.save();
+
+    return claim;
+};
