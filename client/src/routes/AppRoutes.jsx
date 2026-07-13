@@ -25,6 +25,8 @@ function AppRoutes() {
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+
       </Routes>
     </Layout>
   );
