@@ -157,7 +157,7 @@ const RegisterOTP = () => {
   <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-[#1D4ED8]/10" />
 
   <div
-    className="relative z-10 flex flex-col items-center gap-5 justify-center w-full max-w-lg rounded-3xl border border-white/40 bg-white/90 px-8 py-8 shadow-2xl backdrop-blur-xl sm:px-10 sm:py-10"
+    className="relative z-10 flex flex-col items-center gap-5 justify-center w-full max-w-md rounded-3xl border border-white/40 bg-white/90 px-8 py-8 shadow-2xl backdrop-blur-xl sm:px-10 sm:py-10"
     aria-labelledby="otp-heading"
   >
     {/* Top icon */}
@@ -168,20 +168,10 @@ const RegisterOTP = () => {
     {/* Heading */}
     <h1 id="otp-heading" className="text-center font-[Poppins,sans-serif] text-2xl font-bold leading-tight text-[#2A3B63] sm:text-3xl">
       Verify Your Account
-    </h1>
+    </h1>     
     
-
     {/* Description */}
     <div className="text-center">
-      <p className="font-[Inter,sans-serif] text-base leading-relaxed text-[#29292D]">
-        Enter the 6-digit verification code sent to
-      </p>
-      <p className="font-[Inter,sans-serif] text-base font-bold text-[#29292D] break-all">
-        {email}
-      </p>
-    </div>
-
-     <div className="text-center">
       <p className="font-[Inter,sans-serif] text-base leading-relaxed text-[#29292D]">
         Enter the 6-digit verification code sent to
       </p>
