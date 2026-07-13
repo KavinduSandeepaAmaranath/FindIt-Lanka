@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-
 import {
   FaEnvelope,
   FaLock,
@@ -8,193 +7,276 @@ import {
   FaEyeSlash,
   FaArrowRight,
 } from "react-icons/fa";
+import { VscWorkspaceTrusted } from "react-icons/vsc";
 
-import logo from "../assets/images/Loginlogo.png";
 import googleIcon from "../assets/icons/google.png";
 import facebookIcon from "../assets/icons/facebook.png";
-import LoginBgImage from "../assets/images/LoginRegBg.png";
+import LoginBgImage from "../assets/images/LoginRegBackground.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left side */}
-      <div
-        className="w-full lg:w-4/7 min-h-[60vh] sm:min-h-[70vh] lg:min-h-screen relative bg-cover bg-center bg-no-repeat flex items-end justify-center"
-        style={{
-          backgroundImage: `url(${LoginBgImage})`,
-        }}
-      >
-        <div className="relative z-10 text-center pb-6 sm:pb-8 md:pb-10 px-4 sm:px-8">
-          <h1 className="font-['Poppins'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2A3B63]">
-            FindIt Lanka
+    <div className="
+        min-h-screen w-screen
+        flex flex-col lg:flex-row
+        overflow-x-hidden
+        lg:h-screen lg:overflow-hidden lg:fixed lg:inset-0
+        bg-gradient-to-b from-white to-blue-100
+      ">
+
+      {/* Left side  */}
+      <div className="
+          hidden lg:flex
+          lg:w-[58%] xl:w-[58%]
+          shrink-0
+          h-full relative overflow-hidden
+        ">
+        <img
+          src={LoginBgImage}
+          alt="Login"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+
+        <div className="relative z-10 flex flex-col items-center justify-end w-full pb-8 xl:pb-12">
+          <h1 className="
+              font-['Poppins'] font-bold text-[#2A3B63] text-center px-6
+              text-2xl xl:text-3xl 2xl:text-4xl
+            ">
+            Your Items Matter to Us
           </h1>
 
-          <p className="font-['Poppins'] mt-4 sm:mt-6 text-lg sm:text-xl font-medium text-[#0f0f10]">
-            Find Yours
+          <p className="
+              text-[#29292D] leading-6 text-center mt-3
+              max-w-xs xl:max-w-sm
+              text-xs xl:text-sm
+            ">
+            Connect with thousands of people helping each other find lost items.
+            Sign in to your community of trusted helpers.
           </p>
 
-          <h3 className="font-['Poppins'] text-xl sm:text-2xl lg:text-3xl font-semibold text-[#2A3B63] mt-6 sm:mt-8">
-            Lost and Found Simplified
-          </h3>
-
-          <p className="text-[#29292D] text-sm sm:text-base leading-6 sm:leading-7 mt-4 max-w-md mx-auto">
-            Join our community of over 50,000 users helping each other recover
-            what matters most.
+          <p className="font-['Poppins'] text-xl xl:text-2xl font-bold text-[#2A3B63] mt-2">
+            FindIt Lanka
           </p>
         </div>
       </div>
 
-      {/* Right side */}
-      <div className="w-full lg:w-3/7 flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-10 py-6 sm:py-8 md:py-10 bg-gradient-to-b from-white to-blue-200 min-h-screen">
-  
-  <div className="
-    relative z-10
-    w-[92%] sm:w-[85%] md:w-[75%] lg:w-full
-    max-w-md sm:max-w-lg lg:max-w-xl
-    min-h-[580px] sm:min-h-[620px] md:min-h-[680px] lg:min-h-[700px]
-    bg-gradient-to-br from-white/85 via-blue-100/70 to-blue-200/70
-    backdrop-blur-md shadow-xl rounded-3xl
-    px-4 sm:px-6 md:px-8
-    py-6 sm:py-8
-    flex flex-col items-center justify-center
-    
-  ">
-          <div className="w-full max-w-md flex flex-col gap-7 sm:gap-6">
-            {/* Logo */}
-            <div className="flex justify-center">
-              <div className="bg-white shadow-lg rounded-2xl p-4">
-                <img src={logo} alt="logo" className="w-16 sm:w-20" />
+      {/*banner*/}
+ 
+      <div className="
+          lg:hidden
+          w-full
+          flex flex-col
+          bg-white
+        ">
+        
+        <img
+          src={LoginBgImage}
+          alt="Login"
+          className="
+            w-full
+            h-auto
+            object-cover
+            max-h-64 sm:max-h-72 md:max-h-80
+            display-block
+          "
+        />
+
+        <div className="
+            w-full
+            flex flex-col items-center justify-center
+            py-4 sm:py-5 md:py-6
+            px-4
+            bg-white
+          ">
+          <h1 className="
+              font-['Poppins'] text-2xl sm:text-3xl
+              font-bold text-[#2A3B63]
+              text-center
+            ">
+            FindIt Lanka
+          </h1>
+          <p className="
+              text-[#29292D] text-xs sm:text-sm
+              mt-2 sm:mt-3
+              text-center
+            ">
+            Welcome Back
+          </p>
+        </div>
+      </div>
+
+      {/*  Right side / Form panel  */}
+      <div className="
+          w-full lg:w-[42%]
+          bg-transparent
+          flex items-start lg:items-center justify-center
+          px-3 sm:px-6 md:px-10 lg:px-8
+          overflow-y-auto lg:overflow-hidden
+          lg:h-full
+          py-4 sm:py-6 md:py-8 lg:py-0
+        ">
+
+        <div className="
+            w-full
+            max-w-[340px] sm:max-w-md lg:max-w-md
+            flex flex-col
+            py-4 sm:py-6 lg:py-2
+          ">
+
+          {/*  Icon  */}
+          <div className="flex justify-center mb-2">
+            <div className="
+                w-11 h-11 sm:w-13 sm:h-13 lg:w-12 lg:h-12
+                shrink-0
+                bg-blue-600 rounded-xl
+                flex items-center justify-center
+              ">
+              <VscWorkspaceTrusted className="text-white text-lg sm:text-xl lg:text-2xl" />
+            </div>
+          </div>
+
+          {/*  Heading  */}
+          <div className="text-center mb-3">
+            <h2 className="
+                font-bold text-[#2A3B63] font-['Poppins']
+                text-xl sm:text-2xl lg:text-2xl
+              ">
+              Welcome Back
+            </h2>
+            <p className="text-[#64748B] text-xs sm:text-sm mt-1 leading-snug">
+              Sign in to your FindIt Lanka account
+            </p>
+          </div>
+
+          {/*  Form fields  */}
+          <div className="flex flex-col gap-2 sm:gap-2.5">
+
+            {/* Email */}
+            <div>
+              <label className="text-[#64748B] text-xs font-medium">Email Address</label>
+              <div className="relative mt-1">
+                <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
+                <input
+                  type="email"
+                  placeholder="name@example.com"
+                  style={{ paddingLeft: "36px" }}
+                  className="
+                    w-full h-10 sm:h-11 lg:h-10
+                    border border-gray-200 rounded-xl
+                    text-sm text-[#29292D] bg-white
+                    focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]
+                    transition-all duration-300 hover:shadow-md
+                  "
+                />
               </div>
             </div>
 
-            {/* Heading */}
-            <div className="text-center">
-              <h2
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2A3B63]"
-                style={{ fontFamily: "Poppins" }}
-              >
-                Welcome Back
-              </h2>
-
-              <p className="text-[#64748B] text-sm sm:text-base mt-2">
-                Sign in to your account to continue
-              </p>
-            </div>
-
-            <form>
-              <div className="flex flex-col gap-6">
-                {/* Email */}
-                <div>
-                  <label className="text-[#64748B] text-sm font-medium">
-                    Email Address
-                  </label>
-
-                  <div className="relative mt-2">
-                    <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]" />
-
-                    <input
-                      type="email"
-                      placeholder="name@example.com"
-                      style={{ paddingLeft: "48px" }}
-                      className="w-[90%] sm:w-full h-12 pl-12 pr-4 border rounded-xl text-sm sm:text-base text-[#2d2929] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <div className="flex justify-between">
-                    <label className="text-[#64748B] text-sm font-medium">
-                      Password
-                    </label>
-
-                    <a
-                      href="#"
-                      className="text-[#2563EB] text-sm font-medium hover:underline"
-                    >
-                      Forgot password?
-                    </a>
-                  </div>
-
-                  <div className="relative mt-2">
-                    <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]" />
-
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="•••••••••••••"
-                      style={{ paddingLeft: "48px" }}
-                      className="w-full h-12 pl-12 pr-12 border rounded-xl text-sm sm:text-base text-[#29292D] focus:outline-none focus:ring-2 focus:ring-[#2F6BFF] transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#64748B]"
-                    >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Remember me */}
-                <div className="flex items-center gap-2">
-                  <input type="checkbox" className="w-4 h-4" />
-                  <span className="text-[#64748B] text-sm">Remember me</span>
-                </div>
-
-                {/* Login Button */}
-                <button
-                  type="submit"
-                  className="w-full h-12 bg-[#2F6BFF] text-white rounded-xl text-sm sm:text-base font-semibold hover:bg-[#1D4ED8] transition duration-300 hover:shadow-xl flex items-center justify-center gap-2 hover:-translate-y-2"
+            {/* Password */}
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-[#64748B] text-xs font-medium">Password</label>
+                <a
+                  href="#"
+                  className="text-[#2563EB] text-xs font-medium hover:underline"
                 >
-                  Log In
-                  <FaArrowRight />
-                </button>
-
-                {/* Divider */}
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-gray-200"></div>
-                  <span className="text-[#64748B] text-[11px] sm:text-xs">
-                    OR CONTINUE WITH
-                  </span>
-                  <div className="flex-1 h-px bg-gray-200"></div>
-                </div>
-
-                {/* Social Buttons */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <button className="border h-12 rounded-xl flex items-center justify-center gap-2 sm:gap-3 hover:bg-gray-50 transition duration-300 hover:shadow-lg hover:-translate-y-2">
-                    <img
-                      src={googleIcon}
-                      alt="Google"
-                      className="w-5 h-5 sm:w-6 sm:h-6"
-                    />
-                    <span className="text-sm sm:text-base">Google</span>
-                  </button>
-
-                  <button className="border h-12 rounded-xl flex items-center justify-center gap-2 sm:gap-3 hover:bg-gray-50 transition duration-300 hover:shadow-lg hover:-translate-y-2">
-                    <img
-                      src={facebookIcon}
-                      alt="facebook"
-                      className="w-5 h-5 sm:w-6 sm:h-6"
-                    />
-                    <span className="text-sm sm:text-base">Facebook</span>
-                  </button>
-                </div>
-
-                {/* Signup */}
-                <p className="text-center text-[#64748B] text-sm">
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    className="text-[#2563EB] font-medium cursor-pointer hover:underline"
-                  >
-                    Sign Up
-                  </Link>
-                </p>
+                  Forgot?
+                </a>
               </div>
-            </form>
+              <div className="relative mt-1">
+                <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  style={{ paddingLeft: "36px" }}
+                  className="
+                    w-full h-10 sm:h-11 lg:h-10
+                    border border-gray-200 rounded-xl
+                    text-sm text-[#29292D] bg-white
+                    focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]
+                    transition-all duration-300 hover:shadow-md
+                    pr-10 sm:pr-12
+                  "
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember me */}
+            <div className="flex items-center gap-2">
+              <input type="checkbox" className="w-4 h-4 mt-0.5 shrink-0 cursor-pointer" />
+              <span className="text-[#64748B] text-xs">Remember me</span>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="
+                w-full h-10 sm:h-11 lg:h-10
+                bg-[#2F6BFF] text-white rounded-xl
+                text-sm font-semibold
+                hover:bg-[#1D4ED8]
+                transition duration-300 hover:shadow-lg
+                flex items-center justify-center gap-2
+              "
+            >
+              Sign In
+              <FaArrowRight />
+            </button>
+
+            {/* Social divider */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-gray-200"></div>
+              <span className="text-[#64748B] text-[10px] sm:text-[11px] tracking-wide whitespace-nowrap">
+                OR SIGN IN WITH
+              </span>
+              <div className="flex-1 h-px bg-gray-200"></div>
+            </div>
+
+            {/* Social buttons */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <button
+                type="button"
+                className="
+                  border border-gray-200
+                  h-10 sm:h-11 lg:h-10
+                  rounded-xl flex items-center justify-center gap-2
+                  bg-white hover:bg-gray-50
+                  transition duration-300 hover:shadow-md
+                "
+              >
+                <img src={googleIcon} alt="Google" className="w-5 h-5 shrink-0" />
+                <span className="text-xs sm:text-sm">Google</span>
+              </button>
+              <button
+                type="button"
+                className="
+                  border border-gray-200
+                  h-10 sm:h-11 lg:h-10
+                  rounded-xl flex items-center justify-center gap-2
+                  bg-white hover:bg-gray-50
+                  transition duration-300 hover:shadow-md
+                "
+              >
+                <img src={facebookIcon} alt="Facebook" className="w-5 h-5 shrink-0" />
+                <span className="text-xs sm:text-sm">Facebook</span>
+              </button>
+            </div>
+
+            {/* Signup Link */}
+            <p className="text-center text-[#64748B] text-xs pb-6 sm:pb-8 lg:pb-0">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-[#2563EB] font-medium hover:underline">
+                Sign Up
+              </Link>
+            </p>
+
           </div>
         </div>
       </div>
