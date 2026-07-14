@@ -11,9 +11,11 @@ import AdminDashboard from "../pages/AdminDashboard";
 
 
 function AppRoutes() {
+  
   return (
-    <Layout>
+    
       <Routes>
+        <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<Login />} />
@@ -24,10 +26,11 @@ function AppRoutes() {
 
         <Route path="/register-otp" element={<RegisterOTP />} />
 
+        </Route>
+
         <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
 
       </Routes>
-    </Layout>
   );
 }
 
