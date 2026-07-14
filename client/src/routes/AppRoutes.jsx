@@ -8,6 +8,7 @@ import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 import RegisterOTP from "../pages/RegisterOTP";
 import ForgotPassword from "../pages/ForgotPassword";
+import VerifyOtp from "../pages/VerifyOtp";
 
 function AppRoutes() {
   return (
