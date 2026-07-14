@@ -28,6 +28,8 @@ function AppRoutes() {
 
         <Route path="/verify-otp" element={<VerifyOtp />} />
 
+        <Route path="/new-password" element={<NewPassword />} />
+
       </Routes>
     </Layout>
   );
