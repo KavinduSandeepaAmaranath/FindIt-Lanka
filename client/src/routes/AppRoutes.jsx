@@ -9,6 +9,7 @@ import NotFound from "../pages/NotFound";
 import RegisterOTP from "../pages/RegisterOTP";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyOtp from "../pages/VerifyOtp";
+import NewPassword from "../pages/NewPassword";
 
 function AppRoutes() {
   return (
