@@ -249,7 +249,7 @@ const VerifyOTP = () => {
             className="flex items-center gap-2 font-inter font-semibold text-[15px] text-[#2563EB] hover:text-[#1D4ED8] transition-colors"
           >
             <FiArrowLeft className="text-lg" />
-            Back to Email
+            Try another email
           </Link>
         </div>
 
