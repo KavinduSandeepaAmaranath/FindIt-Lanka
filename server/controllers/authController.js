@@ -1,7 +1,7 @@
-import { 
-    sendOTP, 
-    verifyOTP, 
-    registerUser, 
+import {  
+    startRegistration, 
+    verifyRegistrationOTP,
+    resendRegistrationOTP,
     loginUser, 
     logoutUser, 
     sendResetOTP, 
@@ -9,47 +9,53 @@ import {
     resetPassword 
 } from "../services/authService.js";
 
-export const sendOTPController = async (req, res) => {
+export const startRegistrationController = async (req, res) => {
     try {
-        const { email } = req.body;
+        const result = await startRegistration(req.body);
 
-        const result = await sendOTP(email);
-
-        res.status(200).json(result);
-
+        res.status(200).json({
+            success: true,
+            message: result.message,
+        });
     } catch (error) {
         res.status(400).json({
+            success: false,
             message: error.message,
-        });        
+        });
     }
 };
 
-export const verifyOTPController = async (req, res) => {
+export const verifyRegistrationOTPController = async (req, res) => {
     try {
         const { email, otp } = req.body;
 
-        const result = await verifyOTP(email, otp);
+        const result = await verifyRegistrationOTP(email, otp);
 
-        res.status(200).json(result);
+        res.status(201).json({
+            success: true,
+            message: result.message,
+        });
     } catch (error) {
         res.status(400).json({
+            success: false,
             message: error.message,
         });
     }
 };
 
-export const register = async (req, res) => {
+export const resendRegistrationOTPController = async (req, res) => {
     try {
-        const user = await registerUser(req.body);
-
-        const { password, ...userWithoutPassword } = user.toObject();
+        const { email }  = req.body;
         
-        res.status(201).json({
-            message: "User registered successfully",
-            user: userWithoutPassword,
+        const result = await resendRegistrationOTP(email);
+
+        res.status(200).json({
+            success: true,
+            message: result.message,
         });
     } catch (error) {
         res.status(400).json({
+            success: false,
             message: error.message,
         });
     }

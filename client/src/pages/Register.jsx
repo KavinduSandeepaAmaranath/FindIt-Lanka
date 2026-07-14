@@ -1,30 +1,123 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash,
-  FaArrowRight, FaPhone, FaMapMarkerAlt,
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaArrowRight,
+  FaPhone,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa6";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { FaChevronDown } from "react-icons/fa";
+
+import { startRegistration } from "../services/authService.js";
 
 import googleIcon from "../assets/icons/google.png";
 import facebookIcon from "../assets/icons/facebook.png";
 import RegisterBgImage from "../assets/images/LoginRegBackground.png";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("Select your district");
+  const [district, setDistrict] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const districts = [
-    "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-    "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-    "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-    "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-    "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
+    "Ampara",
+    "Anuradhapura",
+    "Badulla",
+    "Batticaloa",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Jaffna",
+    "Kalutara",
+    "Kandy",
+    "Kegalle",
+    "Kilinochchi",
+    "Kurunegala",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Monaragala",
+    "Mullaitivu",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Puttalam",
+    "Ratnapura",
+    "Trincomalee",
+    "Vavuniya",
   ];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+
+    if (
+      !name.trim() ||
+      !email.trim() ||
+      !phoneNumber.trim() ||
+      !district ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (!acceptedTerms) {
+    setError(
+        "You must agree to the Terms of Service and Privacy Policy."
+    );
+    return;
+}
+
+    try {
+      setLoading(true);
+
+      await startRegistration({
+        name,
+        email,
+        phoneNumber,
+        district,
+        password,
+        confirmPassword,
+      });
+
+      navigate("/register-otp", {
+          state: {
+              email,
+          },
+      });
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="
@@ -152,7 +245,10 @@ const Register = () => {
           </div>
 
           {/* ── Form fields ── */}
-          <div className="flex flex-col gap-2 sm:gap-2.5">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-2 sm:gap-2.5"
+          >
 
             {/* Full Name */}
             <div>
@@ -161,6 +257,8 @@ const Register = () => {
                 <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                 <input
                   type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Kasun Perera"
                   style={{ paddingLeft: "36px" }}
                   className="
@@ -225,6 +323,7 @@ const Register = () => {
                         key={district}
                         onClick={() => {
                           setSelectedDistrict(district);
+                          setDistrict(district);
                           setIsOpen(false);
                         }}
                         className="
@@ -250,6 +349,8 @@ const Register = () => {
                 <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                 <input
                   type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+94 7X XXX XXXX"
                   style={{ paddingLeft: "36px" }}
                   className="
@@ -270,6 +371,8 @@ const Register = () => {
                 <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   style={{ paddingLeft: "36px" }}
                   className="
@@ -292,6 +395,8 @@ const Register = () => {
                   <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                   <input
                     type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     style={{ paddingLeft: "36px" }}
                     className="
@@ -319,6 +424,8 @@ const Register = () => {
                   <VscWorkspaceTrusted className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     style={{ paddingLeft: "36px" }}
                     className="
@@ -381,7 +488,12 @@ const Register = () => {
 
             {/* Terms */}
             <div className="flex items-start gap-2">
-              <input type="checkbox" className="w-4 h-4 mt-0.5 shrink-0 cursor-pointer" />
+              <input 
+                type="checkbox" 
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="w-4 h-4 mt-0.5 shrink-0 cursor-pointer" 
+              />
               <p className="text-[#64748B] text-xs leading-5 break-words">
                 I agree to FindIt Lanka's{" "}
                 <span className="text-[#2563EB] font-medium cursor-pointer hover:underline">
@@ -394,9 +506,16 @@ const Register = () => {
               </p>
             </div>
 
+            {error && (
+                <p className="text-red-500 text-sm text-center">
+                    {error}
+                </p>
+            )}
+
             {/* Submit */}
             <button
               type="submit"
+              disabled={loading}
               className="
                 w-full h-10 sm:h-11 lg:h-10
                 bg-[#2F6BFF] text-white rounded-xl
@@ -404,9 +523,11 @@ const Register = () => {
                 hover:bg-[#1D4ED8]
                 transition duration-300 hover:shadow-lg
                 flex items-center justify-center gap-2
+                disabled:opacity-70
+                disabled:cursor-not-allowed
               "
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
               <FaArrowRight />
             </button>
 
@@ -424,7 +545,7 @@ const Register = () => {
               </div>
             </div>
 
-          </div>
+          </form>
         </div>
       </div>
     </div>

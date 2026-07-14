@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { verifyRegistrationOTP, resendRegistrationOTP } from "../services/authService.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RiMailLockFill } from "react-icons/ri";
 import { FaLock, FaRedo, FaShieldAlt } from "react-icons/fa";
@@ -6,14 +7,20 @@ import { VscWorkspaceTrusted } from "react-icons/vsc";
 import otpBackground from "../assets/images/OtpBg.png";
 
 const OTP_LENGTH = 6;
-const RESEND_SECONDS = 90; // 01:30
+const RESEND_SECONDS = 120; // 02:00
 
 const RegisterOTP = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
 
-  const email = location.state?.email || "example@gmail.com";
+  const email = location.state?.email || "";
+
+  useEffect(() => {
+  if (!email) {
+    navigate("/register");
+  }
+}, [email, navigate]);
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
@@ -109,13 +116,23 @@ const RegisterOTP = () => {
   };
 
   // Resend code
-  const handleResend = () => {
+  const handleResend = async () => {
     if (secondsLeft > 0) return;
 
-    setOtp(["", "", "", "", "", ""]);
-    setSecondsLeft(RESEND_SECONDS);
-    setError("");
-    inputRefs.current[0]?.focus();
+    try {
+      await resendRegistrationOTP(email);
+
+      setOtp(["", "", "", "", "", ""]);
+      setSecondsLeft(RESEND_SECONDS);
+      setError("");
+
+      inputRefs.current[0]?.focus();
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Failed to resend verification code."
+      );
+    }
   };
 
   // Verify code
@@ -130,15 +147,18 @@ const RegisterOTP = () => {
     const code = otp.join("");
 
     try {
-      // Dummy async behaviour to simulate a network request
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await verifyRegistrationOTP(email, code);
 
-      console.log("Verifying OTP:", code, "for", email);
-
-      // On success, redirect to login (or dashboard) after verification
-      navigate("/login", { state: { verified: true } });
+      navigate("/login", {
+        state: {
+          registered: true,
+        },
+      });
     } catch (err) {
-      setError("Invalid or expired code. Please try again.");
+      setError(
+        err.response?.data?.message ||
+        "Invalid or expired verification code."
+      );
     } finally {
       setIsVerifying(false);
     }

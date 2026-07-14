@@ -1,32 +1,57 @@
 import User from "../models/User.js";
-import EmailVerification from "../models/EmailVerification.js";
+import PendingRegistration from "../models/PendingRegistration.js";
+import ResetPassword from "../models/ResetPassword.js";
 import bcrypt from "bcryptjs";
 import { generateOTP } from "../utils/generateOTP.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 import { generateAccessToken } from "../utils/generateAccessToken.js";
 import { generateRefreshToken } from "../utils/generateRefreshToken.js";
-import ResetPassword from "../models/ResetPassword.js";
 
-export const sendOTP = async (email) => {
+export const startRegistration = async ({
+    name,
+    email,
+    phoneNumber,
+    district,
+    password,
+    confirmPassword,
+}) => {
     email = email.toLowerCase().trim();
-    
+
+    if (password !== confirmPassword) {
+        throw new Error("Passwords do not match");
+    }
+
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,64}$/;
+
+    if (!passwordRegex.test(password)) {
+        throw new Error(
+            "Password must be 8-64 characters long and include at least one uppercase letter, one lowercase letter, and one number"
+        );
+    }
+
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-        throw new Error("Email is already registered");
+        throw new Error("User already exists");
     }
 
     const otp = generateOTP();
 
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
-    await EmailVerification.findOneAndUpdate(
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await PendingRegistration.findOneAndUpdate(
         { email },
         {
+            name,
             email,
+            phoneNumber,
+            district,
+            password: hashedPassword,
             otp,
-            verified: false,
             expiresAt,
         },
         {
@@ -39,103 +64,96 @@ export const sendOTP = async (email) => {
         to: email,
         subject: "FindIt Lanka Email Verification",
         html: `
-            <h2>Email Verification</h2>
+            <h2>Verify Your Email</h2>
             <p>Your verification code is:</p>
             <h1>${otp}</h1>
-            <p>This code will expire in 5 minutes.</p>
+            <p>This code will expire in 2 minutes.</p>
         `,
     });
 
     return {
         message: "Verification code sent successfully",
     };
-    
 };
 
-export const verifyOTP = async (email, otp) => {
+export const verifyRegistrationOTP = async (email, otp) => {
     email = email.toLowerCase().trim();
     
-    const verification = await EmailVerification.findOne({ email });
+    const pendingRegistration = await PendingRegistration.findOne({ email });
 
-    if (!verification) {
-        throw new Error("Verification record not found");
+    if (!pendingRegistration) {
+        throw new Error("Registration request not found");
     }
 
-    if (verification.verified) {
-        throw new Error("Email is already verified");
-    }
-
-    if (verification.expiresAt < new Date()) {
+    if (pendingRegistration.expiresAt < new Date()) {
         throw new Error("OTP has expired");
     }
 
-    if (verification.otp !== String(otp)) {
+    if (pendingRegistration.otp !== String(otp)) {
         throw new Error("Invalid OTP");
-    }
-
-    verification.verified = true;
-
-    await verification.save();
-
-    return {
-        message: "Email verified successfully"
-    };
-    
-};
-
-export const registerUser = async ({ 
-    name, 
-    email, 
-    phoneNumber, 
-    district, 
-    password, 
-    confirmPassword, 
-}) => {
-
-    email = email.toLowerCase().trim();
-
-    const verification = await EmailVerification.findOne({ email });
-
-    if (!verification) {
-        throw new Error("Email has not been verified");
-    }
-
-    if (!verification.verified) {
-        throw new Error("Please verify your email first");
-    }
-    
-    if (password !== confirmPassword) {
-        throw new Error("Password does not match");
-    }
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,64}$/;
-
-    if (!passwordRegex.test(password)) {
-        throw new Error(
-            "Password must be 8-64 characters long and include at least one uppercase letter, one lowercase letter, and one number"
-        );
     }
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
         throw new Error("User already exists");
-    }        
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+        name: pendingRegistration.name,
+        email: pendingRegistration.email,
+        phoneNumber: pendingRegistration.phoneNumber,
+        district: pendingRegistration.district,
+        password: pendingRegistration.password,
+    });
+    
+    await PendingRegistration.deleteOne({ email });
 
-    const user = await User.create({ 
-        name, 
-        email, 
-        phoneNumber, 
-        district, 
-        password: hashedPassword 
+    return {
+        message: "Account created successfully",
+        user,
+    };
+    
+};
+
+export const resendRegistrationOTP = async (email) => {
+    email = email.toLowerCase().trim();
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+        throw new Error("User already exists");
+    }
+
+    const pendingRegistration = await PendingRegistration.findOne({ email });
+
+    if (!pendingRegistration) {
+        throw new Error("Registration request not found");
+    }
+
+    const otp = generateOTP();
+
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+
+    pendingRegistration.otp = otp;
+    pendingRegistration.expiresAt = expiresAt;
+
+    await pendingRegistration.save();
+
+    await sendEmail({
+        to: email,
+        subject: "FindIt Lanka Email Verification",
+        html: `
+            <h2>FindIt Lanka Email Verification</h2>
+            <p>Your verification code is:</p>
+            <h1>${otp}</h1>
+            <p>This code will expire in 2 minutes.</p>
+        `,
     });
 
-    await EmailVerification.deleteOne({ email });
-
-    return user;
-
+    return {
+        message: "Verification code resent successfully",
+    };
 };
 
 export const loginUser = async ({ email, password }) => {
@@ -189,7 +207,7 @@ export const sendResetOTP = async (email) => {
 
     const otp = generateOTP();
 
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
     await ResetPassword.findOneAndUpdate(
         { email },
@@ -212,7 +230,7 @@ export const sendResetOTP = async (email) => {
             <h2>Password Reset Verification</h2>
             <p>Your verification code for Password Reset is:</p>
             <h1>${otp}</h1>
-            <p>This code will expire in 5 minutes.</p>
+            <p>This code will expire in 2 minutes.</p>
         `,
     });
 
