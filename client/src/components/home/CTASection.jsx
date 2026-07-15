@@ -1,4 +1,4 @@
-import { FiHeart, FiArrowRight, FiSend } from "react-icons/fi";
+import { FiHeart, FiArrowRight } from "react-icons/fi";
 
 function CTASection() {
   return (
@@ -21,14 +21,7 @@ function CTASection() {
 
         <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0">
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 border border-white/50 text-white text-sm font-semibold hover:bg-white/20 transition-colors">
-              <FiSend className="w-4 h-4" />
-              Report Lost Item
-            </button>
-            <button className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 border border-white/50 text-white text-sm font-semibold hover:bg-white/20 transition-colors">
-              <FiSend className="w-4 h-4" />
-              Report Found Item
-            </button>
+            
           </div>
           <button className="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-blue-900 text-sm font-semibold shadow hover:bg-blue-50 transition-colors whitespace-nowrap">
             Get Started

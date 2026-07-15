@@ -6,7 +6,7 @@ function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-300">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
-        {/* Brand */}
+        {/*brand*/}
         <div>
           <div className="flex items-center gap-3 mb-4">
             <img
@@ -22,7 +22,7 @@ function Footer() {
           </p>
         </div>
 
-        {/* Quick Links */}
+        {/*quick links*/}
         <div>
           <h3 className="text-white font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm">
@@ -34,7 +34,7 @@ function Footer() {
           </ul>
         </div>
 
-        {/* Support */}
+        {/*supprt*/}
         <div>
           <h3 className="text-white font-semibold mb-4">Support</h3>
           <ul className="space-y-2 text-sm">
@@ -46,7 +46,7 @@ function Footer() {
           </ul>
         </div>
 
-        {/* Contact */}
+        {/*contact*/}
         <div>
           <h3 className="text-white font-semibold mb-4">Contact Us</h3>
           <ul className="space-y-4 text-sm">
@@ -54,7 +54,7 @@ function Footer() {
               <FiPhone className="w-4 h-4 mt-0.5 text-blue-400" />
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-500">Phone</p>
-                <p>+94 11 123 4567</p>
+                <p>+94 76 23 54 567</p>
               </div>
             </li>
             <li className="flex items-start gap-3">
@@ -77,7 +77,7 @@ function Footer() {
 
       <div className="border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <p>© 2024 FindIt Lanka. All rights reserved.</p>
+          <p>© 2026 FindIt Lanka. All rights reserved.</p>
           <div className="flex items-center gap-5">
             <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>

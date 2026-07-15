@@ -1,14 +1,18 @@
 import { FiSearch, FiSend } from "react-icons/fi";
 
+import LpBgImage from "../../assets/images/LpBgImage.avif";
+import LpCM1 from "../../assets/images/LpCommunityMember1.jpg";
+import LpCM2 from "../../assets/images/LpCommunityMember2.jpg";
+import LpCM3 from "../../assets/images/LpCommunityMember3.jpg";
+
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-800 to-blue-950">
-      {/* Decorative background image (replace with your own hero photo) */}
+      {/*background image*/}
       <div
         className="absolute inset-0 opacity-25 bg-cover bg-center mix-blend-overlay"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?q=80&w=1600&auto=format&fit=crop')",
+          backgroundImage: `url(${LpBgImage})`,
         }}
       />
 
@@ -24,7 +28,7 @@ function HeroSection() {
           they&apos;ve lost.
         </p>
 
-        {/* Search bar */}
+        {/*search bar*/}
         <form
           onSubmit={(e) => e.preventDefault()}
           className="mt-10 max-w-2xl mx-auto flex items-center bg-white rounded-full shadow-lg p-2"
@@ -43,7 +47,7 @@ function HeroSection() {
           </button>
         </form>
 
-        {/* CTA buttons */}
+        {/*CTA buttons*/}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <button className="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-blue-900 text-sm font-semibold shadow hover:bg-blue-50 transition-colors">
             <FiSend className="w-4 h-4" />
@@ -55,21 +59,21 @@ function HeroSection() {
           </button>
         </div>
 
-        {/* Social proof */}
+        {/*social proof*/}
         <div className="mt-10 flex items-center justify-center gap-4">
           <div className="flex -space-x-3">
             <img
-              src="https://i.pravatar.cc/64?img=32"
+              src={LpCM1}
               alt="Community member"
               className="w-10 h-10 rounded-full border-2 border-white object-cover"
             />
             <img
-              src="https://i.pravatar.cc/64?img=12"
+              src={LpCM2}
               alt="Community member"
               className="w-10 h-10 rounded-full border-2 border-white object-cover"
             />
             <img
-              src="https://i.pravatar.cc/64?img=51"
+              src={LpCM3}
               alt="Community member"
               className="w-10 h-10 rounded-full border-2 border-white object-cover"
             />

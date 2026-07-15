@@ -6,7 +6,7 @@ function Navbar() {
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+          {/*logo*/}
           <Link to="/" className="flex items-center gap-3">
             <img
               src={logo}
@@ -18,7 +18,7 @@ function Navbar() {
             </span>
           </Link>
 
-          {/* Nav Links */}
+          {/*nav links*/}
           <div className="hidden md:flex items-center gap-10">
             <Link
               to="/"
@@ -40,7 +40,7 @@ function Navbar() {
             </Link>
           </div>
 
-          {/* Auth Buttons */}
+          {/*auth buttons*/}
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/login"
