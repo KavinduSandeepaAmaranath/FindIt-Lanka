@@ -1,4 +1,4 @@
-import 'react' 
+import 'react'
 
 import LogoImg from "../assets/images/LogoImg.jpg";
 
@@ -52,11 +52,11 @@ const menuItems = [
 
 export default function AdminNavBar() {
   return (
-    <aside className="
-        
+    <aside
+      className="
         left-0
         top-0
-        h-screen
+        min-h-screen 
         w-64 sm:w-72
         bg-gradient-to-b
         from-blue-700
@@ -73,15 +73,15 @@ export default function AdminNavBar() {
       <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
 
         <img
-                  src={LogoImg}
-                  alt="Logo"
-                  className="
-                    w-full
-                    h-full
-                    object-cover 
-                  "
-                />
-        </div>
+          src={LogoImg}
+          alt="Logo"
+          className="
+            w-full
+            h-full
+            object-cover
+          "
+        />
+      </div>
 
 {/* logo title */}
 
@@ -94,11 +94,9 @@ export default function AdminNavBar() {
             Lost & Found Portal
           </p>
         </div>
-        </div>
+      </div>
 
-      
-
-    <nav className="mt-4 sm:mt-6 px-3 sm:px-4">
+      <nav className="mt-4 sm:mt-6 px-3 sm:px-4">
 
         {menuItems.map((item, index) => {
           const Icon = item.icon;
@@ -107,7 +105,6 @@ export default function AdminNavBar() {
             <button
               key={index}
               className={`group flex w-full items-center gap-4 rounded-xl px-5 py-3 mb-2 transition-all duration-300 hover:bg-blue-500/40 hover:text-white hover:shadow-md
-
 
               ${
                 item.active
@@ -131,8 +128,6 @@ export default function AdminNavBar() {
         })}
       </nav>
 
-
-      </aside>
-
+    </aside>
   )
 }
