@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-const AUTH_ROUTES = ["/login", "/register", "/register-otp", "/forgot-password"];
+const AUTH_ROUTES = ["/login", "/register", "/register-otp", "/forgot-password", "/verify-otp", "/new-password"];
 
 function Layout({ children }) {
   const location = useLocation();
