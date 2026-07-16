@@ -8,13 +8,17 @@ import otpBackground from "../assets/images/OtpBg.png";
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 120; // 02:00
+const RESEND_STORAGE_KEY = "registerOtpResendExpiry";
 
 const RegisterOTP = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
 
-  const email = location.state?.email || "";
+  const email =
+    location.state?.email ||
+    sessionStorage.getItem("registerEmail") ||
+    "";
 
   useEffect(() => {
   if (!email) {
@@ -23,18 +27,38 @@ const RegisterOTP = () => {
 }, [email, navigate]);
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(() => {
+    const expiry = sessionStorage.getItem(RESEND_STORAGE_KEY);
+
+    if (!expiry) {
+        return RESEND_SECONDS;
+    }
+
+    const remaining = Math.ceil(
+        (Number(expiry) - Date.now()) / 1000
+    );
+
+    return remaining > 0 ? remaining : 0;
+  });
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [error, setError] = useState("");
 
   const inputRefs = useRef([]);
 
   // Countdown timer
   useEffect(() => {
-    if (secondsLeft <= 0) return;
+    if (secondsLeft <= 0) {
+        sessionStorage.removeItem(
+            RESEND_STORAGE_KEY
+        );
+        return;
+    }
 
     const timerId = setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        setSecondsLeft((prev) =>
+            prev > 0 ? prev - 1 : 0
+        );
     }, 1000);
 
     return () => clearInterval(timerId);
@@ -117,21 +141,39 @@ const RegisterOTP = () => {
 
   // Resend code
   const handleResend = async () => {
+    console.log("Resend button clicked");
+    console.log("Email:", email);
+    console.log("Seconds Left:", secondsLeft);
+
     if (secondsLeft > 0) return;
 
+    setIsResending(true);
+    setError("");
+
     try {
-      await resendRegistrationOTP(email);
+        await resendRegistrationOTP(email);
 
-      setOtp(["", "", "", "", "", ""]);
-      setSecondsLeft(RESEND_SECONDS);
-      setError("");
+        const expiry = Date.now() + RESEND_SECONDS * 1000;
 
-      inputRefs.current[0]?.focus();
+        sessionStorage.setItem(
+            RESEND_STORAGE_KEY,
+            expiry.toString()
+        );
+
+        setOtp(["", "", "", "", "", ""]);
+        setSecondsLeft(RESEND_SECONDS);
+
+        inputRefs.current[0]?.focus();
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-        "Failed to resend verification code."
-      );
+        console.log(err);
+        console.log(err.response);
+
+        setError(
+            err.response?.data?.message ||
+            "Failed to resend verification code."
+        );
+    } finally {
+        setIsResending(false);
     }
   };
 
@@ -226,7 +268,7 @@ const RegisterOTP = () => {
           {error}
         </p>
       )}
-
+  
       <div className="mt-6">
         <button
           type="submit"
@@ -251,11 +293,11 @@ const RegisterOTP = () => {
       <button
         type="button"
         onClick={handleResend}
-        disabled={secondsLeft > 0}
+        disabled={secondsLeft > 0 || isResending}
         className="inline-flex items-center gap-2 text-base font-semibold text-[#2563EB] underline decoration-2 underline-offset-2 transition hover:text-[#1D4ED8] disabled:cursor-not-allowed disabled:text-[#94A3B8] disabled:no-underline"
       >
         <FaRedo className="h-3.5 w-3.5" aria-hidden="true" />
-        Resend Code
+        {isResending ? "Resending..." : "Resend Code"}
       </button>
 
       <p className="mt-2 text-sm text-[#64748B]">

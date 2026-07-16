@@ -104,6 +104,16 @@ const Register = () => {
         confirmPassword,
       });
 
+      sessionStorage.setItem("registerEmail", email);
+      
+      const expiry =
+        Date.now() + 120 * 1000;
+
+      sessionStorage.setItem(
+          "registerOtpResendExpiry",
+          expiry.toString()
+      );
+
       navigate("/register-otp", {
           state: {
               email,
