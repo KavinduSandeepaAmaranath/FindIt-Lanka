@@ -6,7 +6,8 @@ import {
     getMyLostItems, 
     getSingleLostItem, 
     markLostItemAsRecovered, 
-    updateLostItem, 
+    updateLostItem,
+    getRecentLostItems, 
 } from "../services/lostItemService.js";
 
 export const create = async (req, res) => {
@@ -143,6 +144,23 @@ export const markAsRecovered = async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+export const getRecentLostItemsController = async (req, res) => {
+    try {
+        const lostItems = await getRecentLostItems();
+
+        res.status(200).json({
+            success: true,
+            count: lostItems.length,
+            lostItems,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
             message: error.message,
         });
     }

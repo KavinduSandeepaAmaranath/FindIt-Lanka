@@ -6,7 +6,8 @@ import {
     getMyFoundItems, 
     getSingleFoundItem, 
     markFoundItemAsReturned, 
-    updateFoundItem 
+    updateFoundItem,
+    getRecentFoundItems,
 } from "../services/foundItemService.js";
 
 export const create = async (req, res) => {
@@ -143,6 +144,23 @@ export const markAsReturned = async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
+            message: error.message,
+        });
+    }
+};
+
+export const getRecentFoundItemsController = async (req, res) => {
+    try {
+        const foundItems = await getRecentFoundItems();
+
+        res.status(200).json({
+            success: true,
+            count: foundItems.length,
+            foundItems,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
             message: error.message,
         });
     }
