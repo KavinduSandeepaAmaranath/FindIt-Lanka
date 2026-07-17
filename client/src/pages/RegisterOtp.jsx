@@ -31,7 +31,7 @@ const RegisterOTP = () => {
     const expiry = sessionStorage.getItem(RESEND_STORAGE_KEY);
 
     if (!expiry) {
-        return RESEND_SECONDS;
+        return 0;
     }
 
     const remaining = Math.ceil(
@@ -316,7 +316,7 @@ const RegisterOTP = () => {
     <div className="flex items-center justify-center gap-3 rounded-xl bg-blue-100 max-w-md mx-auto min-h-[60px] px-5 py-4">
       <VscWorkspaceTrusted className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#2563EB]" aria-hidden="true" />
       <p className="text-sm leading-relaxed text-[#1D4ED8]">
-        For your security, never share your verification code with anyone. The verification code will expire in 5 minutes.
+        For your security, never share your verification code with anyone. The verification code will expire in 2 minutes.
       </p>
     </div>
   </div>

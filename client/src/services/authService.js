@@ -57,6 +57,13 @@ export const verifyResetOTP = async (email, otp) => {
     return response.data;
 };
 
+export const resendResetOTP = async (email) => {
+    const response = await api.post("/auth/resendResetOTP", {
+        email,
+    });
+    return response.data;
+};
+
 export const resetPassword = async (
     email,
     password,

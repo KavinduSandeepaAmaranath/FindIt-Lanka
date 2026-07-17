@@ -5,9 +5,11 @@ import {
     resendRegistrationOTPController,
     login, 
     logout, 
+    sendResetOTPController,
+    verifyResetOTPController,
+    resendResetOTPController,  
     resetPasswordController, 
-    sendResetOTPController,  
-    verifyResetOTPController 
+     
 } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -20,6 +22,7 @@ router.post("/login", login);
 router.post("/logout", protect, logout);
 router.post("/sendResetOTP", sendResetOTPController);
 router.post("/verifyResetOTP", verifyResetOTPController);
+router.post("/resendResetOTP", resendResetOTPController);
 router.post("/resetPassword", resetPasswordController);
 
 export default router;

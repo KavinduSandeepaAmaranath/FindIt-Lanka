@@ -213,12 +213,12 @@ const Login = () => {
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-[#64748B] text-xs font-medium">Password</label>
-                <a
-                  href="#"
+                <Link
+                  to="/forgot-password"
                   className="text-[#2563EB] text-xs font-medium hover:underline"
                 >
                   Forgot?
-                </a>
+                </Link>
               </div>
               <div className="relative mt-1">
                 <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
