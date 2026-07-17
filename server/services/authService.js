@@ -270,6 +270,52 @@ export const verifyResetOTP = async (email, otp) => {
     
 };
 
+export const resendResetOTP = async (email) => {
+    email = email.toLowerCase().trim();
+
+    const existingUser = await User.findOne({ email });
+    if(!existingUser) {
+        throw new Error("User not Found");
+    }
+
+    const existingRequest = await ResetPassword.findOne({ email });
+    if(!existingRequest) {
+        throw new Error("Password reset request not found");
+    }
+
+    const otp = generateOTP();
+
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+
+    await ResetPassword.findOneAndUpdate(
+        { email },
+        {
+            email,
+            otp,
+            verified: false,
+            expiresAt,
+        },
+        {
+            returnDocument: "after",
+        },
+    );
+
+    await sendEmail({
+        to: email,
+        subject: "FindIt Lanka Password Reset",
+        html: `
+            <h2>Password Reset Verification</h2>
+            <p>Your verification code for Password Reset is:</p>
+            <h1>${otp}</h1>
+            <p>This code will expire in 2 minutes.</p>
+        `,
+    });
+
+    return {
+        message: "Reset Password Verification code sent successfully",
+    };
+};
+
 export const resetPassword = async (email, password, confirmPassword ) => {
     email = email.toLowerCase().trim();
 

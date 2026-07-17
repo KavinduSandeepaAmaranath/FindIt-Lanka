@@ -31,7 +31,7 @@ const RegisterOTP = () => {
     const expiry = sessionStorage.getItem(RESEND_STORAGE_KEY);
 
     if (!expiry) {
-        return RESEND_SECONDS;
+        return 0;
     }
 
     const remaining = Math.ceil(
