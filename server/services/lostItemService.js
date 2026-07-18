@@ -104,3 +104,16 @@ export const markLostItemAsRecovered = async (itemId, userId) => {
 
     return lostItem;
 };
+
+export const getRecentLostItems = async () => {
+    return await LostItem.find({
+        status: "lost",
+    })
+    .select(
+        "title category district lostDate images createdAt"
+    )
+    .sort({
+        createdAt: -1,
+    })
+    .limit(6);
+};

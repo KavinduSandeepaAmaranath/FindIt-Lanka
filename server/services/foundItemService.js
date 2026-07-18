@@ -104,3 +104,16 @@ export const markFoundItemAsReturned = async (itemId, userId) => {
 
     return foundItem;
 };
+
+export const getRecentFoundItems = async () => {
+    return await FoundItem.find({
+        status: "found",
+    })
+    .select(
+        "title category district foundDate images createdAt"
+    )
+    .sort({
+        createdAt: -1,
+    })
+    .limit(6);
+};

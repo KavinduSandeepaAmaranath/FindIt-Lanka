@@ -6,6 +6,7 @@ import {
     getMyLostItemsController, 
     getSingleLostItemController, 
     markAsRecovered, 
+    getRecentLostItemsController,
     remove, 
     update 
 } from "../controllers/lostItemController.js";
@@ -18,6 +19,7 @@ router.get("/all", getAllLostItemsController);
 router.get("/my-items", protect, getMyLostItemsController);
 router.get("/my-items/:id", protect, getSingleLostItemController);
 router.get("/:id", getLostItemByIdController);
+router.get("/lost-items/recent", getRecentLostItemsController);
 router.put("/:id", protect, update);
 router.delete("/:id", protect, remove);
 router.patch("/:id/recover", protect, markAsRecovered);
