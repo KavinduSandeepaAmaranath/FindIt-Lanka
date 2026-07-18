@@ -3,11 +3,26 @@ import {
   FiClipboard,
   FiCheckCircle,
   FiClock,
+  FiFileText,
+  FiUpload,
+  FiUser,
+  FiSearch,
+  FiBell,
+  FiCalendar,
+  FiMenu,
+  FiMapPin,
 } from "react-icons/fi";
 
-import { FiFileText, FiUpload, FiUser } from "react-icons/fi";
-
-
+import {
+  MdDashboard,
+  MdPeople,
+  MdNotifications,
+  MdSettings,
+  MdInventory,
+  MdAssignment,
+  MdVerifiedUser,
+  MdAssessment,
+} from "react-icons/md";
 
 import iphone from "../assets/images/iphone.png";
 import umbrella from "../assets/images/umbrella.png";
@@ -39,7 +54,6 @@ export const stats = [
     sub: "Review Required",
     icon: FiClock,
   },
-  
 ];
 
 export const approvals = [
@@ -83,7 +97,6 @@ export const approvals = [
     date: "Jun 15, 2025",
     status: "Pending",
   },
-  
 ];
 
 export const dashboardHeader = {
@@ -92,40 +105,20 @@ export const dashboardHeader = {
   title: "Dashboard Overview",
   subtitle: "Welcome back, Admin! Here's what's happening today.",
   searchPlaceholder: "Search reports, items, or locations...",
+  icons: {
+    search: FiSearch,
+    bell: FiBell,
+    calendar: FiCalendar,
+    menu: FiMenu,
+  },
 };
 
-
 export const locations = [
-  {
-    id: 1,
-    name: "Galle",
-    reports: 305,
-    percentage: 80,
-  },
-  {
-    id: 2,
-    name: "Colombo",
-    reports: 280,
-    percentage: 65,
-  },
-  {
-    id: 3,
-    name: "Matara",
-    reports: 210,
-    percentage: 50,
-  },
-  {
-    id: 4,
-    name: "Kandy",
-    reports: 187,
-    percentage: 35,
-  },
-  {
-    id: 5,
-    name: "Badulla",
-    reports: 120,
-    percentage: 25,
-  },
+  { id: 1, name: "Galle",    reports: 305, percentage: 80, icon: FiMapPin },
+  { id: 2, name: "Colombo",  reports: 280, percentage: 65, icon: FiMapPin },
+  { id: 3, name: "Matara",   reports: 210, percentage: 50, icon: FiMapPin },
+  { id: 4, name: "Kandy",    reports: 187, percentage: 35, icon: FiMapPin },
+  { id: 5, name: "Badulla",  reports: 120, percentage: 25, icon: FiMapPin },
 ];
 
 export const recentActivities = [
@@ -152,26 +145,36 @@ export const recentActivities = [
   },
   {
     id: 4,
-    title: "New user registered:Sampath Jayasuriya",
+    title: "New user registered: Sampath Jayasuriya",
     user: "by Sampath Jayasuriya",
     time: "3 days ago",
     icon: FiUser,
   },
 ];
 
-
 export const categoryData = [
-  { name: "Electronics", value: 400, color: "#ef4444" },
+  { name: "Electronics",    value: 400, color: "#ef4444" },
   { name: "Personal Items", value: 300, color: "#a855f7" },
   { name: "Pets & Animals", value: 300, color: "#dfea08" },
   { name: "Bags & Wallets", value: 200, color: "#3b82f6" },
-  { name: "Others", value: 100, color: "#22c55e" },
+  { name: "Others",         value: 100, color: "#22c55e" },
 ];
 
 export const overviewData = [
-  { date: "May 20", total: 20, found: 10, lost: 5 },
-  { date: "May 27", total: 45, found: 30, lost: 15 },
-  { date: "June 3", total: 35, found: 25, lost: 10 },
+  { date: "May 20",  total: 20, found: 10, lost: 5  },
+  { date: "May 27",  total: 45, found: 30, lost: 15 },
+  { date: "June 3",  total: 35, found: 25, lost: 10 },
   { date: "June 10", total: 60, found: 40, lost: 20 },
   { date: "June 17", total: 80, found: 60, lost: 25 },
+];
+
+export const navMenuItems = [
+  { id: 1, title: "Admin Dashboard", icon: MdDashboard,     active: true  },
+  { id: 2, title: "Users",           icon: MdPeople,        active: false },
+  { id: 3, title: "Reports",         icon: MdAssessment,    active: false },
+  { id: 4, title: "All Items",       icon: MdInventory,     active: false },
+  { id: 5, title: "Approvals",       icon: MdVerifiedUser,  active: false },
+  { id: 6, title: "Claims",          icon: MdAssignment,    active: false },
+  { id: 7, title: "Notifications",   icon: MdNotifications, active: false },
+  { id: 8, title: "Settings",        icon: MdSettings,      active: false },
 ];

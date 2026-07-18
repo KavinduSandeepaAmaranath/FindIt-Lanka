@@ -1,26 +1,6 @@
 import LogoImg from "../../assets/images/LogoImg.jpg";
-import {
-  MdDashboard,
-  MdPeople,
-  MdNotifications,
-  MdSettings,
-  MdInventory,
-  MdAssignment,
-  MdVerifiedUser,
-  MdAssessment,
-  MdClose,
-} from "react-icons/md";
-
-const menuItems = [
-  { title: "Admin Dashboard", icon: MdDashboard, active: true },
-  { title: "Users", icon: MdPeople },
-  { title: "Reports", icon: MdAssessment },
-  { title: "All Items", icon: MdInventory },
-  { title: "Approvals", icon: MdVerifiedUser },
-  { title: "Claims", icon: MdAssignment },
-  { title: "Notifications", icon: MdNotifications },
-  { title: "Settings", icon: MdSettings },
-];
+import { MdClose } from "react-icons/md"; // kept: UI behaviour, not menu data
+import { navMenuItems } from "../../data/AdminDashboard"; // menu now comes from data
 
 export default function AdminNavBar({ isOpen, setIsOpen }) {
   return (
@@ -36,17 +16,10 @@ export default function AdminNavBar({ isOpen, setIsOpen }) {
       {/* Sidebar */}
       <aside
         className={`
-          /* Base Styles */
-          z-40 w-72 lg:w-64 bg-gradient-to-b from-blue-700 to-blue-600 text-white shadow-2xl transition-transform duration-300 
-          
-          /* මෙය අනිවාර්යයෙන්ම එකතු කරන්න - Sidebar එක Content එකට යට නොවී ස්ථාවරව පවතී */
-          flex-shrink-0 
-
-          /* Mobile: fixed තත්ත්වය */
+          z-40 w-72 lg:w-64 bg-gradient-to-b from-blue-700 to-blue-600 text-white
+          shadow-2xl transition-transform duration-300 flex-shrink-0 overflow-y-auto
           fixed top-0 left-0 h-screen
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-
-          /* Desktop: Sticky තත්ත්වය (පිටුව ස්ක්‍රෝල් කළත් Sidebar එක රැඳේ) */
           lg:sticky lg:top-0 lg:h-screen lg:translate-x-0
         `}
       >
@@ -68,13 +41,13 @@ export default function AdminNavBar({ isOpen, setIsOpen }) {
           </div>
         </div>
 
-        {/* Menu */}
-        <nav className="mt-6 px-4">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
+        {/* Menu - now mapped from navMenuItems (data file) */}
+        <nav className="mt-6 px-4 pb-6">
+          {navMenuItems.map((item) => {
+            const Icon = item.icon; // may be undefined if data is wrong
             return (
               <button
-                key={index}
+                key={item.id}
                 className={`
                   flex items-center w-full gap-4 rounded-xl px-5 py-3 mb-2 transition-all duration-300
                   ${
@@ -84,9 +57,13 @@ export default function AdminNavBar({ isOpen, setIsOpen }) {
                   }
                 `}
               >
-                <Icon
-                  className={`text-xl ${item.active ? "text-blue-700" : "text-blue-100"}`}
-                />
+                {Icon && (
+                  <Icon
+                    className={`text-xl ${
+                      item.active ? "text-blue-700" : "text-blue-100"
+                    }`}
+                  />
+                )}
                 <span className="font-medium">{item.title}</span>
               </button>
             );
