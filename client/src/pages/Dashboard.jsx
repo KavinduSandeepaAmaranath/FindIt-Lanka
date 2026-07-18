@@ -2,6 +2,7 @@ import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
 import WelcomeBanner from "../components/dashboard/WelcomeBanner";
 import StatsOverview from "../components/dashboard/StatsOverview";
+import QuickActionsBanner from "../components/dashboard/QuickActionsBanner";
 
 import {
     currentUser,
@@ -22,6 +23,10 @@ function Dashboard() {
 
               
           <StatsOverview stats={stats} />
+
+          <QuickActionsBanner />
+
+
 
 
         </div>
