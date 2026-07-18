@@ -17,23 +17,24 @@ export default function AdminDashboard() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // Sidebar state
+ 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    
+    <div className="flex flex-col min-h-screen bg-gray-50">
 
-      {/* Sidebar */}
-      <AdminNavBar
-        isOpen={isSidebarOpen}
-        setIsOpen={setIsSidebarOpen}
-      />
+      {/* Sidebar + Main Content row  */}
+      <div className="flex flex-1 items-start">
 
-      {/* Right Side: Main Content + Footer stacked vertically */}
-      <div className="flex-1 flex flex-col lg:ml-64 min-h-screen">
+        {/* Sidebar  */}
+        <AdminNavBar
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
+        />
 
         {/* Main Content */}
-        <main className="flex-1 w-full overflow-x-hidden p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 w-full min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8">
 
           {/* Header */}
           <AdminDashboardHeader
@@ -46,22 +47,26 @@ export default function AdminDashboard() {
           />
 
           {/* Dashboard Cards */}
+
           <section className="mt-6">
             <DashboardCards stats={stats} />
           </section>
 
           {/* Approval Table */}
+
           <section className="mt-8">
             <ApprovalTable approvals={approvals} />
           </section>
 
           {/* Top Locations & Recent Activities */}
+
           <section className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <TopLocations />
             <RecentActivities />
           </section>
 
           {/* Charts */}
+
           <section className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ReportsByCategory />
             <ReportOverview />
@@ -69,10 +74,10 @@ export default function AdminDashboard() {
 
         </main>
 
-        {/* Footer — fits after sidebar, full width of main content */}
-        <Footer />
-
       </div>
+
+      {/* Footer */}
+      <Footer />
 
     </div>
   );
