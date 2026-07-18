@@ -39,9 +39,13 @@ const Login = () => {
     try {
       setLoading(true);
 
-      await login(email, password);
+      const result = await login(email, password);
 
-      navigate("/");
+      if (result.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed. Please try again."

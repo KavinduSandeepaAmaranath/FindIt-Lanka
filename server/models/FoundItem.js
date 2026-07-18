@@ -81,6 +81,11 @@ const foundItemSchema = new mongoose.Schema({
         enum: ["found", "returned", "closed"],
         default: "found",
     },
+    approvalStatus: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending",
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

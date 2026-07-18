@@ -25,12 +25,20 @@ export const login = async (email, password) => {
         email,
         password,
     });
-    const { accessToken, refreshToken } = response.data.data;
+    const { 
+        accessToken, 
+        refreshToken, 
+        user,
+     } = response.data.data;
 
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
 
-    return response.data;
+    return {
+        accessToken,
+        refreshToken,
+        user,
+    };
 };
 
 export const logout = async () => {

@@ -185,7 +185,13 @@ export const loginUser = async ({ email, password }) => {
         return {
             accessToken,
             refreshToken,
-        }
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+        };
 };
 
 export const logoutUser = async (userId) => {
