@@ -1,5 +1,11 @@
 //Mock(sample) data for the User Dashboard Page.
 //Kavindu - Replace with real API data + uploaded image URLs once backend finished
+import leatherBag from "../assets/images/UdbLeatherBag.avif";
+import dog1 from "../assets/images/UdbDog1.avif";
+import carKey1 from "../assets/images/UdbCarKey1.webp";
+import bag2 from "../assets/images/UdpBag2.webp";
+import umbrella1 from "../assets/images/UdbUmbrella1.avif";
+import watch1 from "../assets/images/UdbWatch1.avif";
 
 export const currentUser = {
     name: "Kasun Perera",
@@ -49,7 +55,7 @@ export const myLostItems = [
         date: "April 25, 2026",
         reportedAgo: "Reported 2 days ago",
         status: "Active",
-        image: "../assets/images/UdbLeatherBag.avif",
+        image: leatherBag,
     },
 
     {
@@ -59,7 +65,7 @@ export const myLostItems = [
         date: "June 20, 2026",
         reportedAgo: "Reported 5 hours ago",
         stats: "Active",
-        image: "../assets/images/UdbDog1.avif",
+        image: dog1,
     },
 
     {
@@ -69,7 +75,7 @@ export const myLostItems = [
         date: "July 14, 2026",
         reportedAgo: "Reported 10 hours ago",
         stats: "Matched",
-        image: "../assets/images/UdbCarKey1.webp",
+        image: carKey1,
     }
 ]
 
@@ -82,8 +88,7 @@ export const myFoundItems = [
     date: "May 20, 2026",
     reportedAgo: "Reported 2 days ago",
     status: "Pending Claim",
-    image:
-      "../assets/images/UdpBag2.webp",
+    image:bag2,
   },
 
   {
@@ -93,7 +98,7 @@ export const myFoundItems = [
     date: "August 27, 2026",
     reportedAgo: "Reported 5 hours ago",
     status: "Returned",
-    image: "../assets/images/UdbUmbrella1.avif",
+    image: umbrella1,
   },
 
   {
@@ -103,7 +108,7 @@ export const myFoundItems = [
     date: "December 19, 2025",
     reportedAgo: "Reported 5 hours ago",
     status: "Pending Claim",
-    image: "../assets/images/UdbWatch1.avif",
+    image: watch1,
   },
 ];
 
