@@ -7,15 +7,19 @@ const AUTH_ROUTES = ["/login", "/register", "/register-otp", "/forgot-password",
 function Layout({ children }) {
   const location = useLocation();
 
-  const hideNavbarAndFooter = AUTH_ROUTES.includes(location.pathname);
+  const isAuthRoute = AUTH_ROUTES.includes(location.pathname);
+  const isDashboardRoute = location.pathname.startsWith("/dashboard");
+
+  const hideNavbar = isAuthRoute || isDashboardRoute;
+  const hideFooter = isAuthRoute;
 
   return (
     <>
-      {!hideNavbarAndFooter && <Navbar />}
+      {!hideNavbar && <Navbar />}
 
       <main className="min-h-screen">{children}</main>
 
-      {!hideNavbarAndFooter && <Footer />}
+      {!hideFooter && <Footer />}
     </>
   );
 }
