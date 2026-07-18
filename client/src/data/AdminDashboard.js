@@ -5,6 +5,10 @@ import {
   FiClock,
 } from "react-icons/fi";
 
+import { FiFileText, FiUpload, FiUser } from "react-icons/fi";
+
+
+
 import iphone from "../assets/images/iphone.png";
 import umbrella from "../assets/images/umbrella.png";
 import dog from "../assets/images/dog.jpg";
@@ -89,3 +93,85 @@ export const dashboardHeader = {
   subtitle: "Welcome back, Admin! Here's what's happening today.",
   searchPlaceholder: "Search reports, items, or locations...",
 };
+
+
+export const locations = [
+  {
+    id: 1,
+    name: "Galle",
+    reports: 305,
+    percentage: 80,
+  },
+  {
+    id: 2,
+    name: "Colombo",
+    reports: 280,
+    percentage: 65,
+  },
+  {
+    id: 3,
+    name: "Matara",
+    reports: 210,
+    percentage: 50,
+  },
+  {
+    id: 4,
+    name: "Kandy",
+    reports: 187,
+    percentage: 35,
+  },
+  {
+    id: 5,
+    name: "Badulla",
+    reports: 120,
+    percentage: 25,
+  },
+];
+
+export const recentActivities = [
+  {
+    id: 1,
+    title: "New report submitted: iPhone 14 Pro",
+    user: "by Kasun Perera",
+    time: "10 minutes ago",
+    icon: FiFileText,
+  },
+  {
+    id: 2,
+    title: "Claim matched: Golden Retriever",
+    user: "by Dilini Silva",
+    time: "2 hours ago",
+    icon: FiCheckCircle,
+  },
+  {
+    id: 3,
+    title: "Item approved: Leather Wallet",
+    user: null,
+    time: "1 day ago",
+    icon: FiUpload,
+  },
+  {
+    id: 4,
+    title: "New user registered:Sampath Jayasuriya",
+    user: "by Sampath Jayasuriya",
+    time: "3 days ago",
+    icon: FiUser,
+  },
+];
+
+
+export const categoryData = [
+  { name: "Electronics", value: 400, color: "#ef4444" },
+  { name: "Personal Items", value: 300, color: "#a855f7" },
+  { name: "Pets & Animals", value: 300, color: "#dfea08" },
+  { name: "Bags & Wallets", value: 200, color: "#3b82f6" },
+  { name: "Others", value: 100, color: "#22c55e" },
+];
+
+export const overviewData = [
+  { date: "May 20", total: 20, found: 10, lost: 5 },
+  { date: "May 27", total: 45, found: 30, lost: 15 },
+  { date: "June 3", total: 35, found: 25, lost: 10 },
+  { date: "June 10", total: 60, found: 40, lost: 20 },
+  { date: "June 17", total: 80, found: 60, lost: 25 },
+];
