@@ -22,7 +22,7 @@ function DashboardTopbar({ user }) {
         </button>
       </form>
 
-      {/* user + trust score */}
+      {/*user & trust score */}
       <div className="flex items-center gap-5">
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">

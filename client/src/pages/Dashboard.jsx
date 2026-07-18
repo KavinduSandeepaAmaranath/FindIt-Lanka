@@ -1,5 +1,6 @@
 import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
+import WelcomeBanner from "../components/dashboard/WelcomeBanner";
 
 import {
     currentUser,
@@ -15,9 +16,10 @@ function Dashboard() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
           <DashboardTopbar user={currentUser} />
 
-          {/*  
+          
           <WelcomeBanner user={currentUser} />
 
+          {/*    
           <StatsOverview stats={stats} />
 
           <QuickActionsBanner />
