@@ -1,9 +1,11 @@
 import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
 import WelcomeBanner from "../components/dashboard/WelcomeBanner";
+import StatsOverview from "../components/dashboard/StatsOverview";
 
 import {
     currentUser,
+    stats,
 } from "../data/dashboardData";
 
 function Dashboard() {
@@ -15,40 +17,12 @@ function Dashboard() {
         
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
           <DashboardTopbar user={currentUser} />
-
           
           <WelcomeBanner user={currentUser} />
 
-          {/*    
+              
           <StatsOverview stats={stats} />
 
-          <QuickActionsBanner />
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-            <div className="xl:col-span-2">
-              <ItemsGridSection
-                title="My Lost Items"
-                items={myLostItems}
-                addLabel="Add another Lost item"
-              />
-            </div>
-            <RecentActivity activities={recentActivities} />
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-            <div className="xl:col-span-2">
-              <ItemsGridSection
-                title="My Found Items"
-                items={myFoundItems}
-                addLabel="Add another found item"
-              />
-            </div>
-            <div className="flex flex-col gap-6">
-              <BadgesEarned badges={badges} />
-              <SafetyTipCard />
-            </div>
-          </div>
-          */}
 
         </div>
 
