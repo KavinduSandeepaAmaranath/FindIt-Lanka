@@ -2,8 +2,8 @@
 //Kavindu - Replace with real API data + uploaded image URLs once backend finished
 
 export const currentUser = {
-    name: "Kaasun Perera",
-    membership: "Pro |Member",
+    name: "Kasun Perera",
+    membership: "Pro Member",
     trustScore: 98,
     memberSince: "Feb 2026",
     pendingNotifications: 2,

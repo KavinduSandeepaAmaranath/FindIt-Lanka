@@ -22,7 +22,7 @@ const navItems = [
 ];
 
 function DashboardSidebar() {
-  const location = useLocation();
+  const location = useLocation(); //gets the current browser URL.
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:shrink-0 bg-gradient-to-b from-blue-800 to-blue-950 text-white min-h-screen sticky top-0">
@@ -42,7 +42,7 @@ function DashboardSidebar() {
 
       <nav className="flex-1 px-4 py-6 space-y-1">
         {navItems.map(({ label, to, icon: Icon }) => {
-          const active = location.pathname === to;
+          const active = location.pathname === to; //checks if the current URL matches the link
           return (
             <Link
               key={label}
