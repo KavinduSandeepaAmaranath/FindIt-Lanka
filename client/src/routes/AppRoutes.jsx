@@ -10,26 +10,24 @@ import RegisterOTP from "../pages/RegisterOTP";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
+import Dashboard from "../pages/Dashboard";
+
 
 function AppRoutes() {
   return (
     <Layout>
       <Routes>
+
+        {/*public routes*/}
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
-
         <Route path="*" element={<NotFound />} />
-
         <Route path="/register-otp" element={<RegisterOTP />} />
-
         <Route path="/forgot-password" element={<ForgotPassword />} />
-
         <Route path="/verify-otp" element={<VerifyOtp />} />
-
         <Route path="/new-password" element={<NewPassword />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
 
       </Routes>
     </Layout>
