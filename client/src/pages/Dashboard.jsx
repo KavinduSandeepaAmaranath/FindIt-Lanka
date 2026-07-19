@@ -21,7 +21,7 @@ function Dashboard() {
     <div className="flex bg-slate-50">
       <DashboardSidebar />
 
-      <div className="flex-1 min-w-0" >
+      <div className="flex-1 min-w-0 pt-[60px] lg:pt-0 lg:ml-72">
         
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
           <DashboardTopbar user={currentUser} />
