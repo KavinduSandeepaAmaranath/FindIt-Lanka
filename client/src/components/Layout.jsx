@@ -1,10 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation , Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 const AUTH_ROUTES = ["/login", "/register", "/register-otp", "/forgot-password", "/verify-otp", "/new-password"];
 
-function Layout({ children }) {
+function Layout() {
   const location = useLocation();
 
   const isAuthRoute = AUTH_ROUTES.includes(location.pathname);
@@ -17,7 +17,9 @@ function Layout({ children }) {
     <>
       {!hideNavbar && <Navbar />}
 
-      <main className="min-h-screen">{children}</main>
+      <main className="min-h-screen">
+        <Outlet />
+        </main>
 
       {!hideFooter && <Footer />}
     </>
