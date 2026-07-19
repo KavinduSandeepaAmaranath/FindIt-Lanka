@@ -24,19 +24,23 @@ export default function AdminDashboard() {
     
     <div className="flex flex-col min-h-screen bg-gray-50">
 
-      {/* Sidebar + Main Content row  */}
+      {/* Sidebar + Main Content*/}
+
       <div className="flex flex-1 items-start">
 
         {/* Sidebar  */}
+
         <AdminNavBar
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
         />
 
         {/* Main Content */}
+
         <main className="flex-1 w-full min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8">
 
           {/* Header */}
+
           <AdminDashboardHeader
             header={dashboardHeader}
             showCalendar={showCalendar}
@@ -77,6 +81,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Footer */}
+      
       <Footer />
 
     </div>

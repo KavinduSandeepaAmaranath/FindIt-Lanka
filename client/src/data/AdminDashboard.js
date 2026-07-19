@@ -22,6 +22,7 @@ import {
   MdAssignment,
   MdVerifiedUser,
   MdAssessment,
+  MdClose,
 } from "react-icons/md";
 
 import iphone from "../assets/images/iphone.png";
@@ -35,27 +36,30 @@ export const stats = [
     value: "15,642",
     sub: "↑ 12.5% from last 30 days",
     icon: FiUsers,
+    path: "/All users",
   },
   {
     title: "Total Reports",
     value: "1,248",
     sub: "↑ 8.3% from last 30 days",
     icon: FiClipboard,
+    path: "/reports List",
   },
   {
     title: "Recovered",
     value: "840",
     sub: "↑ 15.7% from last 30 days",
     icon: FiCheckCircle,
+    path: "/recovered list",
   },
   {
     title: "Pending",
     value: "18",
     sub: "Review Required",
     icon: FiClock,
+    path: "/approvals",
   },
 ];
-
 export const approvals = [
   {
     id: "#APP-1252",
@@ -97,8 +101,88 @@ export const approvals = [
     date: "Jun 15, 2025",
     status: "Pending",
   },
-];
+  {
+    id: "#APP-1260",
+    image: iphone,
+    title: "Samsung Galaxy S24",
+    type: "Lost",
+    category: "Electronics",
+    user: "Dilini Silva",
+    date: "Jun 14, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1265",
+    image: umbrella,
+    title: "Leather Wallet",
+    type: "Found",
+    category: "Accessories",
+    user: "Ruwan Fernando",
+    date: "Jun 13, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1270",
+    image: dog,
+    title: "Labrador Puppy",
+    type: "Lost",
+    category: "Pets",
+    user: "Chamara Jayasinghe",
+    date: "Jun 12, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1275",
+    image: watch,
+    title: "Car Key",
+    type: "Found",
+    category: "Accessories",
+    user: "Nimali Perera",
+    date: "Jun 11, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1280",
+    image: iphone,
+    title: "MacBook Pro",
+    type: "Lost",
+    category: "Electronics",
+    user: "Suresh Bandara",
+    date: "Jun 10, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1285",
+    image: umbrella,
+    title: "School Bag",
+    type: "Found",
+    category: "Bags & Wallets",
+    user: "Kumari Rathnayake",
+    date: "Jun 09, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1290",
+    image: dog,
+    title: "Persian Cat",
+    type: "Lost",
+    category: "Pets",
+    user: "Anura Wickramasinghe",
+    date: "Jun 08, 2025",
+    status: "Pending",
+  },
+  {
+    id: "#APP-1295",
+    image: watch,
+    title: "Gold Ring",
+    type: "Found",
+    category: "Accessories",
+    user: "Priyanka Silva",
+    date: "Jun 07, 2025",
+    status: "Pending",
+  },
 
+];
 export const dashboardHeader = {
   adminName: "Kasun Perera",
   adminRole: "Main Admin",
@@ -168,13 +252,58 @@ export const overviewData = [
   { date: "June 17", total: 80, found: 60, lost: 25 },
 ];
 
+// Sidebar Navigation
 export const navMenuItems = [
-  { id: 1, title: "Admin Dashboard", icon: MdDashboard,     active: true  },
-  { id: 2, title: "Users",           icon: MdPeople,        active: false },
-  { id: 3, title: "Reports",         icon: MdAssessment,    active: false },
-  { id: 4, title: "All Items",       icon: MdInventory,     active: false },
-  { id: 5, title: "Approvals",       icon: MdVerifiedUser,  active: false },
-  { id: 6, title: "Claims",          icon: MdAssignment,    active: false },
-  { id: 7, title: "Notifications",   icon: MdNotifications, active: false },
-  { id: 8, title: "Settings",        icon: MdSettings,      active: false },
+  {
+    id: 1,
+    title: "Admin Dashboard",
+    icon: MdDashboard,
+    path: "/admin-dashboard",
+  },
+  {
+    id: 2,
+    title: "Users",
+    icon: MdPeople,
+    path: "/admin-users",
+  },
+  {
+    id: 3,
+    title: "Reports",
+    icon: MdAssessment,
+    path: "/admin-reports",
+  },
+  {
+    id: 4,
+    title: "All Items",
+    icon: MdInventory,
+    path: "/admin-items",
+  },
+  {
+    id: 5,
+    title: "Approvals",
+    icon: MdVerifiedUser,
+    path: "/admin-approvals",
+  },
+  {
+    id: 6,
+    title: "Claims",
+    icon: MdAssignment,
+    path: "/admin-claims",
+  },
+  {
+    id: 7,
+    title: "Notifications",
+    icon: MdNotifications,
+    path: "/admin-notifications",
+  },
+  {
+    id: 8,
+    title: "Settings",
+    icon: MdSettings,
+    path: "/admin-settings",
+  },
 ];
+
+export const navbarIcons = {
+  close: MdClose,
+};

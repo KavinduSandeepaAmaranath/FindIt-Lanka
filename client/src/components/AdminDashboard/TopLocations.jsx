@@ -1,6 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { locations } from "../../data/AdminDashboard";
 
 const TopLocations = () => {
+  const navigate = useNavigate();
+
+  // Navigate to locations page
+  const handleViewAll = () => {
+    navigate("/admin-locations");
+  };
+
   return (
     <div className="bg-white/80 backdrop-blur-md border border-white/20 shadow-md p-4 sm:p-5 rounded-2xl transition-all duration-300 hover:shadow-xl hover:scale-[1.01] hover:bg-white/90">
 
@@ -10,13 +18,12 @@ const TopLocations = () => {
 
       <div className="space-y-5">
         {locations.map((location) => {
-          const Icon = location.icon; // now comes from the data file
+          const Icon = location.icon;
 
           return (
             <div key={location.id}>
               <div className="flex justify-between items-center text-sm mb-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  {/* SAFE: only render if the icon exists */}
                   {Icon && <Icon className="text-blue-500 flex-shrink-0" />}
                   <span className="font-medium truncate">{location.name}</span>
                 </div>
@@ -38,7 +45,10 @@ const TopLocations = () => {
       </div>
 
       <div className="flex justify-end mt-6">
-        <button className="bg-blue-600 text-white text-sm px-5 py-2 rounded-full hover:bg-blue-700 transition">
+        <button
+          onClick={handleViewAll}
+          className="bg-blue-600 text-white text-sm px-5 py-2 rounded-full hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all duration-200"
+        >
           View All
         </button>
       </div>
