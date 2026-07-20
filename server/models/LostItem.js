@@ -81,6 +81,11 @@ const lostItemSchema = new mongoose.Schema({
         enum: ["lost", "recovered", "closed"],
         default: "lost",
     },
+    approvalStatus: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending",
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
