@@ -47,10 +47,260 @@ export const getDashboardStatistics = async () => {
     };
 };
 
+export const getTopLocations = async () => {
+    const [lostLocations, foundLocations] = await Promise.all([
+        LostItem.aggregate([
+            {
+                $match: {
+                    approvalStatus: "approved",
+                },
+            },
+            {
+                $group: {
+                    _id: "$district",
+                    totalReports: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]),
+
+        FoundItem.aggregate([
+            {
+                $match: {
+                    approvalStatus: "approved",
+                },
+            },
+            {
+                $group: {
+                    _id: "$district",
+                    totalReports: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]),
+    ]);
+
+    const locationMap = new Map();
+
+    [...lostLocations, ...foundLocations].forEach((location) => {
+        if (locationMap.has(location._id)) {
+            locationMap.get(location._id).totalReports += location.totalReports;
+        } else {
+            locationMap.set(location._id, {
+                _id: location._id,
+                totalReports: location.totalReports,
+            });
+        }
+    });
+
+    return Array.from(locationMap.values())
+        .sort((a, b) => b.totalReports - a.totalReports)
+        .slice(0, 5);
+};
+
+export const getRecentActivities = async () => {
+    const [users, lostItems, foundItems] = await Promise.all([
+        User.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select("name createdAt"),
+
+        LostItem.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select("title createdAt"),
+
+        FoundItem.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select("title createdAt"),
+    ]);
+
+    const activities = [];
+
+    users.forEach((user) => {
+        activities.push({
+            type: "user",
+            title: `${user.name} registered`,
+            createdAt: user.createdAt,
+        });
+    });
+
+    lostItems.forEach((item) => {
+        activities.push({
+            type: "lost",
+            title: `Lost report: ${item.title}`,
+            createdAt: item.createdAt,
+        });
+    });
+
+    foundItems.forEach((item) => {
+        activities.push({
+            type: "found",
+            title: `Found report: ${item.title}`,
+            createdAt: item.createdAt,
+        });
+    });
+
+    activities.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    return activities.slice(0, 10);
+};
+
+export const getReportsByCategory = async () => {
+    const [lostReports, foundReports] = await Promise.all([
+        LostItem.aggregate([
+            {
+                $match: {
+                    approvalStatus: "approved",
+                },
+            },
+            {
+                $group: {
+                    _id: "$category",
+                    total: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]),
+
+        FoundItem.aggregate([
+            {
+                $match: {
+                    approvalStatus: "approved",
+                },
+            },
+            {
+                $group: {
+                    _id: "$category",
+                    total: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]),
+    ]);
+
+    const categoryMap = new Map();
+
+    [...lostReports, ...foundReports].forEach((item) => {
+        if (categoryMap.has(item._id)) {
+            categoryMap.get(item._id).total += item.total;
+        } else {
+            categoryMap.set(item._id, {
+                category: item._id,
+                total: item.total,
+            });
+        }
+    });
+
+    return Array.from(categoryMap.values()).sort(
+        (a, b) => b.total - a.total
+    );
+};
+
+export const getReportOverview = async () => {
+    const [lostReports, foundReports] = await Promise.all([
+        LostItem.aggregate([
+            {
+                $match: {
+                    approvalStatus: "approved",
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        month: {
+                            $month: "$createdAt",
+                        },
+                    },
+                    lost: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]),
+
+        FoundItem.aggregate([
+            {
+                $match: {
+                    approvalStatus: "approved",
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        month: {
+                            $month: "$createdAt",
+                        },
+                    },
+                    found: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]),
+    ]);
+
+    const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+
+    const overviewMap = new Map();
+
+    lostReports.forEach((item) => {
+        overviewMap.set(item._id.month, {
+            month: months[item._id.month - 1],
+            lost: item.lost,
+            found: 0,
+        });
+    });
+
+    foundReports.forEach((item) => {
+        if (overviewMap.has(item._id.month)) {
+            overviewMap.get(item._id.month).found = item.found;
+        } else {
+            overviewMap.set(item._id.month, {
+                month: months[item._id.month - 1],
+                lost: 0,
+                found: item.found,
+            });
+        }
+    });
+
+    return Array.from(overviewMap.values()).sort(
+        (a, b) =>
+            months.indexOf(a.month) -
+            months.indexOf(b.month)
+    );
+};
+
+/* Lost Item */
 export const getPendingLostItems = async () => {
     return await LostItem.find({
         approvalStatus: "pending",
-    }).sort({
+    })
+    .populate(
+        "userId",
+        "name email phoneNumber"
+    )
+    .sort({
         createdAt: -1,
     });
 };
@@ -122,7 +372,12 @@ export const deleteLostItemByAdmin = async (itemId) => {
 export const getPendingFoundItems = async () => {
     return await FoundItem.find({
         approvalStatus: "pending",
-    }).sort({
+    })
+    .populate(
+        "userId",
+        "name email phoneNumber"
+    )
+    .sort({
         createdAt: -1,
     });
 };

@@ -2,6 +2,10 @@ import express from "express";
 
 import {
     getDashboardStatisticsController,
+    getTopLocationsController,
+    getRecentActivitiesController,
+    getReportsByCategoryController,
+    getReportOverviewController,
 
     getPendingLostItemsController,
     approveLostItemController,
@@ -34,6 +38,10 @@ const router = express.Router();
 
 /* Dashboard Route */
 router.get("/dashboard", protect, adminOnly, getDashboardStatisticsController);
+router.get("/statistics/top-locations", protect, adminOnly, getTopLocationsController);
+router.get("/statistics/recent-activities", protect, adminOnly, getRecentActivitiesController);
+router.get("/statistics/reports-by-category", protect, adminOnly, getReportsByCategoryController);
+router.get("/statistics/report-overview", protect, adminOnly, getReportOverviewController);
 
 /* Lost Items */
 router.get("/lost-items/pending", protect, adminOnly, getPendingLostItemsController);

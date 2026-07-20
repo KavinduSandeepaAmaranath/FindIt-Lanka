@@ -21,7 +21,7 @@ function Navbar() {
           {/*nav links*/}
           <div className="hidden md:flex items-center gap-10">
             <Link
-              to="/"
+              to="/dashboard"
               className="text-sm font-semibold text-slate-800 hover:text-blue-700 transition-colors"
             >
               Home Dashboard

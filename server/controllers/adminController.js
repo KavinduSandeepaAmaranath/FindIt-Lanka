@@ -1,6 +1,11 @@
 import {
     getDashboardStatistics,
+    getTopLocations,
+    getRecentActivities,
     getPendingLostItems,
+    getReportsByCategory,
+    getReportOverview,
+    
     approveLostItem,
     rejectLostItem,
     getAllLostItemsForAdmin,
@@ -20,6 +25,7 @@ import {
     activateUser,
     updateUserRole,
     deleteUser,
+
 } from "../services/adminService.js";
 
 /* Dashboard */
@@ -30,6 +36,72 @@ export const getDashboardStatisticsController = async (req, res) => {
         res.status(200).json({
             success: true,
             statistics,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const getTopLocationsController = async (req, res) => {
+    try {
+        const locations = await getTopLocations();
+
+        res.status(200).json({
+            success: true,
+            count: locations.length,
+            locations,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const getRecentActivitiesController = async (req, res) => {
+    try {
+        const activities = await getRecentActivities();
+
+        res.status(200).json({
+            success: true,
+            activities,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const getReportsByCategoryController = async (req, res) => {
+    try {
+        const categories = await getReportsByCategory();
+
+        res.status(200).json({
+            success: true,
+            count: categories.length,
+            categories,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const getReportOverviewController = async (req, res) => {
+    try {
+        const overview = await getReportOverview();
+
+        res.status(200).json({
+            success: true,
+            overview,
         });
     } catch (error) {
         res.status(500).json({
