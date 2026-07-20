@@ -1,4 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  FaUsers,
+  FaSearch,
+  FaBoxOpen,
+  FaClipboardCheck,
+} from "react-icons/fa";
+import { 
+  getDashboardStatistics, 
+  getPendingLostItems, 
+  getPendingFoundItems, 
+  approveLostItem,
+  rejectLostItem,
+  approveFoundItem,
+  rejectFoundItem,
+} from "../services/adminService";
 import "react-day-picker/dist/style.css";
 
 import AdminNavBar from "../components/AdminDashboard/AdminNavBar";
@@ -11,7 +26,7 @@ import ReportsByCategory from "../components/AdminDashboard/ReportsByCategory";
 import ReportOverview from "../components/AdminDashboard/ReportOverview";
 
 import Footer from "../components/Footer";
-import { dashboardHeader, stats, approvals } from "../data/AdminDashboard";
+import { dashboardHeader } from "../data/AdminDashboard";
 
 export default function AdminDashboard() {
   const [showCalendar, setShowCalendar] = useState(false);
@@ -19,6 +34,137 @@ export default function AdminDashboard() {
 
  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [statistics, setStatistics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [pendingApprovals, setPendingApprovals] = useState([]);
+  const dashboardStats = statistics
+  ? [
+      {
+        title: "Users",
+        value: statistics.totalUsers,
+        sub: "Registered users",
+        icon: FaUsers,
+        path: "/admin/users",
+      },
+      {
+        title: "Lost Reports",
+        value: statistics.totalLostItems,
+        sub: `${statistics.pendingLostItems} pending approval`,
+        icon: FaSearch,
+        path: "/admin/lost-items",
+      },
+      {
+        title: "Found Reports",
+        value: statistics.totalFoundItems,
+        sub: `${statistics.pendingFoundItems} pending approval`,
+        icon: FaBoxOpen,
+        path: "/admin/found-items",
+      },
+      {
+        title: "Recovered / Returned",
+        value:
+          statistics.recoveredItems +
+          statistics.returnedItems,
+        sub: "Completed cases",
+        icon: FaClipboardCheck,
+        path: "/admin/dashboard",
+      },
+    ]
+  : [];
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const [
+          dashboardResponse,
+          lostResponse,
+          foundResponse,
+        ] = await Promise.all([
+          getDashboardStatistics(),
+          getPendingLostItems(),
+          getPendingFoundItems(),
+        ]);
+
+        setStatistics(dashboardResponse.statistics);
+
+        const lostItems = lostResponse.lostItems.map((item) => ({
+          id: item._id,
+          image: item.images?.[0] || "",
+          title: item.title,
+          type: "Lost",
+          category: item.category,
+          user: item.userId?.name || "Unknown",
+          date: new Date(item.lostDate).toLocaleDateString(),
+          status: item.approvalStatus,
+        }));
+
+        const foundItems = foundResponse.foundItems.map((item) => ({
+          id: item._id,
+          image: item.images?.[0] || "",
+          title: item.title,
+          type: "Found",
+          category: item.category,
+          user: item.userId?.name || "Unknown",
+          date: new Date(item.foundDate).toLocaleDateString(),
+          status: item.approvalStatus,
+        }));
+
+        setPendingApprovals([
+          ...lostItems,
+          ...foundItems,
+        ]);
+        
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, []);
+
+  const handleApprove = async (item) => {
+  try {
+    if (item.type === "Lost") {
+      await approveLostItem(item.id);
+    } else {
+      await approveFoundItem(item.id);
+    }
+
+    setPendingApprovals((prev) =>
+      prev.filter((report) => report.id !== item.id)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleReject = async (item) => {
+  try {
+    if (item.type === "Lost") {
+      await rejectLostItem(item.id);
+    } else {
+      await rejectFoundItem(item.id);
+    }
+
+    setPendingApprovals((prev) =>
+      prev.filter((report) => report.id !== item.id)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+  console.log(statistics);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading Dashboard...
+      </div>
+    );
+  }
 
   return (
     
@@ -53,13 +199,18 @@ export default function AdminDashboard() {
           {/* Dashboard Cards */}
 
           <section className="mt-6">
-            <DashboardCards stats={stats} />
+            <DashboardCards stats={dashboardStats} />
           </section>
 
           {/* Approval Table */}
 
           <section className="mt-8">
-            <ApprovalTable approvals={approvals} />
+            <ApprovalTable 
+              approvals={pendingApprovals} 
+              onApprove={handleApprove}
+              onReject={handleReject}
+            />
+
           </section>
 
           {/* Top Locations & Recent Activities */}

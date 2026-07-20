@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiCheckCircle, FiXCircle, FiEye, FiX } from "react-icons/fi";
 
-export default function ApprovalTable({ approvals }) {
+export default function ApprovalTable({ 
+  approvals, 
+  onApprove,
+  onReject, 
+}) {
   const navigate = useNavigate();
 
   const rowsPerPage = 5;
@@ -46,16 +50,43 @@ export default function ApprovalTable({ approvals }) {
     
   };
 
-  const handleApprove = (item) => {
-    showNotification("success", `Report ${item.id} Approved Successfully!`, item.id);
-    
+  const handleApprove = async (item) => {
+    try {
+      await onApprove(item);
+
+      showNotification(
+        "success",
+        `Report ${item.id} approved successfully.`,
+        item.id
+      );
+    } catch (error) {
+      showNotification(
+        "error",
+        error.response?.data?.message ||
+        "Failed to approve report.",
+        item.id
+      );
+    }
   };
 
-  const handleReject = (item) => {
-    showNotification("error", `Report ${item.id} Rejected!`, item.id);
-   
-  };
+  const handleReject = async (item) => {
+    try {
+      await onReject(item);
 
+      showNotification(
+        "success",
+        `Report ${item.id} rejected successfully.`,
+        item.id
+      );
+    } catch (error) {
+      showNotification(
+        "error",
+        error.response?.data?.message ||
+        "Failed to reject report.",
+        item.id
+      );
+    }
+  };
 
   const getNotificationStyles = (type) => {
     switch (type) {

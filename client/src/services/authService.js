@@ -34,6 +34,11 @@ export const login = async (email, password) => {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
 
+    localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+    );
+
     return {
         accessToken,
         refreshToken,

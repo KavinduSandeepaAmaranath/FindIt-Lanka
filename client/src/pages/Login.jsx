@@ -42,9 +42,9 @@ const Login = () => {
       const result = await login(email, password);
 
       if (result.user.role === "admin") {
-        navigate("/admin");
+        navigate("/Admin-Dashboard");
       } else {
-        navigate("/");
+        navigate("/dashboard");
       }
     } catch (err) {
       setError(

@@ -1,12 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiX } from "react-icons/fi";
-import { recentActivities } from "../../data/AdminDashboard";
+import {
+  FaUserPlus,
+  FaSearch,
+  FaBoxOpen,
+} from "react-icons/fa";
+import { getRecentActivities } from "../../services/adminService";
 
 const RecentActivities = () => {
   const navigate = useNavigate();
 
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const [recentActivities, setRecentActivities] = useState([]);
+
+  useEffect(() => {
+    const loadActivities = async () => {
+      try {
+        const response = await getRecentActivities();
+
+        const formattedActivities = response.activities.map(
+          (activity, index) => ({
+            id: index + 1,
+            title: activity.title,
+            user: activity.user || "",
+            time: new Date(activity.createdAt).toLocaleString(),
+            icon:
+              activity.type === "user"
+                ? FaUserPlus
+                : activity.type === "lost"
+                ? FaSearch
+                : FaBoxOpen,
+          })
+        );
+
+        setRecentActivities(formattedActivities);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadActivities();
+  }, []);
 
   const openModal = (activity) => {
     setSelectedActivity(activity);
@@ -97,7 +132,7 @@ const RecentActivities = () => {
           Recent Activities
         </h2>
 
-        <div className="space-y-6">
+        <div className="space-y-6 max-h-[420px] overflow-y-auto pr-2">
           {recentActivities.map((activity) => {
             const IconComponent = activity.icon;
 

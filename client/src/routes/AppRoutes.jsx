@@ -12,6 +12,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
 import Dashboard from "../pages/Dashboard";
+import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
 
 
 function AppRoutes() {
@@ -35,7 +36,14 @@ function AppRoutes() {
         </Route>
 
         {/*admin route - outside the normal layout*/}
-        <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
+        <Route 
+          path="/Admin-Dashboard" 
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          } 
+        />
 
       </Routes>
   );
