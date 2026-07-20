@@ -65,7 +65,7 @@ function DashboardSidebar() {
           bg-gradient-to-b from-blue-800 to-blue-950 text-white
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:fixed lg:top-0 lg:inset-y-0 lg:translate-x-0 lg:flex lg:w-72 lg:shrink-0 lg:min-h-screen
+          lg:sticky lg:top-0 lg:translate-x-0 lg:flex lg:w-72 lg:shrink-0 lg:h-screen lg:self-start
         `}
       >
         <div className="px-7 pt-8 pb-6 border-b border-white/10 flex items-center justify-between">
