@@ -1,0 +1,58 @@
+import SectionTitle from "./SectionTitle";
+import {
+  lostFormSections,
+  lostItemCategories,
+} from "../../data/ReportLost";
+
+const LostItemDetails = () => {
+  const Icon = lostFormSections.itemDetails.icon;
+
+  return (
+    <section className="mb-8">
+
+      {/* Section Title */}
+      <SectionTitle
+        icon={Icon}
+        title={lostFormSections.itemDetails.title}
+      />
+
+      {/* Fields */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        {/* Item Title */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">
+            Item Title
+          </label>
+
+          <input
+            type="text"
+            placeholder="e.g., iPhone 13 - Midnight Blue"
+            className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition"
+          />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">
+            Category
+          </label>
+
+          <select className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white text-gray-600 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition">
+            <option value="">Select Category</option>
+
+            {lostItemCategories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+      </div>
+
+    </section>
+  );
+};
+
+export default LostItemDetails;
