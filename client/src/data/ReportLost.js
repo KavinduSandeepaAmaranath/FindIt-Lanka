@@ -6,6 +6,7 @@ import {
   FiImage,
   FiFileText,
   FiAlertTriangle,
+   FiX,
 } from "react-icons/fi";
 
 /* ===========================================
@@ -152,5 +153,15 @@ export const lostFormSections = {
   reminder: {
     title: "Safety Reminder",
     icon: FiAlertTriangle,
+  },
+};
+
+/* ===========================
+   Modal
+=========================== */
+
+export const reportLostModal = {
+  icons: {
+    close: FiX,
   },
 };

@@ -1,4 +1,6 @@
-import DashboardSidebar from "../components/dashboard/DashboardSidebar";
+import { useState } from "react";{/* අලුතින් ඇඩ් කලා */}
+
+import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
 import WelcomeBanner from "../components/dashboard/WelcomeBanner";
 import StatsOverview from "../components/dashboard/StatsOverview";
@@ -7,6 +9,9 @@ import ItemsGridSection from "../components/dashboard/ItemsGridSection";
 import RecentActivity from "../components/dashboard/RecentActivity";
 import BadgesEarned from "../components/dashboard/BadgesEarned";
 import SafetyTipCard from "../components/dashboard/SafetyTipCard";
+
+import ReportLostModal from "../components/LostForm/ReportLostModal";{/*අලුතින් ඇඩ් කලා */}
+
 import {
     currentUser,
     stats,
@@ -17,9 +22,12 @@ import {
 } from "../data/dashboardData";
 
 function Dashboard() {
+
+  const [openLostReport, setOpenLostReport] = useState(false); {/* අලුතින් ඇඩ් කලා */}
+
   return (
     <div className="flex bg-slate-50">
-      <DashboardSidebar />
+      <DashboardSidebar   onOpenLostReport={() => setOpenLostReport(true)} /> {/* do update newly */}
 
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         
@@ -62,6 +70,15 @@ function Dashboard() {
         </div>
 
       </div>
+
+{/* Lost Report Modal අලුතින් ඇඩ් කලා */}
+
+      {openLostReport && (
+  <ReportLostModal
+    onClose={() => setOpenLostReport(false)}
+  />
+)}
+
     </div>
   );
 }
