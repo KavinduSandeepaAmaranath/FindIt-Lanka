@@ -19,12 +19,23 @@ const navItems = [
   { label: "My Reports", to: "/dashboard/my-reports", icon: FiFileText },
   { label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },
   { label: "Browse Found Items", to: "/dashboard/browse-found", icon: FiSearch },
+  {
+    label: "Add Lost Reports",
+    to: "/report-lost-item",
+    icon: FiSend,
+  },
+  {
+    label: "Add Found Reports",
+    to: "/report-found-item",
+    icon: FiSend,
+  },
   { label: "Notifications", to: "/dashboard/notifications", icon: FiBell },
   { label: "Settings", to: "/dashboard/settings", icon: FiSettings },
   { label: "Help", to: "/dashboard/help", icon: FiHelpCircle },
+  
 ];
 
-function DashboardSidebar() {
+function DashboardSidebar({onOpenLostReport}) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -90,33 +101,62 @@ function DashboardSidebar() {
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1">
-          {navItems.map(({ label, to, icon: Icon }) => {
-            const active = location.pathname === to;
-            return (
-              <Link
-                key={label}
-                to={to}
-                onClick={closeDrawer}
-                className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                  active
-                    ? "bg-white text-blue-900 shadow-sm"
-                    : "text-blue-100 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
+        {/*new update this nav part*/}
 
-        <div className="px-4 pb-7 pt-3 border-t border-white/10">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold transition-colors shadow-sm">
-            <FiSend className="w-4 h-4" />
-            Report Lost Item
-          </button>
-        </div>
+        <nav className="flex-1 px-4 py-6 space-y-1">
+  {navItems.map(({ label, to, icon: Icon }) => {
+    const active = location.pathname === to;
+
+    // ✅ Add Lost Reports -> Modal Open
+    if (label === "Add Lost Reports") {
+      return (
+        <button
+          key={label}
+          onClick={() => {
+            closeDrawer();
+            onOpenLostReport();
+          }}
+          className="
+            w-full
+            flex
+            items-center
+            gap-3
+            px-3.5
+            py-3
+            rounded-xl
+            text-sm
+            font-semibold
+            text-blue-100
+            hover:bg-white/10
+            hover:text-white
+            transition-colors
+          "
+        >
+          <Icon className="w-5 h-5" />
+          <span>{label}</span>
+        </button>
+      );
+    }
+
+    // ✅ All other menu items
+    return (
+      <Link
+        key={label}
+        to={to}
+        onClick={closeDrawer}
+        className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-colors ${
+          active
+            ? "bg-white text-blue-900 shadow-sm"
+            : "text-blue-100 hover:bg-white/10 hover:text-white"
+        }`}
+      >
+        <Icon className="w-5 h-5" />
+        <span>{label}</span>
+      </Link>
+    );
+  })}
+</nav>
+
       </aside>
     </>
   );
