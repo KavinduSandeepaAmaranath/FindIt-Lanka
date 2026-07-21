@@ -1,22 +1,18 @@
 import { useState } from "react";
 import SectionTitle from "./SectionTitle";
 
-import {
-  lostFormSections,
-  descriptionSettings,
-} from "../../data/ReportLost";
-
-const Description = () => {
-  const Icon = lostFormSections.description.icon;
+const Description = ({ formData }) => {
+  const Icon = formData.sections.description.icon;
 
   const [description, setDescription] = useState("");
 
   return (
     <section className="mb-8">
 
+      {/* Section Title */}
       <SectionTitle
         icon={Icon}
-        title={lostFormSections.description.title}
+        title={formData.sections.description.title}
       />
 
       <div>
@@ -24,9 +20,9 @@ const Description = () => {
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          maxLength={descriptionSettings.maxLength}
+          maxLength={formData.description.maxLength}
           rows={6}
-          placeholder={descriptionSettings.placeholder}
+          placeholder={formData.description.placeholder}
           className="
             w-full
             rounded-2xl
@@ -47,7 +43,7 @@ const Description = () => {
         <div className="flex justify-end mt-2">
 
           <span className="text-xs text-gray-500">
-            {description.length} / {descriptionSettings.maxLength}
+            {description.length} / {formData.description.maxLength}
           </span>
 
         </div>

@@ -1,6 +1,7 @@
 import { FiSend} from "react-icons/fi";
 
-function QuickActionBanner() {
+function QuickActionBanner({ onOpenLostReport,
+  onOpenFoundReport, }) {  {/* do update newly add onopen value */}
 
     return(
         <div className="bg-gradient-to-r from-blue-700 to to-blue-900 rounded-2xl px-6 py-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-5">
@@ -12,15 +13,21 @@ function QuickActionBanner() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
-                <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold transition-colors whitespace-nowrap">
+
+               {/* do update newly add onclick */}
+                 <button onClick={onOpenLostReport} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold transition-colors whitespace-nowrap">
+
                     <FiSend className="w-4 h-4"/>
                     Report Lost Item
                 </button>
 
-                <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-blue-50 text-blue-900 text-sm font-semibold transition-colors whitespace-nowrap">
-                    <FiSend className="w-4 h-4"/>
-                    Report Found Item
-                </button>
+                <button
+  onClick={onOpenFoundReport}
+  className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-blue-50 text-blue-900 text-sm font-semibold transition-colors whitespace-nowrap"
+>
+  <FiSend className="w-4 h-4" />
+  Report Found Item
+</button>
             </div>
         </div>
 

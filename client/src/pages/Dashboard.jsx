@@ -10,7 +10,8 @@ import RecentActivity from "../components/dashboard/RecentActivity";
 import BadgesEarned from "../components/dashboard/BadgesEarned";
 import SafetyTipCard from "../components/dashboard/SafetyTipCard";
 
-import ReportLostModal from "../components/LostForm/ReportLostModal";{/*අලුතින් ඇඩ් කලා */}
+
+import ReportModal from "../components/LostFoundForm/ReportModal";{/*අලුතින් ඇඩ් කලා */}
 
 import {
     currentUser,
@@ -21,13 +22,24 @@ import {
     badges,
 } from "../data/dashboardData";
 
+import {
+  reportHeader as lostHeader,
+  reportForm as lostForm,
+} from "../data/ReportLost";
+
+import {
+  reportHeader as foundHeader,
+  reportForm as foundForm,
+} from "../data/ReportFound";
+
 function Dashboard() {
 
-  const [openLostReport, setOpenLostReport] = useState(false); {/* අලුතින් ඇඩ් කලා */}
+  const [openLostReport, setOpenLostReport] = useState(false);
+  const [openFoundReport, setOpenFoundReport] = useState(false); {/* අලුතින් ඇඩ් කලා */}
 
   return (
     <div className="flex bg-slate-50">
-      <DashboardSidebar   onOpenLostReport={() => setOpenLostReport(true)} /> {/* do update newly */}
+      <DashboardSidebar   onOpenLostReport={() => setOpenLostReport(true)} onOpenFoundReport={() => setOpenFoundReport(true)} /> {/* do update newly */}
 
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         
@@ -39,7 +51,7 @@ function Dashboard() {
               
           <StatsOverview stats={stats} />
 
-          <QuickActionsBanner />
+          <QuickActionsBanner onOpenLostReport={() => setOpenLostReport(true)} onOpenFoundReport={() => setOpenFoundReport(true)} /> {/* do update newly */}
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
             <div className="xl:col-span-2">
@@ -73,9 +85,19 @@ function Dashboard() {
 
 {/* Lost Report Modal අලුතින් ඇඩ් කලා */}
 
-      {openLostReport && (
-  <ReportLostModal
+{openLostReport && (
+  <ReportModal
+    header={lostHeader}
+    formData={lostForm}
     onClose={() => setOpenLostReport(false)}
+  />
+)}
+
+{openFoundReport && (
+  <ReportModal
+    header={foundHeader}
+    formData={foundForm}
+    onClose={() => setOpenFoundReport(false)}
   />
 )}
 

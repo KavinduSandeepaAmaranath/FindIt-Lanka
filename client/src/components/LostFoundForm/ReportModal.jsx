@@ -1,14 +1,13 @@
-import {
-  reportLostModal,
-} from "../../data/ReportLost";
+import { FiX } from "react-icons/fi";
 
-import ReportLostHeader from "./ReportLostHeader";
-import ReportLostForm from "./ReportLostForm";
+import ReportHeader from "./ReportHeader";
+import ReportForm from "./ReportForm";
 
-const ReportLostModal = ({ onClose }) => {
-  const CloseIcon =
-    reportLostModal.icons.close;
-
+const ReportModal = ({
+  header,
+  formData,
+  onClose,
+}) => {
   return (
     <div
       className="
@@ -24,9 +23,7 @@ const ReportLostModal = ({ onClose }) => {
         sm:p-5
       "
     >
-
       {/* Modal */}
-
       <div
         className="
           relative
@@ -40,9 +37,7 @@ const ReportLostModal = ({ onClose }) => {
           shadow-2xl
         "
       >
-
-        {/* Close */}
-
+        {/* Close Button */}
         <button
           onClick={onClose}
           className="
@@ -65,13 +60,10 @@ const ReportLostModal = ({ onClose }) => {
             hover:scale-110
           "
         >
-
-          <CloseIcon size={22} />
-
+          <FiX size={22} />
         </button>
 
-        {/* Body */}
-
+        {/* Content */}
         <div
           className="
             p-5
@@ -80,17 +72,19 @@ const ReportLostModal = ({ onClose }) => {
             lg:p-10
           "
         >
+          {/* Header */}
+          <ReportHeader
+            header={header}
+          />
 
-          <ReportLostHeader />
-
-          <ReportLostForm />
-
+          {/* Form */}
+          <ReportForm
+            formData={formData}
+          />
         </div>
-
       </div>
-
     </div>
   );
 };
 
-export default ReportLostModal;
+export default ReportModal;

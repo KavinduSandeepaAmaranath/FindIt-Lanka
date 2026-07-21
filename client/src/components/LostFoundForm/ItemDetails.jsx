@@ -1,19 +1,14 @@
 import SectionTitle from "./SectionTitle";
-import {
-  lostFormSections,
-  lostItemCategories,
-} from "../../data/ReportLost";
 
-const LostItemDetails = () => {
-  const Icon = lostFormSections.itemDetails.icon;
+const ItemDetails = ({ formData }) => {
+  const Icon = formData.sections.itemDetails.icon;
 
   return (
     <section className="mb-8">
-
       {/* Section Title */}
       <SectionTitle
         icon={Icon}
-        title={lostFormSections.itemDetails.title}
+        title={formData.sections.itemDetails.title}
       />
 
       {/* Fields */}
@@ -27,7 +22,7 @@ const LostItemDetails = () => {
 
           <input
             type="text"
-            placeholder="e.g., iPhone 13 - Midnight Blue"
+            placeholder={formData.itemTitlePlaceholder}
             className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition"
           />
         </div>
@@ -38,11 +33,18 @@ const LostItemDetails = () => {
             Category
           </label>
 
-          <select className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white text-gray-600 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition">
-            <option value="">Select Category</option>
+          <select
+            className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white text-gray-600 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition"
+          >
+            <option value="">
+              {formData.categoryPlaceholder}
+            </option>
 
-            {lostItemCategories.map((category) => (
-              <option key={category} value={category}>
+            {formData.categories.map((category) => (
+              <option
+                key={category}
+                value={category}
+              >
                 {category}
               </option>
             ))}
@@ -50,9 +52,8 @@ const LostItemDetails = () => {
         </div>
 
       </div>
-
     </section>
   );
 };
 
-export default LostItemDetails;
+export default ItemDetails;
