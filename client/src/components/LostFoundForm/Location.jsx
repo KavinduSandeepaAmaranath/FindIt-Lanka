@@ -1,33 +1,35 @@
 import SectionTitle from "./SectionTitle";
-import { lostFormSections } from "../../data/ReportLost";
 
-const LostDateTime = () => {
-  const Icon = lostFormSections.dateTime.icon;
+const Location = ({ formData }) => {
+  const Icon = formData.sections.location.icon;
 
   return (
     <section className="mb-8">
 
+      {/* Section Title */}
       <SectionTitle
         icon={Icon}
-        title={lostFormSections.dateTime.title}
+        title={formData.sections.location.title}
       />
 
+      {/* Fields */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-        {/* Lost Date */}
+        {/* Location */}
         <div>
+
           <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Lost Date
+            {formData.locationLabel}
           </label>
 
           <input
-            type="date"
+            type="text"
+            placeholder={formData.locationPlaceholder}
             className="
               w-full
               rounded-xl
               border
               border-gray-300
-              bg-white
               px-4
               py-3
               text-sm
@@ -38,16 +40,17 @@ const LostDateTime = () => {
               focus:ring-blue-100
             "
           />
+
         </div>
 
-        {/* Lost Time */}
+        {/* District */}
         <div>
+
           <label className="block text-sm font-semibold text-slate-700 mb-2">
-            Lost Time
+            {formData.districtLabel}
           </label>
 
-          <input
-            type="time"
+          <select
             className="
               w-full
               rounded-xl
@@ -57,13 +60,29 @@ const LostDateTime = () => {
               px-4
               py-3
               text-sm
+              text-gray-500
               outline-none
               transition
               focus:border-blue-500
               focus:ring-2
               focus:ring-blue-100
             "
-          />
+          >
+            <option value="">
+              {formData.districtPlaceholder}
+            </option>
+
+            {formData.districts.map((district) => (
+              <option
+                key={district}
+                value={district}
+              >
+                {district}
+              </option>
+            ))}
+
+          </select>
+
         </div>
 
       </div>
@@ -72,4 +91,4 @@ const LostDateTime = () => {
   );
 };
 
-export default LostDateTime;
+export default Location;

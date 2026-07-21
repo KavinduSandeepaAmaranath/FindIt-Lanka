@@ -1,15 +1,13 @@
 import { useState } from "react";
 import SectionTitle from "./SectionTitle";
-import {
-  lostFormSections,
-  uploadSettings,
-} from "../../data/ReportLost";
 
-const UploadImages = () => {
-  const Icon = lostFormSections.upload.icon;
+const UploadImages = ({ formData }) => {
+  const Icon = formData.sections.upload.icon;
 
   const [images, setImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const upload = formData.upload;
 
   // Upload Image
   const handleUpload = (e) => {
@@ -18,14 +16,14 @@ const UploadImages = () => {
     if (!file) return;
 
     // File Type Validation
-    if (!uploadSettings.acceptedTypes.includes(file.type)) {
+    if (!upload.acceptedTypes.includes(file.type)) {
       alert("Only JPG and PNG images are allowed.");
       return;
     }
 
     // File Size Validation
-    if (file.size > uploadSettings.maxFileSize * 1024 * 1024) {
-      alert(`Maximum ${uploadSettings.maxFileSize}MB allowed.`);
+    if (file.size > upload.maxFileSize * 1024 * 1024) {
+      alert(`Maximum ${upload.maxFileSize}MB allowed.`);
       return;
     }
 
@@ -35,8 +33,8 @@ const UploadImages = () => {
     };
 
     setImages((prev) => {
-      if (prev.length >= uploadSettings.maxImages) {
-        alert(`Maximum ${uploadSettings.maxImages} images allowed.`);
+      if (prev.length >= upload.maxImages) {
+        alert(`Maximum ${upload.maxImages} images allowed.`);
         return prev;
       }
 
@@ -54,7 +52,7 @@ const UploadImages = () => {
 
     const pages = Math.max(
       1,
-      Math.ceil(updatedImages.length / uploadSettings.imagesPerPage)
+      Math.ceil(updatedImages.length / upload.imagesPerPage)
     );
 
     if (currentPage > pages) {
@@ -65,24 +63,24 @@ const UploadImages = () => {
   // Pagination
   const totalPages = Math.max(
     1,
-    Math.ceil(images.length / uploadSettings.imagesPerPage)
+    Math.ceil(images.length / upload.imagesPerPage)
   );
 
   const startIndex =
-    (currentPage - 1) *
-    uploadSettings.imagesPerPage;
+    (currentPage - 1) * upload.imagesPerPage;
 
   const currentImages = images.slice(
     startIndex,
-    startIndex + uploadSettings.imagesPerPage
+    startIndex + upload.imagesPerPage
   );
 
   return (
     <section className="mb-8">
 
+      {/* Section Title */}
       <SectionTitle
         icon={Icon}
-        title={lostFormSections.upload.title}
+        title={formData.sections.upload.title}
       />
 
       {/* Images */}
@@ -99,7 +97,6 @@ const UploadImages = () => {
               className="w-full h-full object-cover"
             />
 
-            {/* Remove */}
             <button
               onClick={() => removeImage(image.id)}
               className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
@@ -110,7 +107,7 @@ const UploadImages = () => {
         ))}
 
         {/* Upload Card */}
-        {images.length < uploadSettings.maxImages && (
+        {images.length < upload.maxImages && (
           <label
             className="
               h-56
@@ -131,16 +128,16 @@ const UploadImages = () => {
             <Icon className="text-5xl text-blue-400 mb-4" />
 
             <h3 className="font-semibold text-slate-700">
-              {uploadSettings.title}
+              {upload.title}
             </h3>
 
             <p className="text-sm text-gray-500 mt-1">
-              {uploadSettings.subtitle}
+              {upload.subtitle}
             </p>
 
             <input
               type="file"
-              accept={uploadSettings.acceptedTypes.join(",")}
+              accept={upload.acceptedTypes.join(",")}
               onChange={handleUpload}
               className="hidden"
             />
@@ -150,7 +147,7 @@ const UploadImages = () => {
       </div>
 
       {/* Pagination */}
-      {images.length > uploadSettings.imagesPerPage && (
+      {images.length > upload.imagesPerPage && (
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
 
           <button
@@ -166,15 +163,11 @@ const UploadImages = () => {
           </button>
 
           <div className="text-sm text-gray-600">
-
             Page {currentPage} of {totalPages}
 
             <span className="ml-4">
-
-              {images.length} / {uploadSettings.maxImages} Uploaded
-
+              {images.length} / {upload.maxImages} Uploaded
             </span>
-
           </div>
 
           <button

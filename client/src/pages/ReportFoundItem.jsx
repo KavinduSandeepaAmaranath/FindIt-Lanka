@@ -7,9 +7,9 @@ import ReportForm from "../components/LostFoundForm/ReportForm";
 import {
   reportHeader,
   reportForm,
-} from "../data/ReportLost";
+} from "../data/ReportFound";
 
-const ReportLostItem = () => {
+const ReportFoundItem = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -21,7 +21,7 @@ const ReportLostItem = () => {
         setIsOpen={setIsSidebarOpen}
       />
 
-      {/* Right Side */}
+      {/* Content */}
       <div className="flex-1 flex flex-col min-h-screen">
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
@@ -45,4 +45,4 @@ const ReportLostItem = () => {
   );
 };
 
-export default ReportLostItem;
+export default ReportFoundItem;

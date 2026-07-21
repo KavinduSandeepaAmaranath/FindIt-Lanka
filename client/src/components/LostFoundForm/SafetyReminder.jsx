@@ -1,11 +1,5 @@
-
-import {
-  lostFormSections,
-  safetyReminder,
-} from "../../data/ReportLost";
-
-const SafetyReminder = () => {
-  const Icon = lostFormSections.reminder.icon;
+const SafetyReminder = ({ formData }) => {
+  const Icon = formData.sections.reminder.icon;
 
   return (
     <section className="mb-8">
@@ -24,23 +18,21 @@ const SafetyReminder = () => {
       >
 
         {/* Icon */}
-
         <div className="flex-shrink-0 rounded-xl bg-blue-100 p-3">
 
           <Icon className="text-2xl text-blue-600" />
 
         </div>
 
-        {/* Text */}
-
+        {/* Content */}
         <div>
 
           <h3 className="text-base sm:text-lg font-semibold text-blue-800">
-            {safetyReminder.title}
+            {formData.safetyReminder.title}
           </h3>
 
           <p className="mt-2 text-sm text-slate-600 leading-6">
-            {safetyReminder.description}
+            {formData.safetyReminder.description}
           </p>
 
         </div>

@@ -35,7 +35,8 @@ const navItems = [
   
 ];
 
-function DashboardSidebar({onOpenLostReport}) {
+function DashboardSidebar({onOpenLostReport,
+  onOpenFoundReport,}) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -138,7 +139,38 @@ function DashboardSidebar({onOpenLostReport}) {
       );
     }
 
+    if (label === "Add Found Reports") {
+  return (
+    <button
+      key={label}
+      onClick={() => {
+        closeDrawer();
+        onOpenFoundReport();
+      }}
+      className="
+        w-full
+        flex
+        items-center
+        gap-3
+        px-3.5
+        py-3
+        rounded-xl
+        text-sm
+        font-semibold
+        text-blue-100
+        hover:bg-white/10
+        hover:text-white
+        transition-colors
+      "
+    >
+      <Icon className="w-5 h-5" />
+      <span>{label}</span>
+    </button>
+  );
+}
+
     // ✅ All other menu items
+    
     return (
       <Link
         key={label}

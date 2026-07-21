@@ -13,10 +13,10 @@ import {
 =========================================== */
 
 export const reportHeader = {
-  title: "Report a Lost Item",
+  title: "Report a Found Item",
 
   subtitle:
-    "Help the community identify your item by providing as much detail as possible.",
+    "Help return an item to its rightful owner by providing accurate details.",
 
   profile: {
     name: "Kasun Perera",
@@ -32,7 +32,7 @@ export const reportHeader = {
    Categories
 =========================================== */
 
-export const lostItemCategories = [
+export const foundItemCategories = [
   "Electronics",
   "Personal Items",
   "Pets & Animals",
@@ -103,7 +103,7 @@ export const uploadSettings = {
 
 export const descriptionSettings = {
   placeholder:
-    "Describe unique features, brand names, contents, or serial numbers...",
+    "Describe unique features, condition, or anything that helps identify the owner...",
 
   maxLength: 1000,
 };
@@ -116,26 +116,26 @@ export const safetyReminder = {
   title: "Safety Reminder",
 
   description:
-    "For your safety, always meet in a well-lit public place like a police station or shopping mall to return the item. Never share sensitive personal information.",
+    "Meet the owner in a safe, public location during daylight when possible. Avoid sharing personal or financial information.",
 };
 
 /* ===========================================
-   Section Titles
+   Form Sections
 =========================================== */
 
 export const LostFoundFormSections = {
   itemDetails: {
-    title: "Lost Item Details",
+    title: "Found Item Details",
     icon: FiPackage,
   },
 
   location: {
-    title: "Lost Location",
+    title: "Found Location",
     icon: FiMapPin,
   },
 
   dateTime: {
-    title: "Lost Date & Time",
+    title: "Found Date & Time",
     icon: FiCalendar,
   },
 
@@ -160,45 +160,38 @@ export const LostFoundFormSections = {
 =========================================== */
 
 export const reportForm = {
-  /* Item Details */
-
-  itemTitlePlaceholder:
-    "e.g., iPhone 13 - Midnight Blue",
+  // Item Details
+  itemTitlePlaceholder: "e.g., iPhone 13 - Midnight Blue",
 
   categoryPlaceholder: "Select Category",
 
-  categories: lostItemCategories,
+  categories: foundItemCategories,
 
   sections: LostFoundFormSections,
 
-  /* Location */
+  // Location
+  locationLabel: "Found Location",
 
-  locationLabel: "Lost Location",
+  locationPlaceholder: "Street name, landmark or city",
 
-  locationPlaceholder:
-    "Street name, landmark or city",
-
-  districtLabel: "Lost District",
+  districtLabel: "Found District",
 
   districtPlaceholder: "Select District",
 
   districts,
 
-  /* Date & Time */
+  // Date & Time
+  dateLabel: "Found Date",
 
-  dateLabel: "Lost Date",
+  timeLabel: "Found Time",
 
-  timeLabel: "Lost Time",
-
-  /* Upload */
-
+  // Upload
   upload: uploadSettings,
 
-  /* Description */
-
+  // Description
   description: descriptionSettings,
 
-  /* Safety Reminder */
-
+  // Safety Reminder
   safetyReminder,
 };
+
