@@ -16,16 +16,17 @@ import logo from "../../assets/images/Loginlogo.png";
 
 const navItems = [
   { label: "Dashboard", to: "/dashboard", icon: FiGrid },
+  { label: "Browse Items", to: "/dashboard/browse", icon: FiSearch },
   { label: "My Reports", to: "/dashboard/my-reports", icon: FiFileText },
-  { label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },
-  { label: "Browse Found Items", to: "/dashboard/browse-found", icon: FiSearch },
+  { label: "My Claims", to: "/dashboard/my-claims", icon: FiFileText },
+  /*{ label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },*/
   {
-    label: "Add Lost Reports",
+    label: "Report Lost Item",
     to: "/report-lost-item",
     icon: FiSend,
   },
   {
-    label: "Add Found Reports",
+    label: "Report Found Item",
     to: "/report-found-item",
     icon: FiSend,
   },

@@ -13,13 +13,14 @@ const foundItemSchema = new mongoose.Schema({
         required: true,
         enum: [
             "Electronics",
+            "Personal Items",
+            "Pets & Animals",
+            "Bags & Wallets",
             "Documents",
-            "Bags",
-            "Jewelry",
-            "Keys",
             "Clothing",
-            "Pets",
-            "Other",
+            "Vehicles",
+            "Jewellery",
+            "Others"
         ],
     },
     description: {

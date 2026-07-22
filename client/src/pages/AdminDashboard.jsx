@@ -87,28 +87,43 @@ export default function AdminDashboard() {
 
         setStatistics(dashboardResponse.statistics);
 
-        const lostItems = lostResponse.lostItems.map((item) => ({
-          id: item._id,
-          image: item.images?.[0] || "",
-          title: item.title,
-          type: "Lost",
-          category: item.category,
-          user: item.userId?.name || "Unknown",
-          date: new Date(item.lostDate).toLocaleDateString(),
-          status: item.approvalStatus,
-        }));
+        const lostItems = lostResponse.lostItems.map((item) => {
+          const imageUrl = item.images?.length
+            ? `http://localhost:5000/${item.images[0]}`
+            : "";
 
-        const foundItems = foundResponse.foundItems.map((item) => ({
-          id: item._id,
-          image: item.images?.[0] || "",
-          title: item.title,
-          type: "Found",
-          category: item.category,
-          user: item.userId?.name || "Unknown",
-          date: new Date(item.foundDate).toLocaleDateString(),
-          status: item.approvalStatus,
-        }));
+          console.log("Lost Item Image URL:", imageUrl);
 
+          return {
+            id: item._id,
+            image: imageUrl,
+            title: item.title,
+            type: "Lost",
+            category: item.category,
+            user: item.userId?.name || "Unknown",
+            date: new Date(item.lostDate).toLocaleDateString(),
+            status: item.approvalStatus,
+          };
+        });
+
+        const foundItems = foundResponse.foundItems.map((item) => {
+          const imageUrl = item.images?.length
+            ? `http://localhost:5000/${item.images[0]}`
+            : "";
+
+          console.log("Found Item Image URL:", imageUrl);
+
+          return {
+            id: item._id,
+            image: imageUrl,
+            title: item.title,
+            type: "Found",
+            category: item.category,
+            user: item.userId?.name || "Unknown",
+            date: new Date(item.foundDate).toLocaleDateString(),
+            status: item.approvalStatus,
+          };
+        });
         setPendingApprovals([
           ...lostItems,
           ...foundItems,

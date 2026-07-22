@@ -1,6 +1,10 @@
 import SectionTitle from "./SectionTitle";
 
-const Location = ({ formData }) => {
+const Location = ({
+  formData,
+  formValues,
+  setFormValues,
+}) => {
   const Icon = formData.sections.location.icon;
 
   return (
@@ -25,6 +29,13 @@ const Location = ({ formData }) => {
           <input
             type="text"
             placeholder={formData.locationPlaceholder}
+            value={formValues.location}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                location: e.target.value,
+              })
+            }
             className="
               w-full
               rounded-xl
@@ -51,6 +62,13 @@ const Location = ({ formData }) => {
           </label>
 
           <select
+            value={formValues.district}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                district: e.target.value,
+              })
+            }
             className="
               w-full
               rounded-xl
