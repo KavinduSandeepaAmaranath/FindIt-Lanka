@@ -1,4 +1,11 @@
-import { FiSearch } from "react-icons/fi";
+import { FiSearch,
+           FiX,
+          FiAlertTriangle,
+          FiUsers,
+          FiUserCheck,
+          FiUserX,
+          FiUserPlus,
+ } from "react-icons/fi";
 
 import ProfileImg from "../assets/icons/ProfileImg.jpeg";
 
@@ -23,12 +30,6 @@ export const usersHeader = {
   },
 };
 
-import {
-  FiUsers,
-  FiUserCheck,
-  FiUserX,
-  FiUserPlus,
-} from "react-icons/fi";
 
 export const userscard = [
   {
@@ -60,12 +61,12 @@ export const userscard = [
   },
 
   {
-    title: "Blocked Users",
+    title: "Suspended Users",
 
     value: "146",
 
     description:
-      "Blocked accounts",
+      "Suspended accounts",
 
     change:
       "↑ 3.2% vs last month",
@@ -114,7 +115,7 @@ export const users = [
     lost: 32,
     found: 24,
     claims: 5,
-    status: "Blocked",
+    status: "Suspended",
   },
 
   {
@@ -170,7 +171,7 @@ export const users = [
     lost: 21,
     found: 15,
     claims: 8,
-    status: "Active",
+    status: "Suspended",
   },
 
   {
@@ -226,6 +227,22 @@ export const users = [
     lost: 15,
     found: 16,
     claims: 4,
-    status: "Blocked",
+    status: "Suspended",
   },
 ];
+
+export const suspendIcons = {
+  close: FiX,
+  warning: FiAlertTriangle,
+  userSuspend: FiUserX,
+};
+
+
+export const suspendContent = {
+  title: "Suspend User",
+  subtitle: "Account restriction",
+  warningText:
+    "This user will not be able to access the system until reactivated.",
+  cancelButton: "Cancel",
+  confirmButton: "Confirm Suspend",
+};

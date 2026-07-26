@@ -14,55 +14,95 @@ import {
   users
 } from "../data/AllUsersData";
 
+
 const AllUsers = () => {
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
 
-      {/* Sidebar */}
-      <AdminNavBar
-        isOpen={isSidebarOpen}
-        setIsOpen={setIsSidebarOpen}
-      />
+    <div className="min-h-screen flex flex-col bg-gray-50">
 
-      {/* Right Side */}
-      <div className="flex-1 flex flex-col min-h-screen">
 
-        {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+      {/* Main Area */}
+      
+      <div className="flex flex-1">
+
+
+        {/* Sidebar */}
+
+        <AdminNavBar
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
+        />
+
+
+
+        {/* Content */}
+
+        <main
+          className="
+            flex-1
+            p-4
+            sm:p-6
+            lg:p-8
+            overflow-x-hidden
+          "
+        >
+
 
           {/* Header */}
+
           <UsersHeader
             header={usersHeader}
             setIsOpen={setIsSidebarOpen}
           />
 
-          {/* Statistics Cards */}
+
+
+          {/* Cards */}
+
           <section className="mt-6">
+
             <AllUsersCard
               stats={userscard}
             />
+
           </section>
 
 
-         <section className="mt-8">
-    <UsersTable
-        users={users}
-    />
-</section>
 
-          {/* <UsersTable users={usersData} /> */}
+
+          {/* Table */}
+
+          <section className="mt-8">
+
+            <UsersTable
+              users={users}
+            />
+
+          </section>
+
+
 
         </main>
 
-        {/* Footer */}
-        <Footer />
 
       </div>
 
+
+
+
+      {/* Full Width Footer */}
+
+      <Footer />
+
+
     </div>
+
   );
 };
+
 
 export default AllUsers;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import UserViewModal from "./UserViewModal";
+import SuspendUserModal from "./SuspendUserModal";
 
 const UsersTable = ({ users }) => {
   // Pagination
@@ -13,8 +14,8 @@ const UsersTable = ({ users }) => {
 
   const currentRows = users.slice(startIndex, endIndex);
 
-  const [selectedUser, setSelectedUser] =
-useState(null);
+  const [selectedUser, setSelectedUser] =useState(null);
+  const [suspendUser, setSuspendUser] = useState(null);
 
   return (
     <>
@@ -109,20 +110,24 @@ useState(null);
                 <td className="border px-4 py-4">
                   <div className="flex justify-center gap-2">
 
-                    <button onClick={(e) => {e.stopPropagation();}}
-                      className="
-                        bg-red-600
-                        hover:bg-red-700
-                        text-white
-                        text-xs
-                        px-4
-                        py-1
-                        rounded-lg
-                        transition
-                      "
-                    >
-                      Block
-                    </button>
+                    <button
+  onClick={(e) => {
+    e.stopPropagation();
+    setSuspendUser(user);
+  }}
+  className="
+    bg-red-600
+    hover:bg-red-700
+    text-white
+    text-xs
+    px-4
+    py-1
+    rounded-lg
+    transition
+  "
+>
+  Suspend
+</button>
 
                     <button
                   onClick={(e) => {e.stopPropagation();setSelectedUser(user);}}
@@ -253,6 +258,13 @@ useState(null);
         onClose={() => setSelectedUser(null)}
       />
     )}
+
+    {suspendUser && (
+  <SuspendUserModal
+    user={suspendUser}
+    onClose={() => setSuspendUser(null)}
+  />
+)}
 
     </>
     
