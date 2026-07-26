@@ -264,7 +264,7 @@ export const navMenuItems = [
     id: 2,
     title: "Users",
     icon: MdPeople,
-    path: "/admin-users",
+    path: "/all-users",
   },
   {
     id: 3,
