@@ -26,7 +26,7 @@ const AllUsers = () => {
 
 
       {/* Main Area */}
-      
+
       <div className="flex flex-1">
 
 

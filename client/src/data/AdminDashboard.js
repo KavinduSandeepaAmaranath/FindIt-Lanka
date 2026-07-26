@@ -36,7 +36,7 @@ export const stats = [
     value: "15,642",
     sub: "↑ 12.5% from last 30 days",
     icon: FiUsers,
-    path: "/All users",
+    path: "/all-users",
   },
   {
     title: "Total Reports",
@@ -198,11 +198,11 @@ export const dashboardHeader = {
 };
 
 export const locations = [
-  { id: 1, name: "Galle",    reports: 305, percentage: 80, icon: FiMapPin },
-  { id: 2, name: "Colombo",  reports: 280, percentage: 65, icon: FiMapPin },
-  { id: 3, name: "Matara",   reports: 210, percentage: 50, icon: FiMapPin },
-  { id: 4, name: "Kandy",    reports: 187, percentage: 35, icon: FiMapPin },
-  { id: 5, name: "Badulla",  reports: 120, percentage: 25, icon: FiMapPin },
+  { id: 1, name: "Galle", reports: 305, percentage: 80, icon: FiMapPin },
+  { id: 2, name: "Colombo", reports: 280, percentage: 65, icon: FiMapPin },
+  { id: 3, name: "Matara", reports: 210, percentage: 50, icon: FiMapPin },
+  { id: 4, name: "Kandy", reports: 187, percentage: 35, icon: FiMapPin },
+  { id: 5, name: "Badulla", reports: 120, percentage: 25, icon: FiMapPin },
 ];
 
 export const recentActivities = [
@@ -237,17 +237,17 @@ export const recentActivities = [
 ];
 
 export const categoryData = [
-  { name: "Electronics",    value: 400, color: "#ef4444" },
+  { name: "Electronics", value: 400, color: "#ef4444" },
   { name: "Personal Items", value: 300, color: "#a855f7" },
   { name: "Pets & Animals", value: 300, color: "#dfea08" },
   { name: "Bags & Wallets", value: 200, color: "#3b82f6" },
-  { name: "Others",         value: 100, color: "#22c55e" },
+  { name: "Others", value: 100, color: "#22c55e" },
 ];
 
 export const overviewData = [
-  { date: "May 20",  total: 20, found: 10, lost: 5  },
-  { date: "May 27",  total: 45, found: 30, lost: 15 },
-  { date: "June 3",  total: 35, found: 25, lost: 10 },
+  { date: "May 20", total: 20, found: 10, lost: 5 },
+  { date: "May 27", total: 45, found: 30, lost: 15 },
+  { date: "June 3", total: 35, found: 25, lost: 10 },
   { date: "June 10", total: 60, found: 40, lost: 20 },
   { date: "June 17", total: 80, found: 60, lost: 25 },
 ];

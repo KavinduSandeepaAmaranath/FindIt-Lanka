@@ -13,14 +13,15 @@ import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
 import Dashboard from "../pages/Dashboard";
 import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
+import AllUsers from "../pages/AllUsers";
 
 
 function AppRoutes() {
-  
+
   return (
-    
-      <Routes>
-        <Route element={<Layout />}>
+
+    <Routes>
+      <Route element={<Layout />}>
 
         {/*public routes*/}
         <Route path="/" element={<Home />} />
@@ -31,21 +32,30 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/new-password" element={<NewPassword />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        </Route>
+      </Route>
 
-        {/*admin route - outside the normal layout*/}
-        <Route 
-          path="/Admin-Dashboard" 
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboard />
-            </ProtectedAdminRoute>
-          } 
-        />
+      {/*admin route - outside the normal layout*/}
+      <Route
+        path="/Admin-Dashboard"
+        element={
+          <ProtectedAdminRoute>
+            <AdminDashboard />
+          </ProtectedAdminRoute>
+        }
+      />
 
-      </Routes>
+      <Route
+        path="/all-users"
+        element={
+          <ProtectedAdminRoute>
+            <AllUsers />
+          </ProtectedAdminRoute>
+        }
+      />
+
+    </Routes>
   );
 }
 
