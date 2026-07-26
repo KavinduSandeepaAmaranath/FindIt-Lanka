@@ -1,8 +1,41 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { locations } from "../../data/AdminDashboard";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { getTopLocations } from "../../services/adminService";
 
 const TopLocations = () => {
   const navigate = useNavigate();
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    const loadLocations = async () => {
+      try {
+        const response = await getTopLocations();
+        
+        const maxReports =
+          response.locations.length > 0
+            ? response.locations[0].totalReports
+            : 1;
+
+        const formattedLocations = response.locations.map(
+          (location, index) => ({
+            id: index + 1,
+            name: location._id,
+            reports: location.totalReports,
+            percentage:
+              (location.totalReports / maxReports) * 100,
+            icon: FaMapMarkerAlt,
+          })
+        );
+
+        setLocations(formattedLocations);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadLocations();
+  }, []);
 
   // Navigate to locations page
   const handleViewAll = () => {
@@ -16,7 +49,7 @@ const TopLocations = () => {
         Top Locations
       </h2>
 
-      <div className="space-y-5">
+      <div className="space-y-5 max-h-[420px] overflow-y-auto pr-2">
         {locations.map((location) => {
           const Icon = location.icon;
 

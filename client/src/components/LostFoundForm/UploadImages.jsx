@@ -1,7 +1,11 @@
 import { useState } from "react";
 import SectionTitle from "./SectionTitle";
 
-const UploadImages = ({ formData }) => {
+const UploadImages = ({
+  formData,
+  formValues,
+  setFormValues, 
+}) => {
   const Icon = formData.sections.upload.icon;
 
   const [images, setImages] = useState([]);
@@ -27,6 +31,11 @@ const UploadImages = ({ formData }) => {
       return;
     }
 
+    setFormValues({
+      ...formValues,
+      images: [...formValues.images, file],
+    });
+
     const newImage = {
       id: Date.now(),
       preview: URL.createObjectURL(file),
@@ -46,18 +55,31 @@ const UploadImages = ({ formData }) => {
 
   // Remove Image
   const removeImage = (id) => {
-    const updatedImages = images.filter((img) => img.id !== id);
+      const index = images.findIndex((img) => img.id === id);
 
-    setImages(updatedImages);
+      const updatedPreviewImages = images.filter(
+          (img) => img.id !== id
+      );
 
-    const pages = Math.max(
-      1,
-      Math.ceil(updatedImages.length / upload.imagesPerPage)
-    );
+      const updatedFormImages = [...formValues.images];
 
-    if (currentPage > pages) {
-      setCurrentPage(pages);
-    }
+      updatedFormImages.splice(index, 1);
+
+      setImages(updatedPreviewImages);
+
+      setFormValues({
+          ...formValues,
+          images: updatedFormImages,
+      });
+
+      const pages = Math.max(
+          1,
+          Math.ceil(updatedPreviewImages.length / upload.imagesPerPage)
+      );
+
+      if (currentPage > pages) {
+          setCurrentPage(pages);
+      }
   };
 
   // Pagination
@@ -136,10 +158,10 @@ const UploadImages = ({ formData }) => {
             </p>
 
             <input
-              type="file"
-              accept={upload.acceptedTypes.join(",")}
-              onChange={handleUpload}
-              className="hidden"
+                type="file"
+                accept={upload.acceptedTypes.join(",")}
+                onChange={handleUpload}
+                className="hidden"
             />
           </label>
         )}

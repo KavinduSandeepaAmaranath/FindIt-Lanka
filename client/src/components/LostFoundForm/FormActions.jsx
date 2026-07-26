@@ -1,7 +1,4 @@
-const FormActions = () => {
-  const handleSubmit = () => {
-    console.log("Submit Report");
-  };
+const FormActions = ({ onSubmit }) => {
 
   const handleCancel = () => {
     console.log("Cancel");
@@ -13,7 +10,7 @@ const FormActions = () => {
       {/* Submit */}
 
       <button
-        onClick={handleSubmit}
+        onClick={onSubmit}
         className="
           w-full
           sm:w-auto

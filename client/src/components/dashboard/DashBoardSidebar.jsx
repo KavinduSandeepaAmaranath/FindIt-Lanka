@@ -16,16 +16,17 @@ import logo from "../../assets/images/Loginlogo.png";
 
 const navItems = [
   { label: "Dashboard", to: "/dashboard", icon: FiGrid },
+  { label: "Browse Items", to: "/dashboard/browse", icon: FiSearch },
   { label: "My Reports", to: "/dashboard/my-reports", icon: FiFileText },
-  { label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },
-  { label: "Browse Found Items", to: "/dashboard/browse-found", icon: FiSearch },
+  { label: "My Claims", to: "/dashboard/my-claims", icon: FiFileText },
+  /*{ label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },*/
   {
-    label: "Add Lost Reports",
+    label: "Report Lost Item",
     to: "/report-lost-item",
     icon: FiSend,
   },
   {
-    label: "Add Found Reports",
+    label: "Report Found Item",
     to: "/report-found-item",
     icon: FiSend,
   },
@@ -108,66 +109,75 @@ function DashboardSidebar({onOpenLostReport,
   {navItems.map(({ label, to, icon: Icon }) => {
     const active = location.pathname === to;
 
-    // ✅ Add Lost Reports -> Modal Open
-    if (label === "Add Lost Reports") {
-      return (
-        <button
-          key={label}
-          onClick={() => {
-            closeDrawer();
-            onOpenLostReport();
-          }}
-          className="
-            w-full
-            flex
-            items-center
-            gap-3
-            px-3.5
-            py-3
-            rounded-xl
-            text-sm
-            font-semibold
-            text-blue-100
-            hover:bg-white/10
-            hover:text-white
-            transition-colors
-          "
-        >
-          <Icon className="w-5 h-5" />
-          <span>{label}</span>
-        </button>
-      );
+    // ✅ Report Lost Item -> Modal Open (or Link fallback)
+    if (label === "Report Lost Item" || label === "Add Lost Reports") {
+      if (onOpenLostReport) {
+        return (
+          <button
+            key={label}
+            type="button"
+            onClick={() => {
+              closeDrawer();
+              onOpenLostReport();
+            }}
+            className="
+              w-full
+              flex
+              items-center
+              gap-3
+              px-3.5
+              py-3
+              rounded-xl
+              text-sm
+              font-semibold
+              text-blue-100
+              hover:bg-white/10
+              hover:text-white
+              transition-colors
+              cursor-pointer
+            "
+          >
+            <Icon className="w-5 h-5" />
+            <span>{label}</span>
+          </button>
+        );
+      }
     }
 
-    if (label === "Add Found Reports") {
-  return (
-    <button
-      key={label}
-      onClick={() => {
-        closeDrawer();
-        onOpenFoundReport();
-      }}
-      className="
-        w-full
-        flex
-        items-center
-        gap-3
-        px-3.5
-        py-3
-        rounded-xl
-        text-sm
-        font-semibold
-        text-blue-100
-        hover:bg-white/10
-        hover:text-white
-        transition-colors
-      "
-    >
-      <Icon className="w-5 h-5" />
-      <span>{label}</span>
-    </button>
-  );
-}
+    // ✅ Report Found Item -> Modal Open (or Link fallback)
+    if (label === "Report Found Item" || label === "Add Found Reports") {
+      if (onOpenFoundReport) {
+        return (
+          <button
+            key={label}
+            type="button"
+            onClick={() => {
+              closeDrawer();
+              onOpenFoundReport();
+            }}
+            className="
+              w-full
+              flex
+              items-center
+              gap-3
+              px-3.5
+              py-3
+              rounded-xl
+              text-sm
+              font-semibold
+              text-blue-100
+              hover:bg-white/10
+              hover:text-white
+              transition-colors
+              cursor-pointer
+            "
+          >
+            <Icon className="w-5 h-5" />
+            <span>{label}</span>
+          </button>
+        );
+      }
+    }
 
     // ✅ All other menu items
     

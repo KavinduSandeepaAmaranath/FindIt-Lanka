@@ -1,6 +1,10 @@
 import SectionTitle from "./SectionTitle";
 
-const ItemDetails = ({ formData }) => {
+const ItemDetails = ({
+  formData,
+  formValues,
+  setFormValues,
+}) => {
   const Icon = formData.sections.itemDetails.icon;
 
   return (
@@ -23,6 +27,13 @@ const ItemDetails = ({ formData }) => {
           <input
             type="text"
             placeholder={formData.itemTitlePlaceholder}
+            value={formValues.title}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                title: e.target.value,
+              })
+            }
             className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition"
           />
         </div>
@@ -34,6 +45,13 @@ const ItemDetails = ({ formData }) => {
           </label>
 
           <select
+            value={formValues.category}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                category: e.target.value,
+              })
+            }
             className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white text-gray-600 outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition"
           >
             <option value="">

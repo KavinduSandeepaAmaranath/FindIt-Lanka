@@ -160,6 +160,7 @@ export const LostFoundFormSections = {
 =========================================== */
 
 export const reportForm = {
+  type: "lost",
   /* Item Details */
 
   itemTitlePlaceholder:
