@@ -95,8 +95,21 @@ function Dashboard() {
           icon: "calendar",
         },
       ]);
-      setLostItems(lostItemsResponse.lostItems);
-      setFoundItems(foundItemsResponse.foundItems);
+      
+      setLostItems(
+        lostItemsResponse.lostItems.map((item) => ({
+          ...item,
+          date: new Date(item.lostDate).toLocaleDateString(),
+        }))
+      );
+
+      setFoundItems(
+        foundItemsResponse.foundItems.map((item) => ({
+          ...item,
+          date: new Date(item.foundDate).toLocaleDateString(),
+        }))
+      );
+
       setActivities(activitiesResponse.activities);
       } catch (error) {
         console.error(error);

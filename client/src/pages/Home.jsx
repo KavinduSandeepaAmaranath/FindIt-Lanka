@@ -28,7 +28,9 @@ function Home() {
           foundResponse.foundItems.map((item) => ({
             id: item._id,
             title: item.title,
-            image: item.images?.[0] || "",
+            image: item.images?.length
+              ? `http://localhost:5000/${item.images[0]}`
+              : "",
             location: item.district,
             date: new Date(item.foundDate).toLocaleDateString(),
           }))
@@ -38,7 +40,9 @@ function Home() {
           lostResponse.lostItems.map((item) => ({
             id: item._id,
             title: item.title,
-            image: item.images?.[0] || "",
+            image: item.images?.length
+              ? `http://localhost:5000/${item.images[0]}`
+              : "",
             location: item.district,
             date: new Date(item.lostDate).toLocaleDateString(),
           }))

@@ -13,7 +13,7 @@ import {
 export const create = async (req, res) => {
     try {
         const imagePaths = req.files
-            ? req.files.map((file) => file.path)
+            ? req.files.map((file) => `images/${file.filename}`)
             : [];
 
         const foundItem = await createFoundItem({
