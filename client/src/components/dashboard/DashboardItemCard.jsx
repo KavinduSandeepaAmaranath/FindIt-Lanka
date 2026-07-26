@@ -16,7 +16,7 @@ function DashboardItemCard({ title, location, date, reportedAgo, status, images 
       ? `http://localhost:5000/${images[0]}`
       : FALLBACK_IMAGE;
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-blue-500 cursor-pointer overflow-hidden">
       <div className="relative">
         <img
           src={imageUrl}
