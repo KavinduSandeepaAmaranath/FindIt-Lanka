@@ -5,6 +5,7 @@ import { FiSearch,
           FiUserCheck,
           FiUserX,
           FiUserPlus,
+          FiMenu
  } from "react-icons/fi";
 
 import ProfileImg from "../assets/icons/ProfileImg.jpeg";
@@ -27,6 +28,7 @@ export const usersHeader = {
 
   icons: {
     search: FiSearch,
+    menu: FiMenu,
   },
 };
 

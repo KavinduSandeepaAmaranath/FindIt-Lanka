@@ -1,36 +1,117 @@
 import { useState } from "react";
+import { FiMenu } from "react-icons/fi";
 import { usersHeader } from "../../../data/AllUsersData";
 
-const UsersHeader = () => {
+
+const UsersHeader = ({ setIsOpen }) => {
+
   const SearchIcon = usersHeader.icons.search;
+
 
   const [filter, setFilter] = useState(
     usersHeader.filterOptions[0]
   );
 
+
   return (
     <section className="mb-6 sm:mb-8">
 
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
+
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="
+          lg:hidden
+          flex
+          items-center
+          justify-center
+          w-11
+          h-11
+          mb-4
+          rounded-xl
+          bg-blue-600
+          text-white
+          shadow-md
+          hover:bg-blue-700
+          transition
+        "
+      >
+        <FiMenu size={24} />
+      </button>
+
+
+
+      <div
+        className="
+          flex
+          flex-col
+          xl:flex-row
+          xl:items-center
+          xl:justify-between
+          gap-6
+        "
+      >
+
 
         {/* Left */}
         <div className="flex-1">
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 leading-tight">
+
+          <h1
+            className="
+              text-2xl
+              sm:text-3xl
+              lg:text-4xl
+              font-bold
+              text-slate-800
+              leading-tight
+            "
+          >
             {usersHeader.title}
           </h1>
 
-          <p className="mt-2 text-sm sm:text-base text-gray-500 max-w-2xl">
+
+          <p
+            className="
+              mt-2
+              text-sm
+              sm:text-base
+              text-gray-500
+              max-w-2xl
+            "
+          >
             {usersHeader.subtitle}
           </p>
 
+
         </div>
 
+
+
+
+
         {/* Right */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
+        <div
+          className="
+            flex
+            flex-col
+            sm:flex-row
+            gap-4
+            w-full
+            xl:w-auto
+          "
+        >
+
 
           {/* Search */}
-          <div className="relative flex-1 xl:w-[480px]">
+          <div
+            className="
+              relative
+              flex-1
+              xl:w-[480px]
+            "
+          >
+
 
             <SearchIcon
               className="
@@ -43,6 +124,8 @@ const UsersHeader = () => {
                 sm:text-xl
               "
             />
+
+
 
             <input
               type="text"
@@ -68,6 +151,8 @@ const UsersHeader = () => {
               "
             />
 
+
+
             <button
               className="
                 absolute
@@ -84,16 +169,20 @@ const UsersHeader = () => {
                 sm:text-sm
                 font-medium
                 text-white
-                transition-all
-                duration-300
                 hover:bg-blue-700
                 hover:shadow-md
+                transition
               "
             >
               Search
             </button>
 
+
           </div>
+
+
+
+
 
           {/* Filter */}
           <select
@@ -119,6 +208,7 @@ const UsersHeader = () => {
               focus:ring-blue-200
             "
           >
+
             {usersHeader.filterOptions.map(
               (option) => (
                 <option
@@ -129,14 +219,19 @@ const UsersHeader = () => {
                 </option>
               )
             )}
+
           </select>
+
 
         </div>
 
+
       </div>
+
 
     </section>
   );
 };
+
 
 export default UsersHeader;
