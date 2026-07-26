@@ -1,4 +1,5 @@
 import { FiMapPin, FiCalendar } from "react-icons/fi";
+import fallbackImage from "../../assets/images/UdbFallbackImage.avif";
 
 const statusStyles = {
   Active: "bg-blue-50 text-blue-700",
@@ -7,14 +8,18 @@ const statusStyles = {
   "Pending Claim": "bg-orange-50 text-orange-700",
 };
 
-const FALLBACK_IMAGE = "../../assets/images/UdbFallbackImage.avif"
+const FALLBACK_IMAGE = fallbackImage;
 
-function DashboardItemCard({ title, location, date, reportedAgo, status, image }) {
+function DashboardItemCard({ title, location, date, reportedAgo, status, images }) {
+  const imageUrl =
+    images && images.length > 0
+      ? `http://localhost:5000/${images[0]}`
+      : FALLBACK_IMAGE;
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
       <div className="relative">
         <img
-          src={image}
+          src={imageUrl}
           alt={title}
           className="w-full h-36 object-cover"
           loading="lazy"

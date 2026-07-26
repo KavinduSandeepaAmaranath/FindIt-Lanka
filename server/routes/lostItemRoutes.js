@@ -11,10 +11,11 @@ import {
     update 
 } from "../controllers/lostItemController.js";
 import { protect } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", protect, create);
+router.post("/create", protect, upload.array("images", 10), create);
 router.get("/all", getAllLostItemsController);
 router.get("/my-items", protect, getMyLostItemsController);
 router.get("/my-items/:id", protect, getSingleLostItemController);

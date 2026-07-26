@@ -12,8 +12,13 @@ import {
 
 export const create = async (req, res) => {
     try {
+        const imagePaths = req.files
+            ? req.files.map((file) => `images/${file.filename}`)
+            : [];
+
         const foundItem = await createFoundItem({
             ...req.body,
+            images: imagePaths,
             userId: req.user.userId,
         });
 

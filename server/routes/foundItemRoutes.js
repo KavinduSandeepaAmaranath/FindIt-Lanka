@@ -11,10 +11,11 @@ import {
     remove, 
     update 
 } from "../controllers/foundItemController.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", protect, create);
+router.post("/create", protect, upload.array("images", 10), create);
 router.get("/all", getAllFoundItemsController);
 router.get("/my-items", protect, getMyFoundItemsController);
 router.get("/my-items/:id", protect, getSingleFoundItemController);
