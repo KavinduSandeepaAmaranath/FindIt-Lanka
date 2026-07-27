@@ -256,7 +256,7 @@ export const overviewData = [
 export const navMenuItems = [
   {
     id: 1,
-    title: "Admin Dashboard",
+    title: "Dashboard",
     icon: MdDashboard,
     path: "/admin-dashboard",
   },
