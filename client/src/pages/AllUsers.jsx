@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FiUsers, FiUserCheck, FiUserX, FiUserPlus } from "react-icons/fi";
 
 import AdminNavBar from "../components/AdminDashboard/AdminNavBar";
 
@@ -58,16 +59,57 @@ const AllUsers = () => {
     fetchUsers();
   }, []);
 
+  const now = new Date();
+  const newUsersThisMonth = usersList.filter((u) => {
+    if (!u.registered || u.registered === "N/A") return false;
+    const regDate = new Date(u.registered);
+    return (
+      regDate.getMonth() === now.getMonth() &&
+      regDate.getFullYear() === now.getFullYear()
+    );
+  }).length;
+  const dynamicUsersCard = [
+    {
+      title: "Total Users",
+      value: usersList.length.toLocaleString(),
+      description: "All registered users",
+      change: "Live data",
+      icon: FiUsers,
+    },
+    {
+      title: "Active Users",
+      value: usersList
+        .filter((u) => u.status === "Active" || u.status === "active")
+        .length.toLocaleString(),
+      description: "Currently active users",
+      change: "Live data",
+      icon: FiUserCheck,
+    },
+    {
+      title: "Suspended Users",
+      value: usersList
+        .filter((u) => u.status === "Suspended" || u.status === "suspended")
+        .length.toLocaleString(),
+      description: "Suspended accounts",
+      change: "Live data",
+      icon: FiUserX,
+    },
+    {
+      title: "New Users This Month",
+      value: newUsersThisMonth.toLocaleString(),
+      description: "New registrations this month",
+      change: "Live data",
+      icon: FiUserPlus,
+    },
+  ];
 
   return (
 
     <div className="min-h-screen flex flex-col bg-gray-50">
 
-
       {/* Main Area */}
 
       <div className="flex flex-1">
-
 
         {/* Sidebar */}
 
@@ -75,8 +117,6 @@ const AllUsers = () => {
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
         />
-
-
 
         {/* Content */}
 
@@ -90,7 +130,6 @@ const AllUsers = () => {
           "
         >
 
-
           {/* Header */}
 
           <UsersHeader
@@ -98,20 +137,15 @@ const AllUsers = () => {
             setIsOpen={setIsSidebarOpen}
           />
 
-
-
           {/* Cards */}
 
           <section className="mt-6">
 
             <AllUsersCard
-              stats={userscard}
+              stats={dynamicUsersCard}
             />
 
           </section>
-
-
-
 
           {/* Table */}
 
@@ -127,28 +161,19 @@ const AllUsers = () => {
               />
             )}
 
-
           </section>
-
-
 
         </main>
 
-
       </div>
-
-
-
 
       {/* Full Width Footer */}
 
       <Footer />
 
-
     </div>
 
   );
 };
-
 
 export default AllUsers;
