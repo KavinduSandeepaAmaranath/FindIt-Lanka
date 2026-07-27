@@ -32,6 +32,7 @@ const AllUsers = () => {
             email: user.email || "N/A",
             phone: user.phoneNumber || user.phone || "N/A",
             district: user.district || "N/A",
+            createdAt: user.createdAt,
             registered: user.createdAt
               ? new Date(user.createdAt).toLocaleDateString()
               : "N/A",
@@ -56,8 +57,8 @@ const AllUsers = () => {
 
   const now = new Date();
   const newUsersThisMonth = usersList.filter((u) => {
-    if (!u.registered || u.registered === "N/A") return false;
-    const regDate = new Date(u.registered);
+    if (!u.createdAt) return false;
+    const regDate = new Date(u.createdAt);
     return (
       regDate.getMonth() === now.getMonth() &&
       regDate.getFullYear() === now.getFullYear()
