@@ -10,12 +10,7 @@ import UsersTable from "../components/AdminDashboard/users/UsersTable";
 import Footer from "../components/Footer";
 
 import { getAllUsers } from "../services/adminService";
-
-import {
-  usersHeader,
-  userscard,
-  users
-} from "../data/AllUsersData";
+import { usersHeader } from "../data/AllUsersData";
 
 
 const AllUsers = () => {
