@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
-import fallbackImage from "../../assets/images/UdbFallbackImage.avif";
 import { useNavigate } from "react-router-dom";
 import { FiCheckCircle, FiXCircle, FiEye, FiX } from "react-icons/fi";
 
-export default function ApprovalTable({ 
-  approvals, 
-  onApprove,
-  onReject, 
-}) {
+export default function ApprovalTable({ approvals }) {
   const navigate = useNavigate();
 
   const rowsPerPage = 5;
@@ -51,43 +46,16 @@ export default function ApprovalTable({
     
   };
 
-  const handleApprove = async (item) => {
-    try {
-      await onApprove(item);
-
-      showNotification(
-        "success",
-        `Report ${item.id} approved successfully.`,
-        item.id
-      );
-    } catch (error) {
-      showNotification(
-        "error",
-        error.response?.data?.message ||
-        "Failed to approve report.",
-        item.id
-      );
-    }
+  const handleApprove = (item) => {
+    showNotification("success", `Report ${item.id} Approved Successfully!`, item.id);
+    
   };
 
-  const handleReject = async (item) => {
-    try {
-      await onReject(item);
-
-      showNotification(
-        "success",
-        `Report ${item.id} rejected successfully.`,
-        item.id
-      );
-    } catch (error) {
-      showNotification(
-        "error",
-        error.response?.data?.message ||
-        "Failed to reject report.",
-        item.id
-      );
-    }
+  const handleReject = (item) => {
+    showNotification("error", `Report ${item.id} Rejected!`, item.id);
+   
   };
+
 
   const getNotificationStyles = (type) => {
     switch (type) {
@@ -227,13 +195,9 @@ export default function ApprovalTable({
                 <td className="px-3 sm:px-6 py-3 sm:py-4 border-r border-gray-300">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <img
-                      src={item.image || fallbackImage}
+                      src={item.image}
                       alt={item.title}
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover"
-                      onError={(e) => {
-                        e.currentTarget.onerror = null; // Prevent infinite loop
-                        e.currentTarget.src = fallbackImage;
-                      }}
                     />
                     <span className="font-medium whitespace-nowrap">
                       {item.title}

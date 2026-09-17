@@ -1,10 +1,6 @@
 import SectionTitle from "./SectionTitle";
 
-const DateTime = ({
-  formData,
-  formValues,
-  setFormValues,
-}) => {
+const DateTime = ({ formData }) => {
   const Icon = formData.sections.dateTime.icon;
 
   return (
@@ -26,13 +22,6 @@ const DateTime = ({
 
           <input
             type="date"
-            value={formValues.date}
-            onChange={(e) =>
-              setFormValues({
-                ...formValues,
-                date: e.target.value,
-              })
-            }
             className="
               w-full
               rounded-xl
@@ -59,13 +48,6 @@ const DateTime = ({
 
           <input
             type="time"
-            value={formValues.time}
-            onChange={(e) =>
-              setFormValues({
-                ...formValues,
-                time: e.target.value,
-              })
-            }
             className="
               w-full
               rounded-xl
