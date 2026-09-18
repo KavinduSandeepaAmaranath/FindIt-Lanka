@@ -1,4 +1,12 @@
-import { FiSearch, FiShield, FiMessageSquare, FiFileText, FiClock, FiBox, FiXCircle } from "react-icons/fi";
+import {
+  FiSearch,
+  FiShield,
+  FiMessageSquare,
+  FiFileText,
+  FiClock,
+  FiBox,
+  FiXCircle,
+} from "react-icons/fi";
 
 const iconMap = {
   search: FiSearch,
@@ -14,7 +22,7 @@ const toneStyles = {
   blue: {
     card: "bg-sky-50 border-sky-100",
     icon: "bg-blue-100 text-blue-600",
-    button: "bg-blue-700 hover:bg-blue-800 text-white",
+    button: "bg-blue-600 hover:bg-blue-700 text-white",
   },
   green: {
     card: "bg-emerald-50 border-emerald-100",
@@ -33,7 +41,6 @@ const toneStyles = {
   },
 };
 
-
 function NotificationCard({ notification, onMarkAsRead }) {
   const { id, tone, icon, title, description, time, actionLabel, isRead } = notification;
 
@@ -45,41 +52,40 @@ function NotificationCard({ notification, onMarkAsRead }) {
       onClick={() => onMarkAsRead(id)}
       className={`relative flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border p-3 sm:p-4 cursor-pointer transition-shadow hover:shadow-md ${styles.card}`}
     >
-      {/* blue dot = unread */}
-      {!isRead && (
-        <span
-          className="absolute top-2 right-2 sm:top-1.5 sm:left-1.5 sm:right-auto w-2.5 h-2.5 rounded-full bg-blue-600"
-          aria-label="Unread"
-        />
-      )}
-
       {/* icon + text */}
       <div className="flex items-start gap-3 flex-1 min-w-0">
         <div
-          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 ${styles.icon}`}
+          className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 ${styles.icon}`}
         >
           <Icon className="w-4.5 h-4.5" />
+
+          <span
+  className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ring-2 ring-white ${
+    isRead ? "bg-slate-200" : "bg-blue-600"
+  }`}
+  aria-label={isRead ? "Read" : "Unread"}
+/>
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
             <p
-              className={`text-sm text-slate-900 break-words ${
-                isRead ? "font-semibold" : "font-bold"
+              className={`text-sm break-words ${
+                isRead ? "font-semibold text-blue-800" : "font-bold text-blue-800"
               }`}
             >
               {title}
             </p>
             <span className="text-xs text-slate-500 shrink-0 mr-3 sm:mr-0">{time}</span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 leading-snug mt-0.5 break-words">
+          <p className="text-xs sm:text-sm text-blue-700/70 leading-snug mt-0.5 break-words">
             {description}
           </p>
         </div>
       </div>
 
       {/* action button */}
-        <button
+          <button
         onClick={(e) => {
           e.stopPropagation();
           onMarkAsRead(id);

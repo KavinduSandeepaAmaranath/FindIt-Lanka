@@ -13,7 +13,7 @@ import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
 import Dashboard from "../pages/Dashboard";
 import AllUsers from "../pages/AllUsers";
-
+import Notification from "../pages/Notification";
 
 function AppRoutes() {
   
@@ -32,6 +32,7 @@ function AppRoutes() {
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/new-password" element={<NewPassword />} />
         <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/dashboard/notifications" element={<Notification />} />
 
         </Route>
 

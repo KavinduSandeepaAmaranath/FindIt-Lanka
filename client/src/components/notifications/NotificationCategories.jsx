@@ -1,7 +1,7 @@
 function NotificationCategories({ categories, counts, activeCategory, onSelect }) {
   return (
     <aside className="bg-white rounded-2xl shadow-md border border-slate-100 p-4 lg:w-60 lg:shrink-0 lg:self-start">
-      <h2 className="text-sm font-extrabold text-slate-900 mb-3 text-center lg:text-left">
+      <h2 className="text-sm font-extrabold text-blue-800 mb-3 text-center lg:text-left">
         Notification Categories
       </h2>
 
