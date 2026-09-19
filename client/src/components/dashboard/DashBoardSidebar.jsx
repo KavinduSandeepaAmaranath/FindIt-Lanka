@@ -16,9 +16,9 @@ import logo from "../../assets/images/Loginlogo.png";
 
 const navItems = [
   { label: "Dashboard", to: "/dashboard", icon: FiGrid },
+  { label: "Browse Items", to: "/dashboard/browse-found", icon: FiSearch },
   { label: "My Reports", to: "/dashboard/my-reports", icon: FiFileText },
-  { label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },
-  { label: "Browse Found Items", to: "/dashboard/browse-found", icon: FiSearch },
+  { label: "My Claims", to: "/dashboard/my-claims", icon: FiCheckSquare },
   {
     label: "Add Lost Reports",
     to: "/report-lost-item",
@@ -32,7 +32,6 @@ const navItems = [
   { label: "Notifications", to: "/dashboard/notifications", icon: FiBell },
   { label: "Settings", to: "/dashboard/settings", icon: FiSettings },
   { label: "Help", to: "/dashboard/help", icon: FiHelpCircle },
-  
 ];
 
 function DashboardSidebar({onOpenLostReport,
@@ -108,7 +107,7 @@ function DashboardSidebar({onOpenLostReport,
   {navItems.map(({ label, to, icon: Icon }) => {
     const active = location.pathname === to;
 
-    // ✅ Add Lost Reports -> Modal Open
+    //add lost reports -> Modal Open
     if (label === "Add Lost Reports") {
       return (
         <button
@@ -169,7 +168,7 @@ function DashboardSidebar({onOpenLostReport,
   );
 }
 
-    // ✅ All other menu items
+    // all other menu items
     
     return (
       <Link
