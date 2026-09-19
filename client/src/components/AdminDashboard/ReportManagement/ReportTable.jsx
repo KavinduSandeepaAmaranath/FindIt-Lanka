@@ -1,59 +1,38 @@
 import { useState } from "react";
+
 import {
   reportTableIcons,
   reportTableText,
   reportsData,
 } from "../../../data/AdminModuleData/ReportManagement";
+
 import Pagination from "../Pagination";
 import ReportActionModal from "./ReportActionModal";
-
 
 const ReportTable = () => {
   const [selectedReport, setSelectedReport] = useState(null);
 
-  // NEW: Store reports locally so actions can update the table
   const [reportList, setReportList] = useState(reportsData);
 
-  // NEW: Store selected action for action modal
   const [selectedAction, setSelectedAction] = useState(null);
-
-
-  /* **pagination  ** */
-
 
   const rowsPerPage = 5;
 
-
   const [currentPage, setCurrentPage] = useState(1);
 
-
-  const totalPages = Math.ceil(
-    reportList.length / rowsPerPage
-  );
-
+  const totalPages = Math.ceil(reportList.length / rowsPerPage);
 
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-
 
   const currentReports = reportList.slice(
     startIndex,
-    endIndex
+    startIndex + rowsPerPage
   );
-
-
-  /* **action headers** */
-
 
   const handleView = (report) => {
     setSelectedReport(report);
   };
 
-
-
-
-
-  // NEW: Open Approve confirmation modal
   const handleApprove = (report) => {
     setSelectedAction({
       type: "approve",
@@ -61,8 +40,6 @@ const ReportTable = () => {
     });
   };
 
-
-  // NEW: Open Reject confirmation modal
   const handleReject = (report) => {
     setSelectedAction({
       type: "reject",
@@ -70,8 +47,7 @@ const ReportTable = () => {
     });
   };
 
-
-  // NEW: Confirm selected action and update table data
+  // NEW CHANGE: Confirm Approve / Reject action
   const handleConfirmAction = (updatedReport) => {
     if (!selectedAction) {
       return;
@@ -83,6 +59,7 @@ const ReportTable = () => {
           return report;
         }
 
+        // NEW CHANGE: Approve report
         if (selectedAction.type === "approve") {
           return {
             ...report,
@@ -90,15 +67,12 @@ const ReportTable = () => {
           };
         }
 
+        // NEW CHANGE: Reject report
         if (selectedAction.type === "reject") {
           return {
             ...report,
             status: "Rejected",
           };
-        }
-
-        if (selectedAction.type === "edit") {
-          return updatedReport;
         }
 
         return report;
@@ -108,179 +82,144 @@ const ReportTable = () => {
     setSelectedAction(null);
   };
 
-
   return (
-    <div className="mt-8 w-full overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-sm">
+    <>
+      {/* Report Table */}
+      <div className="mt-8 w-full overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-sm">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-[1050px]">
+            <thead>
+              <tr className="border-b border-gray-300">
+                {/* NEW CHANGE: Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.item}
+                </th>
 
+                {/* NEW CHANGE: Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.reporter}
+                </th>
 
-      {/* **Responsive Table** */}
-      <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[1050px]">
+                {/* NEW CHANGE: Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.location}
+                </th>
 
+                {/* NEW CHANGE: Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.type}
+                </th>
 
-          {/***table Header** */}
-          <thead>
-            <tr className="border-b border-gray-300">
-              <th className="px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.item}
-              </th>
+                {/* NEW CHANGE: Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.date}
+                </th>
 
+                {/* NEW CHANGE: Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.status}
+                </th>
 
-              <th className="px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.reporter}
-              </th>
-
-
-              <th className="px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.location}
-              </th>
-
-
-              <th className="px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.type}
-              </th>
-
-
-              <th className="px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.date}
-              </th>
-
-
-              <th className="px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.status}
-              </th>
-
-
-              <th className="px-3 py-4 text-center text-sm font-semibold text-[#2A3B63] underline">
-                {reportTableText.columns.actions}
-              </th>
-            </tr>
-          </thead>
-
-
-          {/* **table Body** */}
-          <tbody>
-            {currentReports.map((report) => (
-              <tr
-                key={report.id}
-                className="
-                  border-b border-gray-200
-                  transition-colors
-                  duration-200
-                  hover:bg-gray-50
-                "
-              >
-                {/* **Item column** */}
-                <td className="px-3 py-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={report.itemImage}
-                      alt={report.itemName}
-                      className="
-                        h-12
-                        w-12
-                        shrink-0
-                        rounded-lg
-                        object-cover
-                        ring-1
-                        ring-gray-200
-                      "
-                    />
-
-
-                    <span className="whitespace-nowrap text-sm text-[#29292D]">
-                      {report.itemName}
-                    </span>
-                  </div>
-                </td>
-
-
-                {/* **Reporter column** */}
-                <td className="px-3 py-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={report.reporterImage}
-                      alt={report.reporterName}
-                      className="
-                        h-10
-                        w-10
-                        shrink-0
-                        rounded-full
-                        object-cover
-                      "
-                    />
-
-
-                    <span className="whitespace-nowrap text-sm text-[#29292D]">
-                      {report.reporterName}
-                    </span>
-                  </div>
-                </td>
-
-
-                {/* **Location colomn** */}
-                <td className="px-3 py-3 text-sm text-[#29292D]">
-                  {report.location}
-                </td>
-
-
-                {/* **Type column** */}
-                <td className="px-3 py-3">
-                  <ReportTypeBadge type={report.type} />
-                </td>
-
-
-                {/* **Date column** */}
-                <td className="px-3 py-3 text-sm text-[#29292D]">
-                  {report.date}
-                </td>
-
-
-                {/* **Status column** */}
-                <td className="px-3 py-3">
-                  <ReportStatusBadge status={report.status} />
-                </td>
-
-
-                {/* **Actions column** */}
-                <td className="px-3 py-3">
-                  <ReportActions
-                    report={report}
-                    onView={handleView}
-                    onApprove={handleApprove}
-                    onReject={handleReject}
-                  />
-                </td>
+                <th className="px-3 py-4 text-center text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.actions}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {currentReports.map((report) => (
+                <tr
+                  key={report.id}
+                  className="
+                    border-b border-gray-200
+                    transition-colors
+                    duration-200
+                    hover:bg-gray-50
+                  "
+                >
+                  {/* Item */}
+                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={report.itemImage}
+                        alt={report.itemName}
+                        className="h-12 w-12 rounded-lg object-cover"
+                      />
+
+                      <span className="text-sm font-medium text-[#29292D]">
+                        {report.itemName}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Reporter */}
+                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={report.reporterImage}
+                        alt={report.reporterName}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+
+                      <span className="text-sm font-medium text-[#29292D]">
+                        {report.reporterName}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Location */}
+                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {report.location}
+                  </td>
+
+                  {/* Type */}
+                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <ReportTypeBadge type={report.type} />
+                  </td>
+
+                  {/* Date */}
+                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {report.date}
+                  </td>
+
+                  {/* Status */}
+                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <ReportStatusBadge status={report.status} />
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-3 py-3">
+                    <ReportActions
+                      report={report}
+                      onView={handleView}
+                      onApprove={handleApprove}
+                      onReject={handleReject}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+{/* Pagination */}
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  totalItems={reportList.length}
+  rowsPerPage={rowsPerPage}
+  onPageChange={setCurrentPage}
+  itemName="reports"
+/>
       </div>
 
-
-      {/* **Common Pagination import** */}
-      <div className="px-6 pb-6">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={reportList.length}
-          rowsPerPage={rowsPerPage}
-          onPageChange={setCurrentPage}
-          itemName="reports"
-        />
-      </div>
-
-
-      {/* **View Popup of row** */}
-      {selectedReport && (
-        <ReportDetailsModal
-          report={selectedReport}
-          onClose={() => setSelectedReport(null)}
-        />
-      )}
-
-
-      {/* NEW: Approve / Reject / Edit action modal */}
+      {/* NEW CHANGE: Approve / Reject confirmation modal */}
       {selectedAction && (
         <ReportActionModal
           report={selectedAction.report}
@@ -289,33 +228,35 @@ const ReportTable = () => {
           onConfirm={handleConfirmAction}
         />
       )}
-    </div>
+
+      {/* View Report Details Modal */}
+      {selectedReport && (
+        <ReportDetailsModal
+          report={selectedReport}
+          onClose={() => setSelectedReport(null)}
+        />
+      )}
+    </>
   );
 };
 
-
-/* **badge of type(lost or found)** */
-
-
+/* Report Type Badge */
 const ReportTypeBadge = ({ type }) => {
   const isLost = type === "Lost";
-
 
   return (
     <span
       className={`
         inline-flex
-        min-w-[58px]
-        justify-center
         rounded-full
         px-3
         py-1
         text-xs
-        font-medium
+        font-semibold
         ${
           isLost
-            ? "bg-[#CE5151] text-white"
-            : "bg-[#37AC6C] text-white"
+            ? "bg-red-100 text-[#B63838]"
+            : "bg-green-100 text-[#009B50]"
         }
       `}
     >
@@ -324,30 +265,24 @@ const ReportTypeBadge = ({ type }) => {
   );
 };
 
-
-/* **status badges  ** */
-
-
+/* Report Status Badge */
 const ReportStatusBadge = ({ status }) => {
-  const styles = {
-    Approved: "bg-[#009B50] text-white",
-    Pending: "bg-[#FF8A2B] text-white",
-    Rejected: "bg-[#B63838] text-white",
+  const statusStyles = {
+    Approved: "bg-green-100 text-[#009B50]",
+    Pending: "bg-yellow-100 text-yellow-700",
+    Rejected: "bg-red-100 text-[#B63838]",
   };
-
 
   return (
     <span
       className={`
         inline-flex
-        min-w-[92px]
-        justify-center
         rounded-full
         px-3
-        py-1.5
+        py-1
         text-xs
-        font-medium
-        ${styles[status] || "bg-gray-200 text-gray-700"}
+        font-semibold
+        ${statusStyles[status]}
       `}
     >
       {status}
@@ -355,10 +290,7 @@ const ReportStatusBadge = ({ status }) => {
   );
 };
 
-
-/* **action btns** */
-
-
+/* Report Actions */
 const ReportActions = ({
   report,
   onView,
@@ -369,12 +301,9 @@ const ReportActions = ({
   const ApproveIcon = reportTableIcons.approve;
   const RejectIcon = reportTableIcons.reject;
 
-
   return (
     <div className="flex items-center justify-center gap-2">
-
-
-      {/* **btn View** */}
+      {/* View button - available for every report */}
       <button
         type="button"
         onClick={() => onView(report)}
@@ -403,13 +332,9 @@ const ReportActions = ({
         {reportTableText.actions.view}
       </button>
 
-
-      {/* **Approved: View + Edit + Reject** */}
+      {/* NEW CHANGE: Approved reports show View + Reject */}
       {report.status === "Approved" && (
         <>
-          
-
-
           <button
             type="button"
             onClick={() => onReject(report)}
@@ -438,8 +363,7 @@ const ReportActions = ({
         </>
       )}
 
-
-      {/* **Pending: View + Approve + Reject** */}
+      {/* NEW CHANGE: Pending reports show View + Approve + Reject */}
       {report.status === "Pending" && (
         <>
           <button
@@ -468,7 +392,6 @@ const ReportActions = ({
             {reportTableText.actions.approve}
           </button>
 
-
           <button
             type="button"
             onClick={() => onReject(report)}
@@ -497,13 +420,9 @@ const ReportActions = ({
         </>
       )}
 
-
-      {/* **Rejected: View + Edit + Approve** */}
+      {/* NEW CHANGE: Rejected reports show View + Approve */}
       {report.status === "Rejected" && (
         <>
-          
-
-
           <button
             type="button"
             onClick={() => onApprove(report)}
@@ -535,10 +454,7 @@ const ReportActions = ({
   );
 };
 
-
-/* **view details (when click view btn)** */
-
-
+/* Report Details Modal */
 const ReportDetailsModal = ({ report, onClose }) => {
   return (
     <div
@@ -571,7 +487,6 @@ const ReportDetailsModal = ({ report, onClose }) => {
             Report Details
           </h2>
 
-
           <button
             type="button"
             onClick={onClose}
@@ -588,13 +503,11 @@ const ReportDetailsModal = ({ report, onClose }) => {
           </button>
         </div>
 
-
         <img
           src={report.itemImage}
           alt={report.itemName}
           className="mt-5 h-48 w-full rounded-xl object-cover"
         />
-
 
         <div className="mt-5 space-y-3">
           <Detail
@@ -602,45 +515,37 @@ const ReportDetailsModal = ({ report, onClose }) => {
             value={report.itemName}
           />
 
-
           <Detail
             label="Reported by"
             value={report.reporterName}
           />
-
 
           <Detail
             label="Location"
             value={report.location}
           />
 
-
           <Detail
             label="Date"
             value={report.date}
           />
-
 
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-[#64748B]">
               Type
             </span>
 
-
             <ReportTypeBadge type={report.type} />
           </div>
-
 
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-[#64748B]">
               Status
             </span>
 
-
             <ReportStatusBadge status={report.status} />
           </div>
         </div>
-
 
         <button
           type="button"
@@ -666,17 +571,13 @@ const ReportDetailsModal = ({ report, onClose }) => {
   );
 };
 
-
-/* **details (view)** */
-
-
+/* Detail */
 const Detail = ({ label, value }) => {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="text-sm font-medium text-[#64748B]">
         {label}
       </span>
-
 
       <span className="text-right text-sm font-medium text-[#29292D]">
         {value}
@@ -685,16 +586,11 @@ const Detail = ({ label, value }) => {
   );
 };
 
-
-/* **closing icon(reject)** */
-
-
+/* Close Icon */
 const XIcon = () => {
   const Icon = reportTableIcons.reject;
 
-
   return <Icon size={20} />;
 };
-
 
 export default ReportTable;
