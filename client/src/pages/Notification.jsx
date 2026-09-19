@@ -30,7 +30,7 @@ function Notification() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [page, setPage] = useState(1);
 
-  // Sidebar "Add Lost/Found Reports" buttons open these modals
+  // Sidebar
   const [openLostReport, setOpenLostReport] = useState(false);
   const [openFoundReport, setOpenFoundReport] = useState(false);
 
@@ -117,9 +117,9 @@ function Notification() {
                 return (
                   <div key={groupName} className="mb-6 last:mb-0">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-extrabold text-slate-900">{groupName}</h3>
+                      <h3 className="text-sm font-bold text-blue-800">{groupName}</h3>
                       {groupName !== "Earlier" && (
-                        <span className="text-sm font-bold text-slate-900">
+                        <span className="text-sm font-bold text-blue-800">
                           {groupItems[0].date}
                         </span>
                       )}

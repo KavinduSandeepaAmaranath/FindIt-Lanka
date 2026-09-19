@@ -14,8 +14,8 @@ function NotificationCategories({ categories, counts, activeCategory, onSelect }
               onClick={() => onSelect(key)}
               className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                 active
-                  ? "bg-blue-100 text-blue-800"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "bg-blue-100 text-blue-900"
+                  : "text-blue-800 hover:bg-slate-50"
               }`}
             >
               <span className="truncate">{label}</span>

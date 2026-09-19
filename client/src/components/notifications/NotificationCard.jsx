@@ -5,7 +5,7 @@ import {
   FiFileText,
   FiClock,
   FiBox,
-  FiXCircle,
+  FiXCircle
 } from "react-icons/fi";
 
 const iconMap = {
