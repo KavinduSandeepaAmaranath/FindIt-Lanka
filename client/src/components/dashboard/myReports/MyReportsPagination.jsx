@@ -1,6 +1,6 @@
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-/*builds [1, "...", 4, 5] style page lists*/
+/*builds page lists*/
 function buildPages(currentPage, totalPages) {
   if (totalPages <= 5) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);

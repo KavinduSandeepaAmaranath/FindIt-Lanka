@@ -32,7 +32,7 @@ import {
   reportForm as foundForm,
 } from "../data/ReportFound";
 
-/*stat card -> status filter mapping*/
+/*stat card for status filter mapping*/
 const statToStatus = {
   total: "all",
   active: "Under Review",
@@ -53,7 +53,6 @@ function MyReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
 
-  /*tab counts always come from the full list*/
   const tabs = useMemo(
     () => [
       { value: "all", label: "All Reports", count: myReports.length },
@@ -71,7 +70,6 @@ function MyReports() {
     []
   );
 
-  /*apply tab + search + date + status filters*/
   const filteredReports = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
@@ -115,7 +113,7 @@ function MyReports() {
     Math.ceil(filteredReports.length / REPORTS_PER_PAGE)
   );
 
-  /*go back to page 1 whenever the filters change*/
+  /*go back page 1 whene filters change*/
   useEffect(() => {
     setCurrentPage(1);
   }, [activeTab, searchTerm, dateFilter, statusFilter]);

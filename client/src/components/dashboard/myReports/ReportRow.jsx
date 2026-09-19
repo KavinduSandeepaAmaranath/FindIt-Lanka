@@ -24,7 +24,7 @@ function ReportRow({ report, onViewDetails }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-md hover:shadow-lg transition-shadow p-4 sm:p-5">
       <div className="flex flex-col lg:flex-row lg:items-center gap-5">
-        {/*thumbnail + title*/}
+        {/*thumbnail and title*/}
         <div className="flex items-center gap-4 lg:w-[260px] lg:shrink-0">
           <img
             src={image}
