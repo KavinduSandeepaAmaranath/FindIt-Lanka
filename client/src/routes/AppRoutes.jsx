@@ -13,6 +13,7 @@ import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
 import Dashboard from "../pages/Dashboard";
 import AllUsers from "../pages/AllUsers";
+import ReportManagement from "../pages/AdminModule/ReportManagement";
 import Notification from "../pages/Notification";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
@@ -46,6 +47,7 @@ function AppRoutes() {
         {/*admin route - outside the normal layout*/}
         <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
         <Route path="/All-Users" element={<AllUsers/>} />
+        <Route path="/Report-Management" element={<ReportManagement/>} />
 
       </Routes>
   );
