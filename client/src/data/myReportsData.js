@@ -210,7 +210,6 @@ export const myReports = [
   },
 ];
 
-/*dropdown options */
 /*dropdown options*/
 export const dateFilterOptions = [
   { value: "all", label: "All Time" },
