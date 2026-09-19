@@ -13,6 +13,7 @@ import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
 import Dashboard from "../pages/Dashboard";
 import AllUsers from "../pages/AllUsers";
+import Notification from "../pages/Notification";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
 
@@ -34,7 +35,9 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/new-password" element={<NewPassword />} />
-        <Route path="/dashboard" element={<Dashboard/>} />.
+        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/dashboard/notifications" element={<Notification />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/dashboard/my-reports" element={<MyReports/>} />
         <Route path="/dashboard/my-claims" element={<MyClaims/>} />
 
