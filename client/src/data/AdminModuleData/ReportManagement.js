@@ -270,3 +270,68 @@ export const reportActionModalText = {
     cancel: "Cancel",
   },
 };
+
+
+
+// NEW CHANGE: Notification settings icons
+import {
+  FiBell,
+  FiCheckCircle,
+  FiClock,
+  FiXCircle,
+  FiRefreshCw,
+} from "react-icons/fi";
+
+// NEW CHANGE: Notification settings data
+export const notificationSettingsData = {
+  title: "Notification Settings",
+
+  description: "Manage report management notifications.",
+
+  settings: [
+    {
+      id: "newReport",
+      title: "New Report Submitted",
+      description: "Get notified when a new report is submitted.",
+      icon: FiBell,
+      defaultEnabled: true,
+    },
+    {
+      id: "pendingReport",
+      title: "Report Pending Review",
+      description: "Get notified when a report is waiting for review.",
+      icon: FiClock,
+      defaultEnabled: true,
+    },
+    {
+      id: "approvedReport",
+      title: "Report Approved",
+      description: "Get notified when a report is approved.",
+      icon: FiCheckCircle,
+      defaultEnabled: true,
+    },
+    {
+      id: "rejectedReport",
+      title: "Report Rejected",
+      description: "Get notified when a report is rejected.",
+      icon: FiXCircle,
+      defaultEnabled: true,
+    },
+    {
+      id: "reportUpdates",
+      title: "Report Action Updates",
+      description: "Receive updates about changes made to reports.",
+      icon: FiRefreshCw,
+      defaultEnabled: true,
+    },
+  ],
+
+  buttons: {
+    done: "Done",
+  },
+
+  ariaLabels: {
+    close: "Close notification settings",
+    toggle: "Toggle",
+  },
+};

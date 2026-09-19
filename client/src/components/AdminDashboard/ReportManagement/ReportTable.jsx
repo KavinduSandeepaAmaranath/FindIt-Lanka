@@ -47,7 +47,7 @@ const ReportTable = () => {
     });
   };
 
-  // NEW CHANGE: Confirm Approve / Reject action
+  // **NEW CHANGE: Confirm Approve / Reject action**
   const handleConfirmAction = (updatedReport) => {
     if (!selectedAction) {
       return;
@@ -59,7 +59,7 @@ const ReportTable = () => {
           return report;
         }
 
-        // NEW CHANGE: Approve report
+        // **NEW CHANGE: Approve report**
         if (selectedAction.type === "approve") {
           return {
             ...report,
@@ -67,7 +67,7 @@ const ReportTable = () => {
           };
         }
 
-        // NEW CHANGE: Reject report
+        // **NEW CHANGE: Reject report**
         if (selectedAction.type === "reject") {
           return {
             ...report,
@@ -84,38 +84,38 @@ const ReportTable = () => {
 
   return (
     <>
-      {/* Report Table */}
+      {/* **Report Table** */}
       <div className="mt-8 w-full overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-sm">
         <div className="w-full overflow-x-auto">
           <table className="w-full min-w-[1050px]">
             <thead>
               <tr className="border-b border-gray-300">
-                {/* NEW CHANGE: Added vertical border to divide columns */}
+                {/* **NEW CHANGE: Added vertical border to divide columns** */}
                 <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
                   {reportTableText.columns.item}
                 </th>
 
-                {/* NEW CHANGE: Added vertical border to divide columns */}
+                {/* **NEW CHANGE: Added vertical border to divide columns** */}
                 <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
                   {reportTableText.columns.reporter}
                 </th>
 
-                {/* NEW CHANGE: Added vertical border to divide columns */}
+                {/* **NEW CHANGE: Added vertical border to divide columns** */}
                 <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
                   {reportTableText.columns.location}
                 </th>
 
-                {/* NEW CHANGE: Added vertical border to divide columns */}
+                {/* **NEW CHANGE: Added vertical border to divide columns** */}
                 <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
                   {reportTableText.columns.type}
                 </th>
 
-                {/* NEW CHANGE: Added vertical border to divide columns */}
+                {/* **NEW CHANGE: Added vertical border to divide columns** */}
                 <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
                   {reportTableText.columns.date}
                 </th>
 
-                {/* NEW CHANGE: Added vertical border to divide columns */}
+                {/* **NEW CHANGE: Added vertical border to divide columns** */}
                 <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
                   {reportTableText.columns.status}
                 </th>
@@ -137,8 +137,8 @@ const ReportTable = () => {
                     hover:bg-gray-50
                   "
                 >
-                  {/* Item */}
-                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  {/* **Item** */}
+                  {/* **NEW CHANGE: Added vertical border to divide columns** */}
                   <td className="border-r border-gray-200 px-3 py-3">
                     <div className="flex items-center gap-3">
                       <img
@@ -153,8 +153,8 @@ const ReportTable = () => {
                     </div>
                   </td>
 
-                  {/* Reporter */}
-                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  {/* **Reporter** */}
+                  {/* **NEW CHANGE: Added vertical border to divide columns** */}
                   <td className="border-r border-gray-200 px-3 py-3">
                     <div className="flex items-center gap-3">
                       <img
@@ -169,31 +169,31 @@ const ReportTable = () => {
                     </div>
                   </td>
 
-                  {/* Location */}
-                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  {/* **Location** */}
+                  {/* **NEW CHANGE: Added vertical border to divide columns** */}
                   <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
                     {report.location}
                   </td>
 
-                  {/* Type */}
-                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  {/* **Type** */}
+                  {/* **NEW CHANGE: Added vertical border to divide columns** */}
                   <td className="border-r border-gray-200 px-3 py-3">
                     <ReportTypeBadge type={report.type} />
                   </td>
 
-                  {/* Date */}
-                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  {/* **Date** */}
+                  {/* **NEW CHANGE: Added vertical border to divide columns** */}
                   <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
                     {report.date}
                   </td>
 
-                  {/* Status */}
-                  {/* NEW CHANGE: Added vertical border to divide columns */}
+                  {/* **Status** */}
+                  {/* **NEW CHANGE: Added vertical border to divide columns** */}
                   <td className="border-r border-gray-200 px-3 py-3">
                     <ReportStatusBadge status={report.status} />
                   </td>
 
-                  {/* Actions */}
+                  {/* **Actions** */}
                   <td className="px-3 py-3">
                     <ReportActions
                       report={report}
@@ -208,18 +208,18 @@ const ReportTable = () => {
           </table>
         </div>
 
-{/* Pagination */}
-<Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  totalItems={reportList.length}
-  rowsPerPage={rowsPerPage}
-  onPageChange={setCurrentPage}
-  itemName="reports"
-/>
+        {/* **Pagination** */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={reportList.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={setCurrentPage}
+          itemName="reports"
+        />
       </div>
 
-      {/* NEW CHANGE: Approve / Reject confirmation modal */}
+      {/* **NEW CHANGE: Approve / Reject confirmation modal** */}
       {selectedAction && (
         <ReportActionModal
           report={selectedAction.report}
@@ -229,7 +229,7 @@ const ReportTable = () => {
         />
       )}
 
-      {/* View Report Details Modal */}
+      {/* **View Report Details Modal** */}
       {selectedReport && (
         <ReportDetailsModal
           report={selectedReport}
@@ -240,7 +240,7 @@ const ReportTable = () => {
   );
 };
 
-/* Report Type Badge */
+/* **Report Type Badge** */
 const ReportTypeBadge = ({ type }) => {
   const isLost = type === "Lost";
 
@@ -265,7 +265,7 @@ const ReportTypeBadge = ({ type }) => {
   );
 };
 
-/* Report Status Badge */
+/* **Report Status Badge** */
 const ReportStatusBadge = ({ status }) => {
   const statusStyles = {
     Approved: "bg-green-100 text-[#009B50]",
@@ -290,7 +290,7 @@ const ReportStatusBadge = ({ status }) => {
   );
 };
 
-/* Report Actions */
+/* **Report Actions** */
 const ReportActions = ({
   report,
   onView,
@@ -303,7 +303,7 @@ const ReportActions = ({
 
   return (
     <div className="flex items-center justify-center gap-2">
-      {/* View button - available for every report */}
+      {/* **View button - available for every report** */}
       <button
         type="button"
         onClick={() => onView(report)}
@@ -332,129 +332,64 @@ const ReportActions = ({
         {reportTableText.actions.view}
       </button>
 
-      {/* NEW CHANGE: Approved reports show View + Reject */}
-      {report.status === "Approved" && (
-        <>
-          <button
-            type="button"
-            onClick={() => onReject(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#B63838]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#8F2C2C]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <RejectIcon size={13} />
-            {reportTableText.actions.reject}
-          </button>
-        </>
-      )}
+      {/* **NEW CHANGE: Approve button - available for every report** */}
+      <button
+        type="button"
+        onClick={() => onApprove(report)}
+        className="
+          inline-flex
+          items-center
+          gap-1
+          rounded-full
+          bg-[#009B50]
+          px-3
+          py-1.5
+          text-xs
+          font-semibold
+          text-white
+          transition-all
+          duration-200
+          hover:bg-[#007A3F]
+          hover:shadow-md
+          active:scale-95
+          focus:outline-none
+        "
+      >
+        <ApproveIcon size={13} />
+        {reportTableText.actions.approve}
+      </button>
 
-      {/* NEW CHANGE: Pending reports show View + Approve + Reject */}
-      {report.status === "Pending" && (
-        <>
-          <button
-            type="button"
-            onClick={() => onApprove(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#009B50]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#007A3F]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <ApproveIcon size={13} />
-            {reportTableText.actions.approve}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onReject(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#B63838]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#8F2C2C]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <RejectIcon size={13} />
-            {reportTableText.actions.reject}
-          </button>
-        </>
-      )}
-
-      {/* NEW CHANGE: Rejected reports show View + Approve */}
-      {report.status === "Rejected" && (
-        <>
-          <button
-            type="button"
-            onClick={() => onApprove(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#009B50]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#007A3F]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <ApproveIcon size={13} />
-            {reportTableText.actions.approve}
-          </button>
-        </>
-      )}
+      {/* **NEW CHANGE: Reject button - available for every report** */}
+      <button
+        type="button"
+        onClick={() => onReject(report)}
+        className="
+          inline-flex
+          items-center
+          gap-1
+          rounded-full
+          bg-[#B63838]
+          px-3
+          py-1.5
+          text-xs
+          font-semibold
+          text-white
+          transition-all
+          duration-200
+          hover:bg-[#8F2C2C]
+          hover:shadow-md
+          active:scale-95
+          focus:outline-none
+        "
+      >
+        <RejectIcon size={13} />
+        {reportTableText.actions.reject}
+      </button>
     </div>
   );
 };
 
-/* Report Details Modal */
+/* **Report Details Modal** */
 const ReportDetailsModal = ({ report, onClose }) => {
   return (
     <div
@@ -571,7 +506,7 @@ const ReportDetailsModal = ({ report, onClose }) => {
   );
 };
 
-/* Detail */
+/* **Detail** */
 const Detail = ({ label, value }) => {
   return (
     <div className="flex items-center justify-between gap-4">
@@ -586,7 +521,7 @@ const Detail = ({ label, value }) => {
   );
 };
 
-/* Close Icon */
+/* **Close Icon** */
 const XIcon = () => {
   const Icon = reportTableIcons.reject;
 
