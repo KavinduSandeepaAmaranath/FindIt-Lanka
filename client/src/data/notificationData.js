@@ -176,11 +176,6 @@ export const notificationsData = [
     actionLabel: "View Report",
     isRead: true,
   },
-
-
-
-
-    // ---------- More Earlier ----------
   {
     id: 13,
     group: "Earlier",
