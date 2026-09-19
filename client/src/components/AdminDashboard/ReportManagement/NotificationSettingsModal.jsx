@@ -127,7 +127,7 @@ const NotificationSettingsModal = ({ onClose }) => {
   );
 };
 
-/* Notification Setting Option */
+{/* Notification Setting Option */}
 const NotificationOption = ({
   setting,
   Icon,
@@ -153,6 +153,7 @@ const NotificationOption = ({
       "
     >
       <div className="flex min-w-0 items-center gap-3">
+        
         {/* Notification Icon */}
         <div
           className="
@@ -217,5 +218,4 @@ const NotificationOption = ({
   );
 };
 
-/* NEW CHANGE: Default export required by HeaderSec.jsx */
 export default NotificationSettingsModal;

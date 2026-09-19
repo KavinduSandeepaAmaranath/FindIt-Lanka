@@ -4,9 +4,7 @@ import {
   Settings,
 } from "lucide-react";
 
-/* ================================
-   Report Management Header Data
-================================ */
+//Report Management Header Data
 
 export const reportHeaderData = {
   title: "Report Management",
@@ -28,9 +26,9 @@ export const reportHeaderData = {
   ],
 };
 
-/* ================================
-   Admin User Data
-================================ */
+
+  // admin user data
+
 
 export const adminUserData = {
   name: "Kasun Perera",
@@ -247,7 +245,7 @@ export const reportsData = [
 ];
 
 
-
+//report actions
 
 export const reportActionModalText = {
   approve: {
@@ -273,7 +271,7 @@ export const reportActionModalText = {
 
 
 
-// NEW CHANGE: Notification settings icons
+//  Notification settings icons
 import {
   FiBell,
   FiCheckCircle,
@@ -282,7 +280,8 @@ import {
   FiRefreshCw,
 } from "react-icons/fi";
 
-// NEW CHANGE: Notification settings data
+
+//  Notification settings data
 export const notificationSettingsData = {
   title: "Notification Settings",
 

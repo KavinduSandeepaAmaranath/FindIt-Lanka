@@ -11,11 +11,11 @@ import NotificationSettingsModal from "./NotificationSettingsModal";
 const HeaderSec = ({ setIsOpen }) => {
   const { title, description, buttons } = reportHeaderData;
 
-  // NEW CHANGE: Notification settings modal state
+  // Notification settings modal state
   const [showNotificationSettings, setShowNotificationSettings] =
     useState(false);
 
-  // NEW CHANGE: Export report data as CSV
+  // Export report data as CSV
   const handleExportReport = () => {
     if (!reportsData || reportsData.length === 0) {
       return;
@@ -83,10 +83,10 @@ const HeaderSec = ({ setIsOpen }) => {
             gap-6
           "
         >
-          {/* **Left Side** */}
+          {/* navbar */}
 
           <div className="flex-1">
-            {/* **Mobile Hamburger for responsive** */}
+            {/*  Hamburger for responsive */}
 
             <button
               type="button"
@@ -134,7 +134,7 @@ const HeaderSec = ({ setIsOpen }) => {
             </p>
           </div>
 
-          {/* **notifi setting & export Btn** */}
+          {/* notifi setting & export Btn */}
 
           <div
             className="
@@ -149,11 +149,11 @@ const HeaderSec = ({ setIsOpen }) => {
             {buttons.map((button) => {
               const Icon = button.icon;
 
-              // NEW CHANGE: Identify notification settings button
+              // Identify notification settings button
               const isNotificationButton =
                 button.label.toLowerCase().includes("notification");
 
-              // NEW CHANGE: Identify export report button
+              //Identify export report button
               const isExportButton =
                 button.label.toLowerCase().includes("export");
 
@@ -161,7 +161,8 @@ const HeaderSec = ({ setIsOpen }) => {
                 <button
                   key={button.id}
                   type="button"
-                  // NEW CHANGE: Handle notification and export actions
+
+                  //Handle notification and export actions
                   onClick={
                     isNotificationButton
                       ? () => setShowNotificationSettings(true)
@@ -209,7 +210,7 @@ const HeaderSec = ({ setIsOpen }) => {
         </div>
       </section>
 
-      {/* NEW CHANGE: Notification settings popup */}
+      {/*Notification settings popup */}
       {showNotificationSettings && (
         <NotificationSettingsModal
           onClose={() => setShowNotificationSettings(false)}

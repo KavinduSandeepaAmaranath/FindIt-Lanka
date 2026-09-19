@@ -108,7 +108,7 @@ const ReportActionModal = ({
         "
         onClick={(e) => e.stopPropagation()}
       >
-        {/* **Modal Header** */}
+        {/* Modal Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
 
@@ -144,7 +144,7 @@ const ReportActionModal = ({
             </h2>
           </div>
 
-          {/* **Close Button** */}
+          {/* Close Button */}
           <button
             type="button"
             onClick={onClose}
@@ -161,12 +161,12 @@ const ReportActionModal = ({
           </button>
         </div>
 
-        {/* **Description** */}
+        {/* Description */}
         <p className="mt-4 text-sm leading-6 text-[#64748B]">
           {getDescription()}
         </p>
 
-        {/* **Approve / Reject Content** */}
+        {/* Approve / Reject Content */}
         {(action === "approve" || action === "reject") && (
           <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
             <div className="flex items-center gap-3">
@@ -194,7 +194,7 @@ const ReportActionModal = ({
         {action === "edit" && (
           <div className="mt-5 space-y-4">
 
-            {/* **Item Name** */}
+            {/* Item Name */}
             <div>
               <label
                 htmlFor="itemName"
@@ -227,7 +227,7 @@ const ReportActionModal = ({
               />
             </div>
 
-            {/* **Location** */}
+            {/* Location */}
             <div>
               <label
                 htmlFor="location"
@@ -260,7 +260,7 @@ const ReportActionModal = ({
               />
             </div>
 
-            {/* **Date** */}
+            {/* Date */}
             <div>
               <label
                 htmlFor="date"
@@ -293,7 +293,7 @@ const ReportActionModal = ({
               />
             </div>
 
-            {/* **Type** */}
+            {/* Type */}
             <div>
               <label
                 htmlFor="type"
