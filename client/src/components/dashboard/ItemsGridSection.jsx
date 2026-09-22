@@ -1,13 +1,7 @@
 import { FiPlus } from "react-icons/fi";
 import DashboardItemCard from "./DashboardItemCard";
 
-function ItemsGridSection({
-  title,
-  items,
-  addLabel,
-  viewAllHref = "#",
-  onAddClick,
-}) {
+function ItemsGridSection({ title, items, addLabel, viewAllHref = "#" }) {
   return (
     <section className="bg-white rounded-2xl shadow-md p-6">
       <div className="flex items-center justify-between mb-5">
@@ -25,10 +19,7 @@ function ItemsGridSection({
           <DashboardItemCard key={item.id} {...item} />
         ))}
 
-        <button
-          onClick={onAddClick}
-          className="rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex flex-col items-center justify-center gap-3 py-10 text-blue-700"
-        >
+        <button className="rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex flex-col items-center justify-center gap-3 py-10 text-blue-700">
           <span className="w-11 h-11 rounded-full bg-blue-600 text-white flex items-center justify-center">
             <FiPlus className="w-5 h-5" />
           </span>

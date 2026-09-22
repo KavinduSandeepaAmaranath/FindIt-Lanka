@@ -5,10 +5,10 @@ import {
   FaBoxOpen,
   FaClipboardCheck,
 } from "react-icons/fa";
-import {
-  getDashboardStatistics,
-  getPendingLostItems,
-  getPendingFoundItems,
+import { 
+  getDashboardStatistics, 
+  getPendingLostItems, 
+  getPendingFoundItems, 
   approveLostItem,
   rejectLostItem,
   approveFoundItem,
@@ -26,18 +26,17 @@ import ReportsByCategory from "../components/AdminDashboard/ReportsByCategory";
 import ReportOverview from "../components/AdminDashboard/ReportOverview";
 
 import Footer from "../components/Footer";
-import { dashboardHeader } from "../data/AdminDashboard";
+import { dashboardHeader, stats, approvals } from "../data/AdminDashboard";
 
 export default function AdminDashboard() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const dashboardStats = statistics
-    ? [
+  ? [
       {
         title: "Users",
         value: statistics.totalUsers,
@@ -69,7 +68,7 @@ export default function AdminDashboard() {
         path: "/admin/dashboard",
       },
     ]
-    : [];
+  : [];
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -127,7 +126,7 @@ export default function AdminDashboard() {
           ...lostItems,
           ...foundItems,
         ]);
-
+        
       } catch (error) {
         console.error(error);
       } finally {
@@ -139,36 +138,36 @@ export default function AdminDashboard() {
   }, []);
 
   const handleApprove = async (item) => {
-    try {
-      if (item.type === "Lost") {
-        await approveLostItem(item.id);
-      } else {
-        await approveFoundItem(item.id);
-      }
-
-      setPendingApprovals((prev) =>
-        prev.filter((report) => report.id !== item.id)
-      );
-    } catch (error) {
-      console.error(error);
+  try {
+    if (item.type === "Lost") {
+      await approveLostItem(item.id);
+    } else {
+      await approveFoundItem(item.id);
     }
-  };
 
-  const handleReject = async (item) => {
-    try {
-      if (item.type === "Lost") {
-        await rejectLostItem(item.id);
-      } else {
-        await rejectFoundItem(item.id);
-      }
+    setPendingApprovals((prev) =>
+      prev.filter((report) => report.id !== item.id)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-      setPendingApprovals((prev) =>
-        prev.filter((report) => report.id !== item.id)
-      );
-    } catch (error) {
-      console.error(error);
+const handleReject = async (item) => {
+  try {
+    if (item.type === "Lost") {
+      await rejectLostItem(item.id);
+    } else {
+      await rejectFoundItem(item.id);
     }
-  };
+
+    setPendingApprovals((prev) =>
+      prev.filter((report) => report.id !== item.id)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   console.log(statistics);
 
@@ -213,18 +212,18 @@ export default function AdminDashboard() {
           {/* Dashboard Cards */}
 
           <section className="mt-6">
-            <DashboardCards stats={dashboardStats} />
+            <DashboardCards stats={stats} />
           </section>
 
           {/* Approval Table */}
 
           <section className="mt-8">
-            <ApprovalTable
-              approvals={pendingApprovals}
+            <ApprovalTable 
+              approvals={pendingApprovals} 
               onApprove={handleApprove}
               onReject={handleReject}
             />
-
+            
           </section>
 
           {/* Top Locations & Recent Activities */}

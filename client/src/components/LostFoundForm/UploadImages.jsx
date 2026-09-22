@@ -1,11 +1,7 @@
 import { useState } from "react";
 import SectionTitle from "./SectionTitle";
 
-const UploadImages = ({
-  formData,
-  formValues,
-  setFormValues, 
-}) => {
+const UploadImages = ({ formData }) => {
   const Icon = formData.sections.upload.icon;
 
   const [images, setImages] = useState([]);
@@ -31,11 +27,6 @@ const UploadImages = ({
       return;
     }
 
-    setFormValues({
-      ...formValues,
-      images: [...formValues.images, file],
-    });
-
     const newImage = {
       id: Date.now(),
       preview: URL.createObjectURL(file),
@@ -55,31 +46,18 @@ const UploadImages = ({
 
   // Remove Image
   const removeImage = (id) => {
-      const index = images.findIndex((img) => img.id === id);
+    const updatedImages = images.filter((img) => img.id !== id);
 
-      const updatedPreviewImages = images.filter(
-          (img) => img.id !== id
-      );
+    setImages(updatedImages);
 
-      const updatedFormImages = [...formValues.images];
+    const pages = Math.max(
+      1,
+      Math.ceil(updatedImages.length / upload.imagesPerPage)
+    );
 
-      updatedFormImages.splice(index, 1);
-
-      setImages(updatedPreviewImages);
-
-      setFormValues({
-          ...formValues,
-          images: updatedFormImages,
-      });
-
-      const pages = Math.max(
-          1,
-          Math.ceil(updatedPreviewImages.length / upload.imagesPerPage)
-      );
-
-      if (currentPage > pages) {
-          setCurrentPage(pages);
-      }
+    if (currentPage > pages) {
+      setCurrentPage(pages);
+    }
   };
 
   // Pagination
@@ -158,10 +136,10 @@ const UploadImages = ({
             </p>
 
             <input
-                type="file"
-                accept={upload.acceptedTypes.join(",")}
-                onChange={handleUpload}
-                className="hidden"
+              type="file"
+              accept={upload.acceptedTypes.join(",")}
+              onChange={handleUpload}
+              className="hidden"
             />
           </label>
         )}

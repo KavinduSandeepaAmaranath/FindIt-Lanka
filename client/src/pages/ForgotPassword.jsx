@@ -1,18 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FiMail, FiArrowLeft } from "react-icons/fi";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
 import { HiOutlineShieldCheck } from "react-icons/hi2";
 import backgroundImage from "../assets/images/OtpBg.png";
 import forgotPasswordIcon from "../assets/images/Forgot_pwdLogo.png";
-import { sendResetOTP } from "../services/authService.js";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validateEmail = (value) => {
     if (!value.trim()) {
@@ -37,12 +35,6 @@ const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isSubmitting) {
-      return
-    };
-
-    setError("");
-
     const validationError = validateEmail(email);
     if (validationError) {
       setError(validationError);
@@ -51,29 +43,14 @@ const ForgotPassword = () => {
 
     try {
       setIsSubmitting(true);
+      setError("");
 
-      await sendResetOTP(email);
+      // Simulated request delay
+      await new Promise((resolve) => setTimeout(resolve, 1200));
 
-      sessionStorage.setItem("forgotPasswordEmail", email);
-
-      const expiry = Date.now() + 120 * 1000;
-
-      sessionStorage.setItem(
-        "forgotPasswordOtpResendExpiry",
-        expiry.toString()
-      );
-
-      navigate("/verify-otp", {
-        state: {
-          email,
-        },
-      });
-      
+      setIsSubmitted(true);
     } catch (err) {
-        setError(
-          err.response?.data?.message ||
-          "Failed to send reset OTP."
-        );
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -105,10 +82,7 @@ const ForgotPassword = () => {
         </p>
 
         {/* FORM */}
-        <form 
-          onSubmit={handleSubmit}
-          className="space-y-3.5"
-        >
+        <div className="space-y-3.5">
           <div>
             <label
               htmlFor="email"
@@ -129,7 +103,7 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={handleEmailChange}
                 placeholder="Enter your email address"
-                disabled={isSubmitting}
+                disabled={isSubmitted}
                 className="w-full font-inter text-[16px] text-[#29292D] placeholder-gray-400 outline-none bg-transparent disabled:opacity-60"
               />
             </div>
@@ -138,11 +112,17 @@ const ForgotPassword = () => {
               <p className="mt-2 text-sm text-red-500 font-inter">{error}</p>
             )}
 
+            {isSubmitted && (
+              <p className="mt-2 text-sm text-green-600 font-inter">
+                An OTP has been sent to your email address.
+              </p>
+            )}
           </div>
 
           <button
-            type="submit"
-            disabled={isSubmitting}
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting || isSubmitted}
             className="w-full flex items-center justify-center gap-2 bg-[#2F6BFF] hover:bg-[#1D4ED8] disabled:opacity-60 disabled:cursor-not-allowed text-white font-poppins font-semibold text-base rounded-xl py-3.5 transition-colors duration-200 shadow-md shadow-blue-500/20"
           >
             {isSubmitting ? (
@@ -150,6 +130,8 @@ const ForgotPassword = () => {
                 <span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                 Sending...
               </>
+            ) : isSubmitted ? (
+              "Reset Code Sent"
             ) : (
               <>
                 <HiOutlinePaperAirplane className="text-lg -rotate-45" />
@@ -184,7 +166,7 @@ const ForgotPassword = () => {
               registered email.
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

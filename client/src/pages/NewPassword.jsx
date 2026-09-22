@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { FiLock, FiEye, FiEyeOff, FiCheck } from "react-icons/fi";
 import { HiOutlineShieldCheck } from "react-icons/hi2";
 import backgroundImage from "../assets/images/OtpBg.png";
 import createnewpasswordIcon from "../assets/images/NewPasswordLogo.png";
-import { resetPassword } from "../services/authService.js";
 
 const CreateNewPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -14,22 +13,6 @@ const CreateNewPassword = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const email = (
-    location.state?.email ||
-    sessionStorage.getItem("forgotPasswordEmail") ||
-    ""
-  ).trim();
-
-  useEffect(() => {
-    if (!email) {
-      navigate("/forgot-password", {
-        replace: true,
-      });
-    }
-  }, [email, navigate]);
 
   // VALIDATION RULES
   const rules = {
@@ -59,14 +42,7 @@ const CreateNewPassword = () => {
 
   //  SUBMIT HANDLER 
   const handleSubmit = async () => {
-    if(isSubmitting) {
-      return;
-    }
-
-    setError("");
-
     const validationError = validate();
-  
     if (validationError) {
       setError(validationError);
       return;
@@ -74,33 +50,16 @@ const CreateNewPassword = () => {
 
     try {
       setIsSubmitting(true);
+      setError("");
 
-      await resetPassword(
-        email,
-        newPassword,
-        confirmPassword,
-      );
-
-      sessionStorage.removeItem("forgotPasswordEmail");
-      sessionStorage.removeItem("forgotPasswordOtpResendExpiry");
+      await new Promise((resolve) => setTimeout(resolve, 1200));
 
       setIsSuccess(true);
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
     } catch (err) {
-      setError(err.response?.data?.message || 
-        "Failed to reset password"
-      );
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    handleSubmit();
   };
 
   //  CHECKLIST ITEM 
@@ -147,10 +106,7 @@ const CreateNewPassword = () => {
         </p>
 
         {/*  FORM */}
-        <form 
-          onSubmit={handleFormSubmit}
-          className="space-y-3.5"
-        >
+        <div className="space-y-3.5">
           {/* New Password */}
           <div>
             <label
@@ -174,7 +130,7 @@ const CreateNewPassword = () => {
                   if (error) setError("");
                 }}
                 placeholder="Enter new password"
-                disabled={isSubmitting || isSuccess}
+                disabled={isSuccess}
                 className="w-full font-inter text-[15px] text-[#29292D] placeholder-gray-400 outline-none bg-transparent disabled:opacity-60"
               />
               <button
@@ -215,7 +171,7 @@ const CreateNewPassword = () => {
                   if (error) setError("");
                 }}
                 placeholder="Confirm new password"
-                disabled={isSubmitting || isSuccess}
+                disabled={isSuccess}
                 className="w-full font-inter text-[15px] text-[#29292D] placeholder-gray-400 outline-none bg-transparent disabled:opacity-60"
               />
               <button
@@ -260,7 +216,8 @@ const CreateNewPassword = () => {
 
           {/*  SUBMIT BUTTON */}
           <button
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             disabled={isSubmitting || isSuccess}
             className="w-full flex items-center justify-center gap-2 bg-[#2F6BFF] hover:bg-[#1D4ED8] disabled:opacity-60 disabled:cursor-not-allowed text-white font-poppins font-semibold text-base rounded-xl py-2.5 transition-colors duration-200 shadow-md shadow-blue-500/20"
           >
@@ -296,7 +253,7 @@ const CreateNewPassword = () => {
               Use a strong password to keep your account secure.
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
