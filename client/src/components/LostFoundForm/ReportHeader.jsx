@@ -1,6 +1,6 @@
 import ProfileImg from "../../assets/icons/ProfileImg.jpeg";
 
-const ReportHeader = ({ header }) => {
+const ReportHeader = ({ header, user }) => {
   const BellIcon = header.icons.bell;
 
   return (
@@ -37,11 +37,11 @@ const ReportHeader = ({ header }) => {
           <div className="hidden sm:block text-right">
 
             <h3 className="font-semibold text-slate-800 text-sm lg:text-base">
-              {header.profile.name}
+              {user?.name}
             </h3>
 
             <p className="text-xs lg:text-sm text-gray-500">
-              {header.profile.role}
+              {user?.membership || "Community Member"}
             </p>
 
           </div>

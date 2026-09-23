@@ -1,8 +1,45 @@
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { categoryData } from "../../data/AdminDashboard";
+import { getReportsByCategory } from "../../services/adminService";
 
 const ReportsByCategory = () => {
-  const total = categoryData.reduce((sum, entry) => sum + entry.value, 0);
+  const [categoryData, setCategoryData] = useState([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await getReportsByCategory();
+
+        const colors = [
+          "#3B82F6",
+          "#22C55E",
+          "#F59E0B",
+          "#EF4444",
+          "#8B5CF6",
+          "#06B6D4",
+          "#EC4899",
+          "#84CC16",
+        ];
+
+        const formattedData = response.categories.map(
+          (item, index) => ({
+            name: item.category,
+            value: item.total,
+            color: colors[index % colors.length],
+          })
+        );
+
+        setCategoryData(formattedData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  const total =
+  categoryData.reduce((sum, entry) => sum + entry.value, 0) || 1;
 
   return (
     // ADDED: transition-all duration-300 for smooth animation

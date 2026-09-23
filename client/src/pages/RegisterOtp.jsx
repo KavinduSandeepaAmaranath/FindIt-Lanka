@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { verifyRegistrationOTP, resendRegistrationOTP } from "../services/authService.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RiMailLockFill } from "react-icons/ri";
 import { FaLock, FaRedo, FaShieldAlt } from "react-icons/fa";
@@ -6,28 +7,58 @@ import { VscWorkspaceTrusted } from "react-icons/vsc";
 import otpBackground from "../assets/images/OtpBg.png";
 
 const OTP_LENGTH = 6;
-const RESEND_SECONDS = 90; // 01:30
+const RESEND_SECONDS = 120; // 02:00
+const RESEND_STORAGE_KEY = "registerOtpResendExpiry";
 
 const RegisterOTP = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
 
-  const email = location.state?.email || "example@gmail.com";
+  const email =
+    location.state?.email ||
+    sessionStorage.getItem("registerEmail") ||
+    "";
+
+  useEffect(() => {
+  if (!email) {
+    navigate("/register");
+  }
+}, [email, navigate]);
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(() => {
+    const expiry = sessionStorage.getItem(RESEND_STORAGE_KEY);
+
+    if (!expiry) {
+        return 0;
+    }
+
+    const remaining = Math.ceil(
+        (Number(expiry) - Date.now()) / 1000
+    );
+
+    return remaining > 0 ? remaining : 0;
+  });
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [error, setError] = useState("");
 
   const inputRefs = useRef([]);
 
   // Countdown timer
   useEffect(() => {
-    if (secondsLeft <= 0) return;
+    if (secondsLeft <= 0) {
+        sessionStorage.removeItem(
+            RESEND_STORAGE_KEY
+        );
+        return;
+    }
 
     const timerId = setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        setSecondsLeft((prev) =>
+            prev > 0 ? prev - 1 : 0
+        );
     }, 1000);
 
     return () => clearInterval(timerId);
@@ -109,13 +140,41 @@ const RegisterOTP = () => {
   };
 
   // Resend code
-  const handleResend = () => {
+  const handleResend = async () => {
+    console.log("Resend button clicked");
+    console.log("Email:", email);
+    console.log("Seconds Left:", secondsLeft);
+
     if (secondsLeft > 0) return;
 
-    setOtp(["", "", "", "", "", ""]);
-    setSecondsLeft(RESEND_SECONDS);
+    setIsResending(true);
     setError("");
-    inputRefs.current[0]?.focus();
+
+    try {
+        await resendRegistrationOTP(email);
+
+        const expiry = Date.now() + RESEND_SECONDS * 1000;
+
+        sessionStorage.setItem(
+            RESEND_STORAGE_KEY,
+            expiry.toString()
+        );
+
+        setOtp(["", "", "", "", "", ""]);
+        setSecondsLeft(RESEND_SECONDS);
+
+        inputRefs.current[0]?.focus();
+    } catch (err) {
+        console.log(err);
+        console.log(err.response);
+
+        setError(
+            err.response?.data?.message ||
+            "Failed to resend verification code."
+        );
+    } finally {
+        setIsResending(false);
+    }
   };
 
   // Verify code
@@ -130,15 +189,18 @@ const RegisterOTP = () => {
     const code = otp.join("");
 
     try {
-      // Dummy async behaviour to simulate a network request
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await verifyRegistrationOTP(email, code);
 
-      console.log("Verifying OTP:", code, "for", email);
-
-      // On success, redirect to login (or dashboard) after verification
-      navigate("/login", { state: { verified: true } });
+      navigate("/login", {
+        state: {
+          registered: true,
+        },
+      });
     } catch (err) {
-      setError("Invalid or expired code. Please try again.");
+      setError(
+        err.response?.data?.message ||
+        "Invalid or expired verification code."
+      );
     } finally {
       setIsVerifying(false);
     }
@@ -206,7 +268,7 @@ const RegisterOTP = () => {
           {error}
         </p>
       )}
-
+  
       <div className="mt-6">
         <button
           type="submit"
@@ -231,11 +293,11 @@ const RegisterOTP = () => {
       <button
         type="button"
         onClick={handleResend}
-        disabled={secondsLeft > 0}
+        disabled={secondsLeft > 0 || isResending}
         className="inline-flex items-center gap-2 text-base font-semibold text-[#2563EB] underline decoration-2 underline-offset-2 transition hover:text-[#1D4ED8] disabled:cursor-not-allowed disabled:text-[#94A3B8] disabled:no-underline"
       >
         <FaRedo className="h-3.5 w-3.5" aria-hidden="true" />
-        Resend Code
+        {isResending ? "Resending..." : "Resend Code"}
       </button>
 
       <p className="mt-2 text-sm text-[#64748B]">
@@ -254,7 +316,7 @@ const RegisterOTP = () => {
     <div className="flex items-center justify-center gap-3 rounded-xl bg-blue-100 max-w-md mx-auto min-h-[60px] px-5 py-4">
       <VscWorkspaceTrusted className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#2563EB]" aria-hidden="true" />
       <p className="text-sm leading-relaxed text-[#1D4ED8]">
-        For your security, never share your verification code with anyone. The verification code will expire in 5 minutes.
+        For your security, never share your verification code with anyone. The verification code will expire in 2 minutes.
       </p>
     </div>
   </div>

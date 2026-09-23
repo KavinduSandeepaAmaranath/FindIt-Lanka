@@ -18,6 +18,10 @@ export default function AdminDashboardHeader({
   const MenuIcon = header.icons.menu;
 
   const [searchText, setSearchText] = useState("");
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
 
   const handleSearch = () => {
     console.log("Searching:", searchText);
@@ -120,11 +124,13 @@ export default function AdminDashboardHeader({
           >
             <div className="text-right hidden sm:block">
               <h3 className="font-semibold text-sm sm:text-base">
-                {header.adminName}
+                {user?.name || "Administrator"}
               </h3>
 
               <p className="text-xs sm:text-sm text-gray-500">
-                {header.adminRole}
+                {user?.role === "admin"
+                  ? "Administrator"
+                  : "User"}
               </p>
             </div>
 

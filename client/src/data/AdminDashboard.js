@@ -270,7 +270,7 @@ export const navMenuItems = [
     id: 3,
     title: "Reports",
     icon: MdAssessment,
-    path: "/report-management",
+    path: "/admin-reports",
   },
   {
     id: 4,
@@ -307,5 +307,3 @@ export const navMenuItems = [
 export const navbarIcons = {
   close: MdClose,
 };
-
-

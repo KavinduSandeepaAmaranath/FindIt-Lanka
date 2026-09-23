@@ -15,7 +15,20 @@ function StatsOverview({ stats }) {
         return (
           <div
             key={label}
-            className="bg-white rounded-2xl shadow-md p-6 flex flex-col gap-3"
+            className="
+              bg-white/80 backdrop-blur-md
+              border border-gray-200
+              rounded-2xl
+              p-6
+              flex flex-col gap-3
+              shadow-md
+              transition-all duration-300
+              hover:-translate-y-2
+              hover:shadow-2xl
+              hover:border-blue-500
+              hover:bg-white
+              cursor-pointer
+            "
           >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-slate-500">{label}</p>
