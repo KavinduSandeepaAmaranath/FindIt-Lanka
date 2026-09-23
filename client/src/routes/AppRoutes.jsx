@@ -7,16 +7,18 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 import RegisterOTP from "../pages/RegisterOtp";
-import AdminDashboard from "../pages/AdminDashboard";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyOtp from "../pages/VerifyOtp";
 import NewPassword from "../pages/NewPassword";
 import Dashboard from "../pages/Dashboard";
 import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
-import AllUsers from "../pages/AllUsers";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
 import Notification from "../pages/Notification";
+
+import AdminDashboard from "../pages/AdminDashboard";
+import AllUsers from "../pages/AllUsers";
+import ReportManagement from "../pages/AdminModule/ReportManagement";
 
 function AppRoutes() {
 
@@ -44,7 +46,7 @@ function AppRoutes() {
 
       {/*admin route - outside the normal layout*/}
       <Route
-        path="/Admin-Dashboard"
+        path="/admin-dashboard"
         element={
           <ProtectedAdminRoute>
             <AdminDashboard />
@@ -60,6 +62,17 @@ function AppRoutes() {
           </ProtectedAdminRoute>
         }
       />
+
+      <Route
+        path="/admin-reports"
+        element={
+          <ProtectedAdminRoute>
+            <ReportManagement />
+          </ProtectedAdminRoute>
+        }
+      />
+
+
 
     </Routes>
   );
