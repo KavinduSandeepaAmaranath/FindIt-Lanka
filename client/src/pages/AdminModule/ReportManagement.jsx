@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import AdminNavBar from "../../components/AdminDashboard/AdminNavBar";
 
@@ -10,8 +10,62 @@ import ReportTable from "../../components/AdminDashboard/ReportManagement/Report
 
 import Footer from "../../components/Footer";
 
+import { getAllLostItems, getAllFoundItems } from "../../services/adminService";
+import { stats } from "../../data/AdminDashboard";
+
 const ReportManagement = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(true);
+
+  const fetchReports = async () => {
+    try {
+      setLoading(true);
+
+      const [lostRes, foundRes] = await Promise.all([
+        getAllLostItems(),
+        getAllFoundItems(),
+      ]);
+
+      const lostList = lostRes.lostItems || [];
+      const foundList = foundRes.foundItems || [];
+
+      const formattedLost = lostList.map((item) => ({
+        id: item._id,
+        itemName: item.title,
+        reporterName: item.userId?.name || "Unknown User",
+        location: item.district || "N/A",
+        type: "Lost",
+        date: item.lostDate ? new Date(item.lostDate).toLocaleDateString() : "N/A",
+        status: item.approvalStatus.charAt(0).toUpperCase() + item.approvalStatus.slice(1),
+        itemImage: item.imageUrl || "/placeholder.png",
+        category: item.category,
+      }));
+
+      const formattedFound = foundList.map((item) => ({
+        id: item._id,
+        itemName: item.title,
+        reporterName: item.userId?.name || "Unknown User",
+        location: item.district || "N/A",
+        type: "Found",
+        date: item.foundDate ? new Date(item.foundDate).toLocaleDateString() : "N/A",
+        status: item.approvalStatus.charAt(0).toUpperCase() + item.approvalStatus.slice(1),
+        itemImage: item.imageUrl || "/placeholder.png",
+        category: item.category,
+      }));
+
+      setReports([...formattedLost, ...formattedFound]);
+    } catch (err) {
+      setError("Failed to load reports from database.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -28,12 +82,12 @@ const ReportManagement = () => {
         {/* Content of page */}
         <main
           className="
-            flex-1
-            p-4
-            sm:p-6
-            lg:p-8
-            overflow-x-hidden
-          "
+              flex-1
+              p-4
+              sm:p-6
+              lg:p-8
+              overflow-x-hidden
+            "
         >
 
           {/* Headersec */}
@@ -43,7 +97,9 @@ const ReportManagement = () => {
 
           {/* Report Cards */}
           <section className="mt-6">
-            <ReportCards />
+            <ReportCards
+              reports={reports}
+            />
           </section>
 
           {/* Filters */}
@@ -53,7 +109,12 @@ const ReportManagement = () => {
 
           {/* Report Table */}
           <section className="mt-8">
-            <ReportTable />
+            <ReportTable
+              reports={reports}
+              loading={loading}
+              error={error}
+              onRefresh={fetchReports}
+            />
           </section>
 
         </main>
