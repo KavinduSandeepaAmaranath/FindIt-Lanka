@@ -4,8 +4,28 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 
-const ReportCards = () => {
+const ReportCards = ({ reports = [] }) => {
   const [selectedCards, setSelectedCards] = useState(null);
+
+  const totalReports = reports.length;
+  const pendingCount = reports.filter((r) => r.status === "Pending").length;
+  const approvedCount = reports.filter((r) => r.status === "Approved").length;
+  const rejectedCount = reports.filter((r) => r.status === "Rejected").length;
+
+  const getCardValue = (title) => {
+    if (title.includes("Total")) {
+      return totalReports;
+    }
+    if (title.includes("Pending")) {
+      return pendingCount;
+    }
+    if (title.includes("Approved")) {
+      return approvedCount;
+    }
+    if (title.includes("Rejected")) {
+      return rejectedCount;
+    }
+  };
 
   return (
     <>
@@ -69,7 +89,7 @@ const ReportCards = () => {
                   {/* card Value */}
 
                   <p className="mt-1 text-3xl font-bold text-[#0F3292]">
-                    {Card.value}
+                    {getCardValue(Card.title)}
                   </p>
 
                   {/*card Description */}
@@ -143,11 +163,11 @@ const ReportCards = () => {
               </p>
 
               <p className="mt-2 text-4xl font-bold text-[#0F3292]">
-                {selectedCards.value}
+                {getCardValue(selectedCards.title)}
               </p>
 
               <p className="mt-3 text-sm font-medium text-[#0F3292]">
-                ↑ {selectedCards.change} from last month
+                {selectedCards.change} from last month
               </p>
             </div>
 

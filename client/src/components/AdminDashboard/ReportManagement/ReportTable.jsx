@@ -3,28 +3,27 @@ import { useState } from "react";
 import {
   reportTableIcons,
   reportTableText,
-  reportsData,
 } from "../../../data/AdminModuleData/ReportManagement";
+
+import {
+  approveLostItem,
+  rejectLostItem,
+  approveFoundItem,
+  rejectFoundItem,
+} from "../../../services/adminService";
 
 import Pagination from "../Pagination";
 import ReportActionModal from "./ReportActionModal";
 
-const ReportTable = () => {
+const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
   const [selectedReport, setSelectedReport] = useState(null);
-
-  const [reportList, setReportList] = useState(reportsData);
-
   const [selectedAction, setSelectedAction] = useState(null);
 
   const rowsPerPage = 5;
-
   const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(reportList.length / rowsPerPage);
-
+  const totalPages = Math.ceil(reports.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-
-  const currentReports = reportList.slice(
+  const currentReports = reports.slice(
     startIndex,
     startIndex + rowsPerPage
   );
@@ -48,39 +47,57 @@ const ReportTable = () => {
   };
 
   // Confirm Approve / Reject action
-  const handleConfirmAction = (updatedReport) => {
+  const handleConfirmAction = async () => {
     if (!selectedAction) {
       return;
     }
 
-    setReportList((prevReports) =>
-      prevReports.map((report) => {
-        if (report.id !== updatedReport.id) {
-          return report;
+    const { type, report } = selectedAction;
+    const isLost = report.type === "Lost";
+
+    try {
+      if (type === "approve") {
+        if (isLost) {
+          await approveLostItem(report.id);
+        } else {
+          await approveFoundItem(report.id);
         }
-
-        //  Approve report
-        if (selectedAction.type === "approve") {
-          return {
-            ...report,
-            status: "Approved",
-          };
+      } else if (type === "reject") {
+        if (isLost) {
+          await rejectLostItem(report.id);
+        } else {
+          await rejectFoundItem(report.id);
         }
+      }
 
-        // Reject report
-        if (selectedAction.type === "reject") {
-          return {
-            ...report,
-            status: "Rejected",
-          };
-        }
-
-        return report;
-      })
-    );
-
-    setSelectedAction(null);
+      setSelectedAction(null);
+      if (onRefresh) {
+        onRefresh();
+      }
+    } catch (err) {
+      console.error("Failed to update report status:", err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="mt-8 flex justify-center py-10">
+        <p className="text-gray-500 font-medium">
+          Loading reports from database...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mt-8 flex justify-center py-10">
+        <p className="text-red-500 font-medium">
+          {error}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -213,7 +230,7 @@ const ReportTable = () => {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalItems={reportList.length}
+          totalItems={reports.length}
           rowsPerPage={rowsPerPage}
           onPageChange={setCurrentPage}
           itemName="reports"
@@ -254,10 +271,9 @@ const ReportTypeBadge = ({ type }) => {
         py-1
         text-xs
         font-semibold
-        ${
-          isLost
-            ? "bg-red-100 text-[#B63838]"
-            : "bg-green-100 text-[#009B50]"
+        ${isLost
+          ? "bg-red-100 text-[#B63838]"
+          : "bg-green-100 text-[#009B50]"
         }
       `}
     >

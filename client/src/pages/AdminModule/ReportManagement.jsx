@@ -11,17 +11,17 @@ import ReportTable from "../../components/AdminDashboard/ReportManagement/Report
 import Footer from "../../components/Footer";
 
 import { getAllLostItems, getAllFoundItems } from "../../services/adminService";
-import { stats } from "../../data/AdminDashboard";
 
 const ReportManagement = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchReports = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       const [lostRes, foundRes] = await Promise.all([
         getAllLostItems(),
