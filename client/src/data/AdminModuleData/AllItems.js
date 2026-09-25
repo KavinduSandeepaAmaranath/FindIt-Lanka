@@ -16,9 +16,7 @@ import {
   FiRepeat,
 } from "react-icons/fi";
 
-/* =========================================
-   ALL ITEMS HEADER DATA
-========================================= */
+//header data
 
 export const allItemsHeaderData = {
   title: "All Items",
@@ -32,9 +30,7 @@ export const allItemsHeaderData = {
   },
 };
 
-/* =========================================
-   ALL ITEMS HEADER ICONS
-========================================= */
+//header icons
 
 export const allItemsHeaderIcons = {
   notification: FiBell,
@@ -42,9 +38,7 @@ export const allItemsHeaderIcons = {
   menu: FiMenu,
 };
 
-/* =========================================
-   ALL ITEMS CARDS DATA
-========================================= */
+//cards data
 
 export const AllItemsCardsData = [
   {
@@ -103,9 +97,7 @@ export const AllItemsCardsData = [
   },
 ];
 
-/* =========================================
-   ALL ITEMS SEARCH + FILTER DATA
-========================================= */
+//search & filter data
 
 export const allItemsFilterData = {
   search: {
@@ -156,18 +148,14 @@ export const allItemsFilterData = {
   ],
 };
 
-/* =========================================
-   ALL ITEMS FILTER ICONS
-========================================= */
+//filter icons
 
 export const allItemsFilterIcons = {
   search: FiSearch,
   chevronDown: FiChevronDown,
 };
 
-/* =========================================
-   ALL ITEMS TABLE COLUMNS
-========================================= */
+//table columns
 
 export const allItemsTableColumns = [
   {
@@ -207,9 +195,7 @@ export const allItemsTableColumns = [
   },
 ];
 
-/* =========================================
-   ALL ITEMS TABLE DATA
-========================================= */
+//table data
 
 export const allItemsTableData = [
   {
@@ -338,9 +324,7 @@ export const allItemsTableData = [
   },
 ];
 
-/* =========================================
-   ALL ITEMS TABLE ICONS
-========================================= */
+//table icons
 
 export const allItemsTableIcons = {
   view: FiEye,

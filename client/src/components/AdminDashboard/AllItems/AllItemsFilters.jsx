@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 import {
@@ -143,9 +144,7 @@ const AllItemsFilters = () => {
         </div>
 
 
-        {/* =====================================
-            FILTERS
-        ====================================== */}
+        {/*filters*/}
 
         <div
           className="
@@ -186,9 +185,7 @@ const AllItemsFilters = () => {
 };
 
 
-/* =========================================
-   FILTER BUTTON
-========================================= */
+//filter btn
 
 const FilterButton = ({
   filter,
@@ -208,7 +205,7 @@ const FilterButton = ({
       "
     >
 
-      {/* Button */}
+      {/* Btn */}
       <button
         type="button"
         onClick={onToggle}
@@ -241,7 +238,7 @@ const FilterButton = ({
 
         <div>
 
-          {/* Filter Label */}
+          {/* filter lable */}
           <span
             className="
               block
@@ -254,7 +251,7 @@ const FilterButton = ({
           </span>
 
 
-          {/* Selected Value */}
+          {/* selected value */}
           <span
             className="
               mt-1
@@ -284,9 +281,7 @@ const FilterButton = ({
       </button>
 
 
-      {/* =====================================
-          DROPDOWN
-      ====================================== */}
+      {/*dropdown */}
 
       {isOpen && (
         <div

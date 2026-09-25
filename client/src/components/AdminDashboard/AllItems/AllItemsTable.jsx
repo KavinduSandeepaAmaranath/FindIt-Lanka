@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 import {
@@ -28,11 +29,12 @@ const AllItemsTable = () => {
     <>
       <section className="mt-8 w-full">
 
-        {/* Table */}
+        {/* table */}
         <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1050px] border-collapse">
-              {/* Table Header */}
+
+              {/* table headers */}
               <thead>
                 <tr className="border-b border-gray-300 bg-gray-50">
                   {allItemsTableColumns.map((column, index) => (
@@ -54,7 +56,7 @@ const AllItemsTable = () => {
                 </tr>
               </thead>
 
-              {/* Table Body */}
+              {/* table body */}
               <tbody>
                 {currentItems.map((item) => (
                   <tr
@@ -67,7 +69,7 @@ const AllItemsTable = () => {
                       hover:bg-blue-50/40
                     "
                   >
-                    {/* Item */}
+                    {/* item column */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <div className="flex items-center gap-3">
                         <div
@@ -105,35 +107,35 @@ const AllItemsTable = () => {
                       </div>
                     </td>
 
-                    {/* Type */}
+                    {/* type column */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <div className="flex justify-center">
                         <TypeBadge type={item.type} />
                       </div>
                     </td>
 
-                    {/* Location */}
+                    {/* location column */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <span className="text-sm text-[#29292D]">
                         {item.location}
                       </span>
                     </td>
 
-                    {/* Date */}
+                    {/* date column */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <span className="whitespace-nowrap text-sm text-[#29292D]">
                         {item.date}
                       </span>
                     </td>
 
-                    {/* Item Status */}
+                    {/* item status column */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <div className="flex justify-center">
                         <ItemStatusBadge status={item.itemStatus} />
                       </div>
                     </td>
 
-                    {/* Claim Status */}
+                    {/* claim status column */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <div
                         className="
@@ -155,7 +157,7 @@ const AllItemsTable = () => {
                       </div>
                     </td>
 
-                    {/* Action */}
+                    {/* action column */}
                     <td className="px-4 py-2.5">
                       <div className="flex justify-center">
                         <ViewButton
@@ -169,7 +171,7 @@ const AllItemsTable = () => {
             </table>
           </div>
 
-          {/* Empty State */}
+          {/* empty state */}
           {currentItems.length === 0 && (
             <div className="px-6 py-16 text-center">
               <p className="text-base font-semibold text-[#2A3B63]">
@@ -183,7 +185,7 @@ const AllItemsTable = () => {
           )}
         </div>
 
-        {/* Pagination */}
+        {/* pagination sec */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -194,7 +196,7 @@ const AllItemsTable = () => {
         />
       </section>
 
-      {/* View Item Modal */}
+      {/* view item btn modal */}
       {selectedItem && (
         <ViewItemModal
           item={selectedItem}
@@ -205,9 +207,7 @@ const AllItemsTable = () => {
   );
 };
 
-/* ==========================================
-   TYPE BADGE
-========================================== */
+//type badge
 
 const TypeBadge = ({ type }) => {
   const isLost = type === "Lost";
@@ -236,9 +236,7 @@ const TypeBadge = ({ type }) => {
   );
 };
 
-/* ==========================================
-   ITEM STATUS BADGE
-========================================== */
+//item status badge
 
 const ItemStatusBadge = ({ status }) => {
   const StatusIcon =
@@ -274,9 +272,7 @@ const ItemStatusBadge = ({ status }) => {
   );
 };
 
-/* ==========================================
-   CLAIM STATUS BADGE
-========================================== */
+//claim status badge
 
 const ClaimStatusBadge = ({ status }) => {
   const StatusIcon =
@@ -312,9 +308,7 @@ const ClaimStatusBadge = ({ status }) => {
   );
 };
 
-/* ==========================================
-   VIEW BUTTON
-========================================== */
+//view btn
 
 const ViewButton = ({ onClick }) => {
   const ViewIcon = allItemsTableIcons.view;
@@ -349,9 +343,7 @@ const ViewButton = ({ onClick }) => {
   );
 };
 
-/* ==========================================
-   VIEW ITEM MODAL
-========================================== */
+//view item model displaying popup sec when click view btn
 
 const ViewItemModal = ({ item, onClose }) => {
   return (
@@ -385,9 +377,7 @@ const ViewItemModal = ({ item, onClose }) => {
         "
         onClick={(event) => event.stopPropagation()}
       >
-        {/* ================================
-            TITLE
-        ================================= */}
+        {/*title*/}
 
         <h2
           className="
@@ -400,9 +390,7 @@ const ViewItemModal = ({ item, onClose }) => {
           Item Details
         </h2>
 
-        {/* ================================
-            ITEM SUMMARY
-        ================================= */}
+        {/*item summery*/}
 
         <div
           className="
@@ -416,7 +404,7 @@ const ViewItemModal = ({ item, onClose }) => {
             p-3
           "
         >
-          {/* Image */}
+          {/* item image */}
 
           <div
             className="
@@ -437,7 +425,7 @@ const ViewItemModal = ({ item, onClose }) => {
             />
           </div>
 
-          {/* Summary Details */}
+          {/* summery details */}
 
           <div className="space-y-1 text-sm">
             <p className="font-medium text-[#173B80]">
@@ -488,9 +476,7 @@ const ViewItemModal = ({ item, onClose }) => {
           </div>
         </div>
 
-        {/* ================================
-            ITEM INFORMATION
-        ================================= */}
+        {/* item info */}
 
         <div
           className="
@@ -539,9 +525,7 @@ const ViewItemModal = ({ item, onClose }) => {
           </div>
         </div>
 
-        {/* ================================
-            REPORT INFORMATION
-        ================================= */}
+        {/*report info */}
 
         <div
           className="
@@ -580,9 +564,7 @@ const ViewItemModal = ({ item, onClose }) => {
           </div>
         </div>
 
-        {/* ================================
-            DONE BUTTON
-        ================================= */}
+        {/*done btn */}
 
         <button
           type="button"
@@ -612,9 +594,8 @@ const ViewItemModal = ({ item, onClose }) => {
     </div>
   );
 };
-/* ==========================================
-   TABLE STYLES
-========================================== */
+
+//table styles
 
 const tableHeaderClass = `
   px-4

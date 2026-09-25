@@ -1,3 +1,4 @@
+
 import {
   allItemsHeaderData,
   allItemsHeaderIcons,
@@ -24,10 +25,10 @@ const HeaderSec = ({ setIsOpen }) => {
         "
       >
 
-        {/* Left Section */}
+        {/* left Sec (nav) */}
         <div className="flex-1">
 
-          {/* Hamburger for responsive */}
+          {/* hamburger for responsive */}
           <button
             type="button"
             onClick={() => setIsOpen(true)}
@@ -48,7 +49,7 @@ const HeaderSec = ({ setIsOpen }) => {
             <MenuIcon size={28} />
           </button>
 
-          {/* Heading */}
+          {/* header title */}
           <h1
             className="
               text-2xl
@@ -62,7 +63,7 @@ const HeaderSec = ({ setIsOpen }) => {
             {title}
           </h1>
 
-          {/* Description */}
+          {/* description */}
           <p
             className="
               mt-2
@@ -78,7 +79,7 @@ const HeaderSec = ({ setIsOpen }) => {
         </div>
 
 
-        {/* Right Profile Section */}
+        {/* right profile sec */}
         <div
           className="
             flex
@@ -91,7 +92,7 @@ const HeaderSec = ({ setIsOpen }) => {
           "
         >
 
-          {/* Notification */}
+          {/* notification */}
           <button
             type="button"
             aria-label="Notifications"
@@ -116,7 +117,7 @@ const HeaderSec = ({ setIsOpen }) => {
           >
             <NotificationIcon size={25} />
 
-            {/* Notification indicator */}
+            {/* notification indicator */}
             <span
               className="
                 absolute
@@ -133,7 +134,7 @@ const HeaderSec = ({ setIsOpen }) => {
           </button>
 
 
-          {/* Profile */}
+          {/* profile */}
           <button
             type="button"
             className="
@@ -153,7 +154,7 @@ const HeaderSec = ({ setIsOpen }) => {
             "
           >
 
-            {/* Profile Icon */}
+            {/* profile icon */}
             <div
               className="
                 flex
@@ -172,7 +173,7 @@ const HeaderSec = ({ setIsOpen }) => {
             </div>
 
 
-            {/* Profile Information */}
+            {/* profile info */}
             <div className="hidden min-[420px]:block">
 
               <p
