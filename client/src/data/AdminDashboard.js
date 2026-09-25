@@ -276,7 +276,7 @@ export const navMenuItems = [
     id: 4,
     title: "All Items",
     icon: MdInventory,
-    path: "/admin-items",
+    path: "/all-items",
   },
   {
     id: 5,
