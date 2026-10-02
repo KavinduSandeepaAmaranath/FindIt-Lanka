@@ -6,15 +6,17 @@ import {
   FiCheck,
   FiRotateCcw,
   FiClock,
+  FiCheckCircle,
 } from "react-icons/fi";
 import fallbackImage from "../../../assets/images/UdbFallbackImage.avif";
 import { formatReturnDate } from "./returnHelpers";
 
 function ReturnCard({
   item,
+  onViewClaim,
   onViewDetails,
   onContactClaimant,
-  onMarkReturned,
+  onMarkDone,
 }) {
   const { title, status, claimedBy, claimedOn, image } = item;
 
@@ -49,6 +51,12 @@ function ReturnCard({
             Returned
           </span>
         );
+      case "Rejected":
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-rose-600 text-white shadow-xs">
+            Rejected
+          </span>
+        );
       default:
         return (
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-slate-600 text-white shadow-xs">
@@ -58,8 +66,23 @@ function ReturnCard({
     }
   };
 
-  // Render contextual action buttons matching the sketch
+  // Render action buttons matching user request & UI images
   const renderActions = () => {
+    if (status === "Pending Claim") {
+      return (
+        <div className="flex flex-col gap-2 w-full sm:w-[170px]">
+          <button
+            type="button"
+            onClick={() => onViewClaim(item)}
+            className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#38bdf8] hover:bg-[#0ea5e9] text-white shadow-xs transition-colors cursor-pointer"
+          >
+            <FiEye className="w-4 h-4" />
+            View Claim
+          </button>
+        </div>
+      );
+    }
+
     if (status === "Approved") {
       return (
         <div className="flex flex-col gap-2 w-full sm:w-[170px]">
@@ -95,31 +118,17 @@ function ReturnCard({
           </button>
           <button
             type="button"
-            onClick={() => onMarkReturned(item)}
+            onClick={() => onMarkDone(item)}
             className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-xs transition-colors cursor-pointer"
           >
-            Mark As Returned
+            <FiCheckCircle className="w-4 h-4" />
+            Mark as Done
           </button>
         </div>
       );
     }
 
-    if (status === "Pending Claim") {
-      return (
-        <div className="flex flex-col gap-2 w-full sm:w-[170px]">
-          <button
-            type="button"
-            onClick={() => onViewDetails(item)}
-            className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#38bdf8] hover:bg-[#0ea5e9] text-white shadow-xs transition-colors cursor-pointer"
-          >
-            <FiEye className="w-4 h-4" />
-            Claim Details
-          </button>
-        </div>
-      );
-    }
-
-    // Default or "Returned"
+    // Default / "Returned"
     return (
       <div className="flex flex-col gap-2 w-full sm:w-[170px]">
         <button
@@ -191,7 +200,7 @@ function ReturnCard({
 
           <button
             type="button"
-            onClick={() => onViewDetails(item)}
+            onClick={() => (status === "Pending Claim" ? onViewClaim(item) : onViewDetails(item))}
             aria-label={`Open details for ${title}`}
             className="hidden lg:flex w-8 h-8 rounded-full items-center justify-center text-slate-300 group-hover:text-blue-600 hover:bg-blue-50 transition-colors shrink-0 cursor-pointer"
           >

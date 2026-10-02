@@ -8,11 +8,16 @@ import MyReturnsStats from "../components/dashboard/myReturns/MyReturnsStats";
 import MyReturnsTabs from "../components/dashboard/myReturns/MyReturnsTabs";
 import MyReturnsSearch from "../components/dashboard/myReturns/MyReturnsSearch";
 import ReturnsList from "../components/dashboard/myReturns/ReturnsList";
-import ReturnDetailsModal from "../components/dashboard/myReturns/ReturnDetailsModal";
-import ContactClaimantModal from "../components/dashboard/myReturns/ContactClaimantModal";
-import MarkReturnedModal from "../components/dashboard/myReturns/MarkReturnedModal";
-import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
 
+// Modals matching UI Images 1 to 5
+import ClaimDetailsModal from "../components/dashboard/myReturns/ClaimDetailsModal";
+import ApproveClaimModal from "../components/dashboard/myReturns/ApproveClaimModal";
+import RejectClaimModal from "../components/dashboard/myReturns/RejectClaimModal";
+import ViewDetailsModal from "../components/dashboard/myReturns/ViewDetailsModal";
+import MarkItemReturnedModal from "../components/dashboard/myReturns/MarkItemReturnedModal";
+import ContactClaimantModal from "../components/dashboard/myReturns/ContactClaimantModal";
+
+import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
 import ReportModal from "../components/LostFoundForm/ReportModal";
 import { currentUser } from "../data/dashboardData";
 import {
@@ -60,10 +65,13 @@ function MyReturns() {
   const [activeStat, setActiveStat] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Modal states
-  const [selectedItem, setSelectedItem] = useState(null);
+  // Modal states matching provided UI images
+  const [claimDetailsItem, setClaimDetailsItem] = useState(null); // Image 1
+  const [approveModalItem, setApproveModalItem] = useState(null); // Image 2
+  const [rejectModalItem, setRejectModalItem] = useState(null);   // Image 3
+  const [viewDetailsItem, setViewDetailsItem] = useState(null);   // Image 4
+  const [markDoneItem, setMarkDoneItem] = useState(null);         // Image 5
   const [contactItem, setContactItem] = useState(null);
-  const [markReturnedItem, setMarkReturnedItem] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
   // Auto-dismiss toast
@@ -215,6 +223,39 @@ function MyReturns() {
     setActiveStat(matchedStat || null);
   };
 
+  // Button Action Handlers
+  const handleApproveClaim = (item) => {
+    setReturnsList((prev) =>
+      prev.map((r) =>
+        r.id === item.id
+          ? {
+              ...r,
+              status: "Approved",
+              claimStatus: "Approved",
+              approvedDate: new Date().toISOString(),
+            }
+          : r
+      )
+    );
+    setToastMessage(`Claim for "${item.title}" approved! You can now contact the claimant.`);
+  };
+
+  const handleRejectClaim = (item, reason) => {
+    setReturnsList((prev) =>
+      prev.map((r) =>
+        r.id === item.id
+          ? {
+              ...r,
+              status: "Rejected",
+              claimStatus: "Rejected",
+              rejectionReason: reason,
+            }
+          : r
+      )
+    );
+    setToastMessage(`Claim for "${item.title}" has been rejected.`);
+  };
+
   const handleConfirmReturned = (itemId, details) => {
     setReturnsList((prev) =>
       prev.map((r) =>
@@ -223,22 +264,13 @@ function MyReturns() {
               ...r,
               status: "Returned",
               returnedOn: details.returnedOn,
-              handoverMethod: details.handoverMethod,
+              returnMethod: details.handoverMethod,
               returnNote: details.note,
             }
           : r
       )
     );
-    setToastMessage("Item successfully marked as returned to claimant!");
-  };
-
-  const handleApproveClaim = (item) => {
-    setReturnsList((prev) =>
-      prev.map((r) =>
-        r.id === item.id ? { ...r, status: "Approved" } : r
-      )
-    );
-    setToastMessage(`Claim for "${item.title}" has been approved!`);
+    setToastMessage("Item successfully marked as returned!");
   };
 
   return (
@@ -288,12 +320,13 @@ function MyReturns() {
             />
           </div>
 
-          {/* Returns Cards List */}
+          {/* Returns Cards List with custom action buttons */}
           <ReturnsList
             returns={visibleReturns}
-            onViewDetails={setSelectedItem}
-            onContactClaimant={setContactItem}
-            onMarkReturned={setMarkReturnedItem}
+            onViewClaim={(item) => setClaimDetailsItem(item)}
+            onViewDetails={(item) => setViewDetailsItem(item)}
+            onContactClaimant={(item) => setContactItem(item)}
+            onMarkDone={(item) => setMarkDoneItem(item)}
           />
 
           {/* Pagination */}
@@ -315,14 +348,54 @@ function MyReturns() {
         </div>
       )}
 
-      {/* Return Details Modal */}
-      {selectedItem && (
-        <ReturnDetailsModal
-          item={selectedItem}
-          onClose={() => setSelectedItem(null)}
-          onContactClaimant={setContactItem}
-          onMarkReturned={setMarkReturnedItem}
-          onApproveClaim={handleApproveClaim}
+      {/* Image 1: Claim Details Modal */}
+      {claimDetailsItem && (
+        <ClaimDetailsModal
+          item={claimDetailsItem}
+          onClose={() => setClaimDetailsItem(null)}
+          onOpenApproveModal={(item) => {
+            setClaimDetailsItem(null);
+            setApproveModalItem(item);
+          }}
+          onOpenRejectModal={(item) => {
+            setClaimDetailsItem(null);
+            setRejectModalItem(item);
+          }}
+        />
+      )}
+
+      {/* Image 2: Approve Claim? Modal */}
+      {approveModalItem && (
+        <ApproveClaimModal
+          item={approveModalItem}
+          onClose={() => setApproveModalItem(null)}
+          onConfirm={handleApproveClaim}
+        />
+      )}
+
+      {/* Image 3: Reject Claim? Modal */}
+      {rejectModalItem && (
+        <RejectClaimModal
+          item={rejectModalItem}
+          onClose={() => setRejectModalItem(null)}
+          onConfirm={handleRejectClaim}
+        />
+      )}
+
+      {/* Image 4: View Details Modal */}
+      {viewDetailsItem && (
+        <ViewDetailsModal
+          item={viewDetailsItem}
+          onClose={() => setViewDetailsItem(null)}
+        />
+      )}
+
+      {/* Image 5: Mark Item as Returned Modal */}
+      {markDoneItem && (
+        <MarkItemReturnedModal
+          item={markDoneItem}
+          onClose={() => setMarkDoneItem(null)}
+          onConfirm={handleConfirmReturned}
         />
       )}
 
@@ -332,15 +405,6 @@ function MyReturns() {
           item={contactItem}
           onClose={() => setContactItem(null)}
           onMessageSent={(msg) => setToastMessage(msg)}
-        />
-      )}
-
-      {/* Mark Returned Modal */}
-      {markReturnedItem && (
-        <MarkReturnedModal
-          item={markReturnedItem}
-          onClose={() => setMarkReturnedItem(null)}
-          onConfirm={handleConfirmReturned}
         />
       )}
 
