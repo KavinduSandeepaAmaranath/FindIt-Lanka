@@ -14,6 +14,9 @@ import Dashboard from "../pages/Dashboard";
 import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
+import AllItems from "../pages/AdminModule/AllItems";
+import Settings from "../pages/Settings"; 
+import MyReturns from "../pages/MyReturns";
 import Notification from "../pages/Notification";
 
 import AdminDashboard from "../pages/AdminDashboard";
@@ -39,6 +42,10 @@ function AppRoutes() {
         <Route path="/dashboard/my-reports" element={<MyReports />} />
         <Route path="/dashboard/my-claims" element={<MyClaims />} />
         <Route path="/dashboard/notifications" element={<Notification />} />
+        <Route path="/dashboard/my-reports" element={<MyReports/>} />
+        <Route path="/dashboard/my-claims" element={<MyClaims/>} />
+        <Route path="/dashboard/settings" element={<Settings />} /> 
+        <Route path="/dashboard/my-returns" element={<MyReturns/>} />
 
         <Route path="*" element={<NotFound />} />
 
@@ -73,6 +80,11 @@ function AppRoutes() {
       />
 
 
+        {/*admin route - outside the normal layout*/}
+        <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
+        <Route path="/All-Users" element={<AllUsers/>} />
+        <Route path="/Report-Management" element={<ReportManagement/>} />
+        <Route path="/All-Items" element={<AllItems/>} />
 
     </Routes>
   );

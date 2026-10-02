@@ -14,12 +14,31 @@ import {
 } from "react-icons/fi";
 import logo from "../../assets/images/Loginlogo.png";
 
+function MyReturnsIcon({ className = "w-5 h-5" }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M9 13.5l-3 2.5 3 2.5" />
+      <path d="M6 16h6.5a2.5 2.5 0 0 0 2.5-2.5v-.5" />
+    </svg>
+  );
+}
+
 const navItems = [
   { label: "Dashboard", to: "/dashboard", icon: FiGrid },
   { label: "Browse Items", to: "/dashboard/browse", icon: FiSearch },
   { label: "My Reports", to: "/dashboard/my-reports", icon: FiFileText },
-  { label: "My Claims", to: "/dashboard/my-claims", icon: FiFileText },
-  /*{ label: "My Found Items", to: "/dashboard/my-found-items", icon: FiCheckSquare },*/
+  { label: "My Claims", to: "/dashboard/my-claims", icon: FiCheckSquare },
+  { label: "My Returns", to: "/dashboard/my-returns", icon: MyReturnsIcon },
   {
     label: "Report Lost Item",
     to: "/report-lost-item",
