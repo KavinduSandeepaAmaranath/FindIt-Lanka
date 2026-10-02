@@ -2,13 +2,15 @@ import { FiUser } from "react-icons/fi";
 import SettingsSectionCard from "./SettingsSectionCard";
 import ProfileImg from "../../assets/icons/ProfileImg.jpeg";
 
-function ProfileSettingsSection({ formData, onChange, onSave }) {
+function ProfileSettingsSection({ formData, onChange, onSave, onChangePhoto, avatarUrl }) {
   const fields = [
     { name: "fullName", label: "Full Name", type: "text" },
     { name: "email", label: "Email Address", type: "email" },
     { name: "phone", label: "Phone Number", type: "text" },
     { name: "district", label: "District", type: "text" },
   ];
+
+  const currentAvatar = avatarUrl || ProfileImg;
 
   return (
     <SettingsSectionCard
@@ -19,13 +21,23 @@ function ProfileSettingsSection({ formData, onChange, onSave }) {
       <div className="flex flex-col sm:flex-row gap-6">
         {/* avatar */}
         <div className="flex flex-col items-center gap-3 shrink-0">
-          <img
-            src={ProfileImg}
-            alt="Profile"
-            className="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm"
-          />
+          <div
+            onClick={onChangePhoto}
+            className="relative cursor-pointer group"
+            title="Click to change photo"
+          >
+            <img
+              src={currentAvatar}
+              alt="Profile"
+              className="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm group-hover:opacity-90 transition-opacity"
+            />
+          </div>
          
-          <button className="px-3 py-1.5 rounded-full border border-blue-200 text-blue-700 text-xs font-semibold hover:bg-blue-50 transition-colors">
+          <button
+            type="button"
+            onClick={onChangePhoto}
+            className="px-3 py-1.5 rounded-full border border-blue-200 text-blue-700 text-xs font-semibold hover:bg-blue-50 transition-colors cursor-pointer"
+          >
             Change Photo
           </button>
         </div>

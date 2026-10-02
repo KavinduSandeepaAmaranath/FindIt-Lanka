@@ -13,15 +13,32 @@ const iconMap = {
   location: FiMapPin,
 };
 
-function TogglePreferenceList({ items, onToggle }) {
+function TogglePreferenceList({ items, onToggle, onItemClick }) {
   return (
     <div className="space-y-3">
-      {items.map(({ key, icon, title, description, enabled }) => {
+      {items.map(({ key, icon, title, description, enabled, isActionable }) => {
         const Icon = iconMap[icon] || FiFileText;
+        const clickable = Boolean(
+          onItemClick &&
+            (isActionable ||
+              key === "profileVisibility" ||
+              key === "showPhoneNumber" ||
+              key === "locationVisibility")
+        );
+
         return (
           <div
             key={key}
-            className="flex items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-4"
+            onClick={() => {
+              if (clickable) {
+                onItemClick(key);
+              }
+            }}
+            className={`flex items-center justify-between gap-4 bg-white rounded-xl border border-slate-100 p-4 transition-all ${
+              clickable
+                ? "cursor-pointer hover:border-blue-200 hover:shadow-xs"
+                : ""
+            }`}
           >
             <div className="flex items-start gap-3 min-w-0">
               <div className="w-9 h-9 rounded-full bg-blue-300 text-blue-600 flex items-center justify-center shrink-0">
@@ -32,7 +49,26 @@ function TogglePreferenceList({ items, onToggle }) {
                 <p className="text-sm text-slate-500">{description}</p>
               </div>
             </div>
-            <ToggleSwitch enabled={enabled} onToggle={() => onToggle(key)} />
+
+            <div
+              onClick={(e) => {
+                if (clickable) {
+                  e.stopPropagation();
+                  onItemClick(key);
+                }
+              }}
+            >
+              <ToggleSwitch
+                enabled={enabled}
+                onToggle={() => {
+                  if (clickable) {
+                    onItemClick(key);
+                  } else {
+                    onToggle(key);
+                  }
+                }}
+              />
+            </div>
           </div>
         );
       })}
