@@ -15,7 +15,7 @@ import ProtectedAdminRoute from "../components/ProtectedAdminRoute";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
 import AllItems from "../pages/AdminModule/AllItems";
-import Settings from "../pages/Settings"; 
+import Settings from "../pages/Settings";
 import MyReturns from "../pages/MyReturns";
 import Notification from "../pages/Notification";
 
@@ -24,13 +24,10 @@ import AllUsers from "../pages/AllUsers";
 import ReportManagement from "../pages/AdminModule/ReportManagement";
 
 function AppRoutes() {
-
   return (
-
     <Routes>
       <Route element={<Layout />}>
-
-        {/*public routes*/}
+        {/*public & user dashboard routes*/}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -42,16 +39,13 @@ function AppRoutes() {
         <Route path="/dashboard/my-reports" element={<MyReports />} />
         <Route path="/dashboard/my-claims" element={<MyClaims />} />
         <Route path="/dashboard/notifications" element={<Notification />} />
-        <Route path="/dashboard/my-reports" element={<MyReports/>} />
-        <Route path="/dashboard/my-claims" element={<MyClaims/>} />
-        <Route path="/dashboard/settings" element={<Settings />} /> 
-        <Route path="/dashboard/my-returns" element={<MyReturns/>} />
+        <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path="/dashboard/my-returns" element={<MyReturns />} />
 
         <Route path="*" element={<NotFound />} />
-
       </Route>
 
-      {/*admin route - outside the normal layout*/}
+      {/*protected admin routes*/}
       <Route
         path="/admin-dashboard"
         element={
@@ -79,13 +73,14 @@ function AppRoutes() {
         }
       />
 
-
-        {/*admin route - outside the normal layout*/}
-        <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
-        <Route path="/All-Users" element={<AllUsers/>} />
-        <Route path="/Report-Management" element={<ReportManagement/>} />
-        <Route path="/All-Items" element={<AllItems/>} />
-
+      <Route
+        path="/all-items"
+        element={
+          <ProtectedAdminRoute>
+            <AllItems />
+          </ProtectedAdminRoute>
+        }
+      />
     </Routes>
   );
 }
