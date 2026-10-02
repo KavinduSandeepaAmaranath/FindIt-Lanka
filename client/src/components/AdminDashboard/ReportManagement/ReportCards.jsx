@@ -1,8 +1,6 @@
-
 import { ReportCardsData } from "../../../data/AdminModuleData/ReportManagement";
 import { useState } from "react";
 import { X } from "lucide-react";
-
 
 const ReportCards = ({ reports = [] }) => {
   const [selectedCards, setSelectedCards] = useState(null);
@@ -92,12 +90,6 @@ const ReportCards = ({ reports = [] }) => {
                     {getCardValue(Card.title)}
                   </p>
 
-                  {/*card Description */}
-
-                  <p className="mt-1 text-sm font-normal text-[#29292D]">
-                    {Card.description}
-                  </p>
-
                 </div>
               </div>
 
@@ -158,20 +150,16 @@ const ReportCards = ({ reports = [] }) => {
 
             {/* Popup Content */}
             <div className="mt-6">
-              <p className="text-sm text-[#29292D]">
-                {selectedCards.description}
-              </p>
-
               <p className="mt-2 text-4xl font-bold text-[#0F3292]">
                 {getCardValue(selectedCards.title)}
               </p>
 
               <p className="mt-3 text-sm font-medium text-[#0F3292]">
-                {selectedCards.change} from last month
+                ↑ {selectedCards.change} from last month
               </p>
             </div>
 
-            {/* Close Button(when opening of clicking card) */}
+            {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedCards(null)}

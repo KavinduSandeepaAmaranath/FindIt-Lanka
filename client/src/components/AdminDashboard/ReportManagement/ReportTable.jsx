@@ -163,6 +163,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
                         src={report.itemImage}
                         alt={report.itemName}
                         className="h-12 w-12 rounded-lg object-cover"
+                        onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
                       />
 
                       <span className="text-sm font-medium text-[#29292D]">
@@ -318,6 +319,8 @@ const ReportActions = ({
   const ApproveIcon = reportTableIcons.approve;
   const RejectIcon = reportTableIcons.reject;
 
+  const isPending = report.status === "Pending";
+
   return (
     <div className="flex items-center justify-center gap-2">
       {/* View button - available for every report */}
@@ -349,59 +352,62 @@ const ReportActions = ({
         {reportTableText.actions.view}
       </button>
 
-      {/* Approve button - available for every report */}
-      <button
-        type="button"
-        onClick={() => onApprove(report)}
-        className="
-          inline-flex
-          items-center
-          gap-1
-          rounded-full
-          bg-[#009B50]
-          px-3
-          py-1.5
-          text-xs
-          font-semibold
-          text-white
-          transition-all
-          duration-200
-          hover:bg-[#007A3F]
-          hover:shadow-md
-          active:scale-95
-          focus:outline-none
-        "
-      >
-        <ApproveIcon size={13} />
-        {reportTableText.actions.approve}
-      </button>
+      {/* Approve & Reject buttons - available ONLY if report status is Pending */}
+      {isPending && (
+        <>
+          <button
+            type="button"
+            onClick={() => onApprove(report)}
+            className="
+              inline-flex
+              items-center
+              gap-1
+              rounded-full
+              bg-[#009B50]
+              px-3
+              py-1.5
+              text-xs
+              font-semibold
+              text-white
+              transition-all
+              duration-200
+              hover:bg-[#007A3F]
+              hover:shadow-md
+              active:scale-95
+              focus:outline-none
+            "
+          >
+            <ApproveIcon size={13} />
+            {reportTableText.actions.approve}
+          </button>
 
-      {/* Reject button - available for every report */}
-      <button
-        type="button"
-        onClick={() => onReject(report)}
-        className="
-          inline-flex
-          items-center
-          gap-1
-          rounded-full
-          bg-[#B63838]
-          px-3
-          py-1.5
-          text-xs
-          font-semibold
-          text-white
-          transition-all
-          duration-200
-          hover:bg-[#8F2C2C]
-          hover:shadow-md
-          active:scale-95
-          focus:outline-none
-        "
-      >
-        <RejectIcon size={13} />
-        {reportTableText.actions.reject}
-      </button>
+          <button
+            type="button"
+            onClick={() => onReject(report)}
+            className="
+              inline-flex
+              items-center
+              gap-1
+              rounded-full
+              bg-[#B63838]
+              px-3
+              py-1.5
+              text-xs
+              font-semibold
+              text-white
+              transition-all
+              duration-200
+              hover:bg-[#8F2C2C]
+              hover:shadow-md
+              active:scale-95
+              focus:outline-none
+            "
+          >
+            <RejectIcon size={13} />
+            {reportTableText.actions.reject}
+          </button>
+        </>
+      )}
     </div>
   );
 };
@@ -459,6 +465,7 @@ const ReportDetailsModal = ({ report, onClose }) => {
           src={report.itemImage}
           alt={report.itemName}
           className="mt-5 h-48 w-full rounded-xl object-cover"
+          onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
         />
 
         <div className="mt-5 space-y-3">
