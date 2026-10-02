@@ -1,11 +1,66 @@
-
 import { ReportCardsData } from "../../../data/AdminModuleData/ReportManagement";
 import { useState } from "react";
 import { X } from "lucide-react";
 
-
-const ReportCards = () => {
+const ReportCards = ({ reports = [] }) => {
   const [selectedCards, setSelectedCards] = useState(null);
+
+  const totalReports = reports.length;
+  const pendingCount = reports.filter((r) => r.status === "Pending").length;
+  const approvedCount = reports.filter((r) => r.status === "Approved").length;
+  const rejectedCount = reports.filter((r) => r.status === "Rejected").length;
+
+  const getCardValue = (title) => {
+    if (title.includes("Total")) {
+      return totalReports;
+    }
+    if (title.includes("Pending")) {
+      return pendingCount;
+    }
+    if (title.includes("Approved")) {
+      return approvedCount;
+    }
+    if (title.includes("Rejected")) {
+      return rejectedCount;
+    }
+  };
+
+  const getCardPercentageChange = (title) => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const prevDate = new Date(currentYear, currentMonth - 1, 1);
+    const prevMonth = prevDate.getMonth();
+    const prevYear = prevDate.getFullYear();
+
+    let targetReports = reports;
+    if (title.includes("Pending")) {
+      targetReports = reports.filter((r) => r.status === "Pending");
+    } else if (title.includes("Approved")) {
+      targetReports = reports.filter((r) => r.status === "Approved");
+    } else if (title.includes("Rejected")) {
+      targetReports = reports.filter((r) => r.status === "Rejected");
+    }
+
+    const currentCount = targetReports.filter((r) => {
+      const d = new Date(r.rawDate || r.date);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).length;
+
+    const prevCount = targetReports.filter((r) => {
+      const d = new Date(r.rawDate || r.date);
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
+    }).length;
+
+    if (prevCount === 0) {
+      return currentCount > 0 ? "↑ +100%" : "0%";
+    }
+
+    const percent = ((currentCount - prevCount) / prevCount) * 100;
+    const arrow = percent >= 0 ? "↑ +" : "↓ ";
+    return `${arrow}${percent.toFixed(1)}%`;
+  };
 
   return (
     <>
@@ -69,13 +124,7 @@ const ReportCards = () => {
                   {/* card Value */}
 
                   <p className="mt-1 text-3xl font-bold text-[#0F3292]">
-                    {Card.value}
-                  </p>
-
-                  {/*card Description */}
-
-                  <p className="mt-1 text-sm font-normal text-[#29292D]">
-                    {Card.description}
+                    {getCardValue(Card.title)}
                   </p>
 
                 </div>
@@ -83,7 +132,7 @@ const ReportCards = () => {
 
               {/* card Changes */}
               <p className="mt-4 text-xs font-medium text-[#0F3292]">
-                ↑ {Card.change} from last month
+                {getCardPercentageChange(Card.title)} from last month
               </p>
             </button>
           );
@@ -138,20 +187,16 @@ const ReportCards = () => {
 
             {/* Popup Content */}
             <div className="mt-6">
-              <p className="text-sm text-[#29292D]">
-                {selectedCards.description}
-              </p>
-
               <p className="mt-2 text-4xl font-bold text-[#0F3292]">
-                {selectedCards.value}
+                {getCardValue(selectedCards.title)}
               </p>
 
               <p className="mt-3 text-sm font-medium text-[#0F3292]">
-                ↑ {selectedCards.change} from last month
+                {getCardPercentageChange(selectedCards.title)} from last month
               </p>
             </div>
 
-            {/* Close Button(when opening of clicking card) */}
+            {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedCards(null)}
