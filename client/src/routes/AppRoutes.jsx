@@ -17,6 +17,7 @@ import ReportManagement from "../pages/AdminModule/ReportManagement";
 import Notification from "../pages/Notification";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
+import MyReturns from "../pages/MyReturns";
 
 
 
@@ -38,9 +39,9 @@ function AppRoutes() {
         <Route path="/new-password" element={<NewPassword />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/dashboard/notifications" element={<Notification />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/dashboard/my-reports" element={<MyReports/>} />
         <Route path="/dashboard/my-claims" element={<MyClaims/>} />
+        <Route path="/dashboard/my-returns" element={<MyReturns/>} />
 
         </Route>
 
