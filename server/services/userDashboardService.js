@@ -14,6 +14,10 @@ export const getDashboardProfile = async (userId) => {
 };
 
 export const getDashboardStatistics = async (userId) => {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
     const [
         totalLostReports,
         totalFoundReports,
@@ -21,40 +25,33 @@ export const getDashboardStatistics = async (userId) => {
         activeFoundReports,
         recoveredItems,
         returnedItems,
+        pendingLostReports,
+        pendingFoundReports,
+        rejectedLostReports,
+        rejectedFoundReports,
+        thisMonthLostReports,
+        thisMonthFoundReports,
         user,
     ] = await Promise.all([
-        LostItem.countDocuments({
-            userId,
-        }),
+        LostItem.countDocuments({ userId }),
+        FoundItem.countDocuments({ userId }),
 
-        FoundItem.countDocuments({
-            userId,
-        }),
+        LostItem.countDocuments({ userId, status: "lost", approvalStatus: "approved" }),
+        FoundItem.countDocuments({ userId, status: "found", approvalStatus: "approved" }),
 
-        LostItem.countDocuments({
-            userId,
-            status: "lost",
-            approvalStatus: "approved",
-        }),
+        LostItem.countDocuments({ userId, status: "recovered" }),
+        FoundItem.countDocuments({ userId, status: "returned" }),
 
-        FoundItem.countDocuments({
-            userId,
-            status: "found",
-            approvalStatus: "approved",
-        }),
+        LostItem.countDocuments({ userId, approvalStatus: "pending" }),
+        FoundItem.countDocuments({ userId, approvalStatus: "pending" }),
 
-        LostItem.countDocuments({
-            userId,
-            status: "recovered",
-        }),
+        LostItem.countDocuments({ userId, approvalStatus: "rejected" }),
+        FoundItem.countDocuments({ userId, approvalStatus: "rejected" }),
 
-        FoundItem.countDocuments({
-            userId,
-            status: "returned",
-        }),
+        LostItem.countDocuments({ userId, createdAt: { $gte: startOfMonth } }),
+        FoundItem.countDocuments({ userId, createdAt: { $gte: startOfMonth } }),
 
-        User.findById(userId)
-            .select("createdAt"),
+        User.findById(userId).select("createdAt"),
     ]);
 
     if (!user) {
@@ -62,19 +59,14 @@ export const getDashboardStatistics = async (userId) => {
     }
 
     return {
-        totalReports:
-            totalLostReports + totalFoundReports,
-
+        totalReports: totalLostReports + totalFoundReports,
         totalLostReports,
-
         totalFoundReports,
-
-        activeCases:
-            activeLostReports + activeFoundReports,
-
-        recoveredItems:
-            recoveredItems + returnedItems,
-
+        activeCases: activeLostReports + activeFoundReports,
+        recoveredItems: recoveredItems + returnedItems,
+        pendingReports: pendingLostReports + pendingFoundReports,
+        rejectedReports: rejectedLostReports + rejectedFoundReports,
+        thisMonthCount: thisMonthLostReports + thisMonthFoundReports,
         memberSince: user.createdAt,
     };
 };
