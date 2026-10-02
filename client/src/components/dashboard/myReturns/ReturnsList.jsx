@@ -3,9 +3,10 @@ import ReturnCard from "./ReturnCard";
 
 function ReturnsList({
   returns,
+  onViewClaim,
   onViewDetails,
   onContactClaimant,
-  onMarkReturned,
+  onMarkDone,
 }) {
   if (returns.length === 0) {
     return (
@@ -27,9 +28,10 @@ function ReturnsList({
         <ReturnCard
           key={item.id}
           item={item}
+          onViewClaim={onViewClaim}
           onViewDetails={onViewDetails}
           onContactClaimant={onContactClaimant}
-          onMarkReturned={onMarkReturned}
+          onMarkDone={onMarkDone}
         />
       ))}
     </div>
