@@ -17,6 +17,7 @@ import ReportManagement from "../pages/AdminModule/ReportManagement";
 import Notification from "../pages/Notification";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
+import AllItems from "../pages/AdminModule/AllItems";
 import Settings from "../pages/Settings"; 
 import MyReturns from "../pages/MyReturns";
 
@@ -51,6 +52,7 @@ function AppRoutes() {
         <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
         <Route path="/All-Users" element={<AllUsers/>} />
         <Route path="/Report-Management" element={<ReportManagement/>} />
+        <Route path="/All-Items" element={<AllItems/>} />
 
       </Routes>
   );
