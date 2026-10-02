@@ -18,7 +18,7 @@ function ItemsSection({ title, subtitle, items }) {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
         {items.map((item) => (
-          <ItemCard key={item.title} {...item} />
+          <ItemCard key={item.id} {...item} />
         ))}
       </div>
     </section>
