@@ -8,6 +8,7 @@ import {
   FiBell,
   FiSettings,
   FiHelpCircle,
+  FiInfo,
   FiSend,
   FiMenu,
   FiX,
@@ -51,7 +52,7 @@ const navItems = [
   },
   { label: "Notifications", to: "/dashboard/notifications", icon: FiBell },
   { label: "Settings", to: "/dashboard/settings", icon: FiSettings },
-  { label: "Help", to: "/dashboard/help", icon: FiHelpCircle },
+  { label: "Help", to: "/dashboard/help", icon: FiInfo },
 ];
 
 function DashboardSidebar({onOpenLostReport,
