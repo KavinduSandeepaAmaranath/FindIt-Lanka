@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { getDashboardStatistics } from "../services/dashboardService.js";
+import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
@@ -17,7 +17,7 @@ import ReportModal from "../components/LostFoundForm/ReportModal";
 import { currentUser } from "../data/dashboardData";
 
 import {
-  myReports,
+  myReports as mockReports,
   dateFilterOptions,
   statusFilterOptions,
   REPORTS_PER_PAGE,
@@ -58,28 +58,82 @@ function MyReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
 
+  const [reportsList, setReportsList] = useState(mockReports);
   const [liveStats, setLiveStats] = useState(null);
 
   useEffect(() => {
-    const fetchLiveStats = async () => {
+    const fetchBackendData = async () => {
       try {
-        const res = await getDashboardStatistics();
-        if (res?.statistics) {
-          setLiveStats(res.statistics);
+        const [statsRes, lostRes, foundRes] = await Promise.all([
+          getDashboardStatistics().catch(() => null),
+          getMyLostItems().catch(() => null),
+          getMyFoundItems().catch(() => null),
+        ]);
+
+        if (statsRes?.statistics) {
+          setLiveStats(statsRes.statistics);
+        }
+
+        const lostItems = lostRes?.lostItems || [];
+        const foundItems = foundRes?.foundItems || [];
+
+        const formatBackendItem = (item, type) => {
+          let statusLabel = "Under Review";
+          if (item.approvalStatus === "pending") {
+            statusLabel = "Pending";
+          } else if (item.approvalStatus === "rejected") {
+            statusLabel = "Rejected";
+          } else if (item.status === "recovered" || item.status === "returned") {
+            statusLabel = "Resolved";
+          } else if (item.approvalStatus === "approved") {
+            statusLabel = "Under Review";
+          }
+
+          const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
+          let imageUrl = "https://via.placeholder.com/150?text=No+Image";
+          if (rawImg) {
+            imageUrl = rawImg.startsWith("http")
+              ? rawImg
+              : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+          }
+
+          const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
+
+          return {
+            id: item._id,
+            title: item.title,
+            location: `${item.location || ""}, ${item.district || ""}`.replace(/^,\s*/, "").replace(/,\s*$/, ""),
+            reportType: type,
+            reportedOn: item.lostDate || item.foundDate || item.createdAt,
+            description: item.description,
+            status: statusLabel,
+            image: imageUrl,
+            category: item.category || "General",
+            referenceNo: refNum,
+          };
+        };
+
+        const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
+        const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
+        const allFetched = [...formattedLost, ...formattedFound];
+
+        if (allFetched.length > 0) {
+          setReportsList(allFetched);
         }
       } catch (err) {
-        console.warn("Could not load live backend statistics:", err);
+        console.warn("Could not fetch user backend items:", err);
       }
     };
-    fetchLiveStats();
+
+    fetchBackendData();
   }, []);
 
   const dynamicReportStats = useMemo(() => {
-    const total = liveStats?.totalReports ?? myReports.length;
-    const active = liveStats?.activeCases ?? myReports.filter((r) => r.status === "Under Review" || r.status === "Active" || r.status === "Approved").length;
-    const recovered = liveStats?.recoveredItems ?? myReports.filter((r) => r.status === "Resolved" || r.status === "Recovered").length;
-    const pending = liveStats?.pendingReports ?? myReports.filter((r) => r.status === "Pending" || r.status === "Under Review").length;
-    const rejected = liveStats?.rejectedReports ?? myReports.filter((r) => r.status === "Rejected").length;
+    const total = liveStats?.totalReports ?? reportsList.length;
+    const active = liveStats?.activeCases ?? reportsList.filter((r) => r.status === "Under Review" || r.status === "Active" || r.status === "Approved").length;
+    const recovered = liveStats?.recoveredItems ?? reportsList.filter((r) => r.status === "Resolved" || r.status === "Recovered").length;
+    const pending = liveStats?.pendingReports ?? reportsList.filter((r) => r.status === "Pending" || r.status === "Under Review").length;
+    const rejected = liveStats?.rejectedReports ?? reportsList.filter((r) => r.status === "Rejected").length;
     const thisMonth = liveStats?.thisMonthCount ?? 2;
 
     const formatVal = (val) => (val < 10 ? `0${val}` : `${val}`);
@@ -126,37 +180,37 @@ function MyReports() {
         accent: "rose",
       },
     ];
-  }, [liveStats]);
+  }, [liveStats, reportsList]);
 
   const tabs = useMemo(
     () => [
       {
         value: "all",
         label: "All Reports",
-        count: myReports.length,
+        count: reportsList.length,
       },
       {
         value: "Lost Item",
         label: "Lost Reports",
-        count: myReports.filter(
+        count: reportsList.filter(
           (r) => r.reportType === "Lost Item"
         ).length,
       },
       {
         value: "Found Item",
         label: "Found Reports",
-        count: myReports.filter(
+        count: reportsList.filter(
           (r) => r.reportType === "Found Item"
         ).length,
       },
     ],
-    []
+    [reportsList]
   );
 
   const filteredReports = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
-    return myReports
+    return reportsList
       .filter((report) => {
         if (
           activeTab !== "all" &&
@@ -208,6 +262,7 @@ function MyReports() {
           new Date(b.reportedOn) - new Date(a.reportedOn)
       );
   }, [
+    reportsList,
     activeTab,
     searchTerm,
     dateFilter,

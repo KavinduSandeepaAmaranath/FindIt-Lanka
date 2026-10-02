@@ -74,21 +74,17 @@ export const getDashboardStatistics = async (userId) => {
 export const getMyDashboardLostItems = async (userId) => {
     return await LostItem.find({
         userId,
-    })
-        .sort({
-            createdAt: -1,
-        })
-        .limit(6);
+    }).sort({
+        createdAt: -1,
+    });
 };
 
 export const getMyDashboardFoundItems = async (userId) => {
     return await FoundItem.find({
         userId,
-    })
-        .sort({
-            createdAt: -1,
-        })
-        .limit(6);
+    }).sort({
+        createdAt: -1,
+    });
 };
 
 export const getRecentDashboardActivities = async (userId) => {
