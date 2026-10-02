@@ -17,6 +17,7 @@ import MyClaims from "../pages/MyClaims";
 import AllItems from "../pages/AdminModule/AllItems";
 import Settings from "../pages/Settings"; 
 import MyReturns from "../pages/MyReturns";
+import Help from "../pages/Help";
 import Notification from "../pages/Notification";
 
 import AdminDashboard from "../pages/AdminDashboard";
@@ -46,6 +47,8 @@ function AppRoutes() {
         <Route path="/dashboard/my-claims" element={<MyClaims/>} />
         <Route path="/dashboard/settings" element={<Settings />} /> 
         <Route path="/dashboard/my-returns" element={<MyReturns/>} />
+        <Route path="/dashboard/help" element={<Help />} />
+        <Route path="/help" element={<Help />} />
 
         <Route path="*" element={<NotFound />} />
 

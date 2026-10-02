@@ -8,6 +8,7 @@ import {
   FiBell,
   FiSettings,
   FiHelpCircle,
+  FiInfo,
   FiSend,
   FiMenu,
   FiX,
