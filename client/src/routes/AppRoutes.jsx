@@ -81,6 +81,13 @@ function AppRoutes() {
           </ProtectedAdminRoute>
         }
       />
+      
+      <Route path="/All-Items" element={<ProtectedAdminRoute><AllItems /></ProtectedAdminRoute>} />
+      <Route path="/all items" element={<ProtectedAdminRoute><AllItems /></ProtectedAdminRoute>} />
+      <Route path="/all_items" element={<ProtectedAdminRoute><AllItems /></ProtectedAdminRoute>} />
+      <Route path="/Admin-Dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+      <Route path="/All-Users" element={<ProtectedAdminRoute><AllUsers /></ProtectedAdminRoute>} />
+      <Route path="/Report-Management" element={<ProtectedAdminRoute><ReportManagement /></ProtectedAdminRoute>} />
     </Routes>
   );
 }

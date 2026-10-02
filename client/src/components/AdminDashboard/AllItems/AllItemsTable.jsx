@@ -9,18 +9,19 @@ import {
 
 import Pagination from "../Pagination";
 
-const AllItemsTable = () => {
+const AllItemsTable = ({ items = allItemsTableData }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const rowsPerPage = 5;
 
-  const totalItems = allItemsTableData.length;
+  const totalItems = items.length;
   const totalPages = Math.ceil(totalItems / rowsPerPage);
+  const safePage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
 
-  const startIndex = (currentPage - 1) * rowsPerPage;
+  const startIndex = (safePage - 1) * rowsPerPage;
 
-  const currentItems = allItemsTableData.slice(
+  const currentItems = items.slice(
     startIndex,
     startIndex + rowsPerPage
   );
@@ -187,7 +188,7 @@ const AllItemsTable = () => {
 
         {/* pagination sec */}
         <Pagination
-          currentPage={currentPage}
+          currentPage={safePage}
           totalPages={totalPages}
           totalItems={totalItems}
           rowsPerPage={rowsPerPage}
