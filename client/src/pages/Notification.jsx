@@ -9,7 +9,8 @@ import NotificationPagination from "../components/notifications/NotificationPagi
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
 import { currentUser } from "../data/dashboardData";
-import { notificationCategories, notificationsData } from "../data/notificationData";
+import { notificationCategories } from "../data/notificationData";
+import { useNotifications } from "../context/NotificationContext";
 
 import {
   reportHeader as lostHeader,
@@ -25,8 +26,15 @@ const ITEMS_PER_PAGE = 7;
 const GROUPS = ["Today", "Yesterday", "Earlier"]; 
 
 function Notification() {
-   // The list lives in state so we can change isRead when the user clicks.
-  const [notifications, setNotifications] = useState(notificationsData);
+  const {
+    notifications,
+    setNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    deleteAllNotifications,
+  } = useNotifications();
+
   const [activeCategory, setActiveCategory] = useState("all");
   const [page, setPage] = useState(1);
 
@@ -63,17 +71,15 @@ function Notification() {
   // Event handlers 
   const handleCategoryChange = (key) => {
     setActiveCategory(key);
-    setPage(1); // go back to page 1 when the category changes
+    setPage(1);
   };
 
   const handleMarkAsRead = (id) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+    markAsRead(id);
   };
 
   const handleMarkAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+    markAllAsRead();
   };
 
   const handlePageChange = (newPage) => {

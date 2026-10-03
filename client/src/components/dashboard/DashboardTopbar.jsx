@@ -1,8 +1,13 @@
 import { FiSearch, FiUser, FiShield } from "react-icons/fi";
+import NotificationBell from "../common/NotificationBell";
 
 function DashboardTopbar({ user, hideSearch = false }) {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-8">
+    <div
+      className={`flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-8 ${
+        hideSearch ? "lg:justify-end" : ""
+      }`}
+    >
       {/*search bar*/}
       {!hideSearch && (
         <form
@@ -24,8 +29,10 @@ function DashboardTopbar({ user, hideSearch = false }) {
         </form>
       )}
 
-      {/*user & trust score */}
-      <div className={`flex items-center gap-5 ${hideSearch ? "ml-auto" : ""}`}>
+      {/*user & trust score*/}
+      <div className="flex items-center gap-5">
+        <NotificationBell />
+
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
             <p className="text-sm font-bold text-slate-900">{user?.name}</p>

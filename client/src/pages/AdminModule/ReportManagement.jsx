@@ -24,7 +24,6 @@ const ReportManagement = () => {
     date: "All Time",
   });
 
-  
   const getImageUrl = (item) => {
     if (item.images && item.images.length > 0) {
       const img = item.images[0];
@@ -148,17 +147,11 @@ const ReportManagement = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-
-      {/* Main Area */}
       <div className="flex flex-1">
-
-        {/* admin navbar */}
         <AdminNavBar
           isOpen={isSidebarOpen}
           setIsOpen={setIsSidebarOpen}
         />
-
-        {/* Content of page */}
         <main
           className="
               flex-1
@@ -168,21 +161,15 @@ const ReportManagement = () => {
               overflow-x-hidden
             "
         >
-
-          {/* Headersec */}
           <HeaderSec
             setIsOpen={setIsSidebarOpen}
           />
-
-          {/* Report Cards */}
           <section className="mt-6">
             <ReportCards
               reports={reports}
               onCardSelect={(statusVal) => handleFilterChange("status", statusVal)}
             />
           </section>
-
-          {/* Filters */}
           <section className="mt-8">
             <ReportFilters
               searchTerm={searchTerm}
@@ -191,8 +178,6 @@ const ReportManagement = () => {
               onFilterChange={handleFilterChange}
             />
           </section>
-
-          {/* Report Table */}
           <section className="mt-8">
             <ReportTable
               reports={filteredReports}
@@ -201,14 +186,9 @@ const ReportManagement = () => {
               onRefresh={fetchReports}
             />
           </section>
-
         </main>
-
       </div>
-
-      {/* Footer */}
       <Footer />
-
     </div>
   );
 };

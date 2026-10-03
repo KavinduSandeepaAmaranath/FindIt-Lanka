@@ -18,6 +18,7 @@ import AllItems from "../pages/AdminModule/AllItems";
 import Settings from "../pages/Settings";
 import MyReturns from "../pages/MyReturns";
 import Notification from "../pages/Notification";
+import Help from "../pages/Help";
 
 import AdminDashboard from "../pages/AdminDashboard";
 import AllUsers from "../pages/AllUsers";
@@ -41,6 +42,8 @@ function AppRoutes() {
         <Route path="/dashboard/notifications" element={<Notification />} />
         <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/dashboard/my-returns" element={<MyReturns />} />
+        <Route path="/dashboard/help" element={<Help />} />
+        <Route path="/help" element={<Help />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
@@ -81,7 +84,7 @@ function AppRoutes() {
           </ProtectedAdminRoute>
         }
       />
-      
+
       <Route path="/All-Items" element={<ProtectedAdminRoute><AllItems /></ProtectedAdminRoute>} />
       <Route path="/all items" element={<ProtectedAdminRoute><AllItems /></ProtectedAdminRoute>} />
       <Route path="/all_items" element={<ProtectedAdminRoute><AllItems /></ProtectedAdminRoute>} />

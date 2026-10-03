@@ -1,8 +1,6 @@
 import ProfileImg from "../../assets/icons/ProfileImg.jpeg";
 
 const ReportHeader = ({ header, user }) => {
-  const BellIcon = header.icons.bell;
-
   return (
     <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
 
@@ -20,16 +18,7 @@ const ReportHeader = ({ header, user }) => {
       </div>
 
       {/* Right Side */}
-      <div className="flex items-center justify-between sm:justify-end gap-4">
-
-        {/* Notification */}
-        <button className="relative p-2 rounded-full hover:bg-gray-100 transition">
-
-          <BellIcon className="text-2xl text-orange-400" />
-
-          <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-red-500"></span>
-
-        </button>
+      <div className="flex items-center justify-end gap-4">
 
         {/* Profile */}
         <button className="flex items-center gap-3 rounded-xl p-2 hover:bg-gray-100 transition">

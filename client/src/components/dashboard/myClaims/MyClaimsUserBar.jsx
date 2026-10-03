@@ -1,20 +1,10 @@
-import { FiUser, FiBell } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
+import NotificationBell from "../../common/NotificationBell";
 
 function MyClaimsUserBar({ user }) {
   return (
     <div className="flex items-center justify-end gap-4">
-      <button
-        type="button"
-        aria-label="Notifications"
-        className="relative w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 hover:text-blue-700 transition-colors"
-      >
-        <FiBell className="w-5 h-5" />
-        {user.pendingNotifications > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
-            {user.pendingNotifications}
-          </span>
-        )}
-      </button>
+      <NotificationBell />
 
       <div className="flex items-center gap-3">
         <div className="text-right hidden sm:block">
