@@ -1,6 +1,4 @@
 import { useState, useMemo, useEffect } from "react";
-import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
-
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
 
@@ -8,6 +6,7 @@ import MyReportsHeader from "../components/dashboard/myReports/MyReportsHeader";
 import MyReportsStats from "../components/dashboard/myReports/MyReportsStats";
 import MyReportsFilters from "../components/dashboard/myReports/MyReportsFilters";
 import MyReportsTabs from "../components/dashboard/myReports/MyReportsTabs";
+import MyReportsSearch from "../components/dashboard/myReports/MyReportsSearch";
 import ReportsList from "../components/dashboard/myReports/ReportsList";
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
 import ReportDetailsModal from "../components/dashboard/myReports/ReportDetailsModal";
@@ -33,10 +32,12 @@ import {
   reportForm as foundForm,
 } from "../data/ReportFound";
 
+import { normalizeStatus } from "../components/dashboard/myReports/reportHelpers";
+
 /*status card for status filter mapping*/
 const statToStatus = {
   total: "all",
-  active: "Under Review",
+  active: "Approved-Active",
   recovered: "Resolved",
   pending: "Pending",
   rejected: "Rejected",
@@ -49,7 +50,6 @@ function MyReports() {
   const [activeTab, setActiveTab] = useState("all");
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchDraft, setSearchDraft] = useState("");
 
   const [dateFilter, setDateFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -204,8 +204,58 @@ function MyReports() {
         ).length,
       },
     ],
-    [reportsList]
+    [],
   );
+
+  const computedStats = useMemo(() => {
+    return reportStats.map((st) => {
+      if (st.id === "total") {
+        return {
+          ...st,
+          value: String(myReports.length).padStart(2, "0"),
+        };
+      }
+      if (st.id === "active") {
+        const count = myReports.filter(
+          (r) => normalizeStatus(r.status) === "approved-active"
+        ).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      if (st.id === "recovered") {
+        const count = myReports.filter(
+          (r) => normalizeStatus(r.status) === "resolved"
+        ).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      if (st.id === "pending") {
+        // Pending card includes both Pending and Under Review items
+        const count = myReports.filter((r) => {
+          const s = normalizeStatus(r.status);
+          return s === "pending" || s === "under-review";
+        }).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      if (st.id === "rejected") {
+        const count = myReports.filter(
+          (r) => normalizeStatus(r.status) === "rejected"
+        ).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      return st;
+    });
+  }, []);
 
   const filteredReports = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
@@ -292,30 +342,7 @@ function MyReports() {
     safePage * REPORTS_PER_PAGE
   );
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setSearchTerm(searchDraft.trim());
-  };
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchDraft(value);
-    setSearchTerm(value.trim());
-  };
-
-  const handleClearSearch = () => {
-    setSearchDraft("");
-    setSearchTerm("");
-  };
-
-  const handleResetFilters = () => {
-    setSearchDraft("");
-    setSearchTerm("");
-    setDateFilter("all");
-    setStatusFilter("all");
-    setActiveTab("all");
-    setActiveStat("total");
-  };
 
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
@@ -336,11 +363,19 @@ function MyReports() {
   const handleStatusFilterChange = (value) => {
     setStatusFilter(value);
 
-    const matchedStat = Object.keys(statToStatus).find(
-      (key) => statToStatus[key] === value
-    );
-
-    setActiveStat(matchedStat || null);
+    if (value === "all") {
+      setActiveStat("total");
+    } else if (
+      normalizeStatus(value) === "pending" ||
+      normalizeStatus(value) === "under-review"
+    ) {
+      setActiveStat("pending");
+    } else {
+      const matchedStat = Object.keys(statToStatus).find(
+        (key) => statToStatus[key] === value
+      );
+      setActiveStat(matchedStat || null);
+    }
   };
 
   return (
@@ -353,6 +388,29 @@ function MyReports() {
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
 
+          {/*topbar without search*/}
+          <DashboardTopbar
+            user={currentUser}
+            hideSearch
+          />
+
+          {/*title + date / status filters*/}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            <MyReportsHeader />
+
+            <MyReportsFilters
+              dateFilter={dateFilter}
+              onDateFilterChange={setDateFilter}
+              statusFilter={statusFilter}
+              onStatusFilterChange={handleStatusFilterChange}
+              dateOptions={dateFilterOptions}
+              statusOptions={statusFilterOptions}
+            />
+          </div>
+
+          {/*statistics*/}
+          <MyReportsStats
+            stats={computedStats}
           {/* Header & User Profile Topbar in one aligned row */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <MyReportsHeader />
@@ -369,6 +427,13 @@ function MyReports() {
             onSelectStat={handleSelectStat}
           />
 
+          {/*tabs + search*/}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+            <MyReportsTabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
           {/* Search Bar & Custom Filters Toolbar */}
           <MyReportsFilters
             searchDraft={searchDraft}
@@ -383,12 +448,8 @@ function MyReports() {
             statusOptions={statusFilterOptions}
           />
 
-          {/*report type tabs*/}
-          <MyReportsTabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
+            <MyReportsSearch searchTerm={searchTerm} onSearch={setSearchTerm} />
+          </div>
 
           {/*reports*/}
           <ReportsList
@@ -411,6 +472,22 @@ function MyReports() {
         <ReportDetailsModal
           report={selectedReport}
           onClose={() => setSelectedReport(null)}
+          onEdit={(report) => {
+            setSelectedReport(null);
+            if (report.reportType === "Found Item") {
+              setOpenFoundReport(true);
+            } else {
+              setOpenLostReport(true);
+            }
+          }}
+          onEditAndResubmit={(report) => {
+            setSelectedReport(null);
+            if (report.reportType === "Found Item") {
+              setOpenFoundReport(true);
+            } else {
+              setOpenLostReport(true);
+            }
+          }}
         />
       )}
 

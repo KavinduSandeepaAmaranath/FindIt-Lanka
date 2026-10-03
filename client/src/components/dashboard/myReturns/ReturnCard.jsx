@@ -194,18 +194,9 @@ function ReturnCard({
           </div>
         </div>
 
-        {/* Column 3: Action Buttons & Chevron Arrow */}
+        {/* Column 3: Action Buttons */}
         <div className="flex items-center gap-3 lg:border-l lg:border-slate-200/80 lg:pl-8 shrink-0">
           {renderActions()}
-
-          <button
-            type="button"
-            onClick={() => (status === "Pending Claim" ? onViewClaim(item) : onViewDetails(item))}
-            aria-label={`Open details for ${title}`}
-            className="hidden lg:flex w-8 h-8 rounded-full items-center justify-center text-slate-300 group-hover:text-blue-600 hover:bg-blue-50 transition-colors shrink-0 cursor-pointer"
-          >
-            <FiChevronRight className="w-6 h-6 stroke-[2]" />
-          </button>
         </div>
       </div>
     </div>

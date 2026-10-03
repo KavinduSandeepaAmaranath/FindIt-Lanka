@@ -1,3 +1,4 @@
+//used for all pages bell icons 
 import { createContext, useContext, useState, useEffect } from "react";
 import { notificationsData as defaultNotificationsData } from "../data/notificationData";
 

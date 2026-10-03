@@ -24,6 +24,15 @@ function MyReportsFilters({
     "All Status";
 
   return (
+    <div className="flex flex-col sm:flex-row gap-4 bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-3 shrink-0">
+      {/*date filter*/}
+      <div className="min-w-[170px]">
+        <label
+          htmlFor="filter-date"
+          className="block text-[11px] font-semibold text-slate-400 mb-1"
+        >
+          Filter By Date
+        </label>
     <div className="flex w-full flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
       {/* Search Bar */}
       <form
