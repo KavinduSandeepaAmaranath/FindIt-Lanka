@@ -22,11 +22,12 @@ const AllItemsFilters = ({
     <section className="mt-8 w-full">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         {/* Search */}
-        <div className="flex w-full xl:max-w-[470px]">
+        <div className="flex w-full xl:max-w-xl">
           <div className="relative flex-1">
             <SearchIcon
-              size={24}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7EC4F5]"
+              size={22}
+              strokeWidth={2}
+              className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#94A3B8]"
             />
             <input
               type="text"
@@ -38,7 +39,7 @@ const AllItemsFilters = ({
                 rounded-l-xl
                 border border-gray-300
                 bg-white
-                pl-12 pr-4
+                pl-11 pr-4
                 text-sm text-[#29292D]
                 outline-none transition-all duration-200
                 placeholder:text-[#94A3B8]
@@ -50,7 +51,7 @@ const AllItemsFilters = ({
           <button
             type="button"
             className="
-              h-12 rounded-r-xl bg-[#2563EB] px-7 text-sm font-semibold text-white
+              h-12 rounded-r-xl bg-[#2563EB] shrink-0 px-6 text-base font-semibold text-white sm:px-8
               transition-all duration-200 hover:bg-[#0F3292] hover:shadow-md active:scale-[0.98]
               focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 sm:px-8
             "

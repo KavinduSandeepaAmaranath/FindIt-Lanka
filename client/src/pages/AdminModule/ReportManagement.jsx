@@ -164,6 +164,7 @@ const ReportManagement = () => {
           <section className="mt-6">
             <ReportCards
               reports={reports}
+              onCardSelect={(statusVal) => handleFilterChange("status", statusVal)}
             />
           </section>
 
