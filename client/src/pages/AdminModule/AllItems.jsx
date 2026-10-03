@@ -44,8 +44,18 @@ const AllItems = () => {
         getAllFoundItems(),
       ]);
 
-      const lostList = lostRes.lostItems || [];
-      const foundList = foundRes.foundItems || [];
+      const lostList = (lostRes.lostItems || []).filter(
+        (item) =>
+          item.approvalStatus === "approved" ||
+          item.approvalStatus === "Approved" ||
+          (!item.approvalStatus && item.status !== "rejected")
+      );
+      const foundList = (foundRes.foundItems || []).filter(
+        (item) =>
+          item.approvalStatus === "approved" ||
+          item.approvalStatus === "Approved" ||
+          (!item.approvalStatus && item.status !== "rejected")
+      );
 
       const formattedLost = lostList.map((item) => ({
         id: item._id,

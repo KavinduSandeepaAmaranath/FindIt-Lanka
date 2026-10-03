@@ -20,7 +20,7 @@ const ReportManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     reportType: "All",
-    status: "All",
+    status: "Pending",
     date: "All Time",
   });
 
