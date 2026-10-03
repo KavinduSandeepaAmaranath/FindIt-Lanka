@@ -18,6 +18,10 @@ export default function AdminDashboardHeader({
   const MenuIcon = header.icons.menu;
 
   const [searchText, setSearchText] = useState("");
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
 
   const handleSearch = () => {
     console.log("Searching:", searchText);
@@ -43,10 +47,8 @@ export default function AdminDashboardHeader({
           </button>
 
           {/* Search Box */}
-          <div className="flex items-center bg-white/70 backdrop-blur-md border border-white/30 rounded-xl px-2 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 w-full lg:max-w-[430px] shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-white gap-2">
-
-            <SearchIcon className="text-gray-400 text-lg flex-shrink-0" />
-
+          <div className="relative flex-1 lg:max-w-[480px]">
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg sm:text-xl pointer-events-none" />
             <input
               type="text"
               value={searchText}
@@ -57,16 +59,50 @@ export default function AdminDashboardHeader({
                 }
               }}
               placeholder={header.searchPlaceholder}
-              className="flex-1 bg-transparent outline-none placeholder:text-gray-400 text-sm"
+              className="
+                w-full
+                rounded-2xl
+                border
+                border-gray-300
+                bg-white
+                py-3
+                pl-11
+                pr-24
+                sm:pr-28
+                text-sm
+                sm:text-base
+                shadow-sm
+                outline-none
+                transition
+                focus:border-blue-500
+                focus:ring-2
+                focus:ring-blue-200
+              "
             />
-
             <button
               onClick={handleSearch}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-all duration-300 hover:bg-blue-700 hover:scale-105"
+              className="
+                absolute
+                right-2
+                top-1/2
+                -translate-y-1/2
+                rounded-xl
+                bg-blue-600
+                px-4
+                sm:px-5
+                lg:px-6
+                py-2
+                text-xs
+                sm:text-sm
+                font-medium
+                text-white
+                hover:bg-blue-700
+                hover:shadow-md
+                transition
+              "
             >
               Search
             </button>
-
           </div>
         </div>
 
@@ -88,11 +124,13 @@ export default function AdminDashboardHeader({
           >
             <div className="text-right hidden sm:block">
               <h3 className="font-semibold text-sm sm:text-base">
-                {header.adminName}
+                {user?.name || "Administrator"}
               </h3>
 
               <p className="text-xs sm:text-sm text-gray-500">
-                {header.adminRole}
+                {user?.role === "admin"
+                  ? "Administrator"
+                  : "User"}
               </p>
             </div>
 

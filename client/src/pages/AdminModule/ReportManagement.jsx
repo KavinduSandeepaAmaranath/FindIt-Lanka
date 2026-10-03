@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import AdminNavBar from "../../components/AdminDashboard/AdminNavBar";
 
@@ -10,10 +9,10 @@ import ReportTable from "../../components/AdminDashboard/ReportManagement/Report
 
 import Footer from "../../components/Footer";
 
+import { getAllLostItems, getAllFoundItems } from "../../services/adminService";
+
 const ReportManagement = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-<<<<<<< HEAD
-=======
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -146,7 +145,6 @@ const ReportManagement = () => {
 
     return matchesSearch && matchesType && matchesStatus && matchesDate;
   });
->>>>>>> 8dd1c422806a30eed6d0237448c7e727ff73ca4d
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -163,12 +161,12 @@ const ReportManagement = () => {
         {/* Content of page */}
         <main
           className="
-            flex-1
-            p-4
-            sm:p-6
-            lg:p-8
-            overflow-x-hidden
-          "
+              flex-1
+              p-4
+              sm:p-6
+              lg:p-8
+              overflow-x-hidden
+            "
         >
 
           {/* Headersec */}
@@ -178,24 +176,30 @@ const ReportManagement = () => {
 
           {/* Report Cards */}
           <section className="mt-6">
-<<<<<<< HEAD
-            <ReportCards />
-=======
             <ReportCards
               reports={reports}
               onCardSelect={(statusVal) => handleFilterChange("status", statusVal)}
             />
->>>>>>> 8dd1c422806a30eed6d0237448c7e727ff73ca4d
           </section>
 
           {/* Filters */}
           <section className="mt-8">
-            <ReportFilters />
+            <ReportFilters
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              filters={filters}
+              onFilterChange={handleFilterChange}
+            />
           </section>
 
           {/* Report Table */}
           <section className="mt-8">
-            <ReportTable />
+            <ReportTable
+              reports={filteredReports}
+              loading={loading}
+              error={error}
+              onRefresh={fetchReports}
+            />
           </section>
 
         </main>

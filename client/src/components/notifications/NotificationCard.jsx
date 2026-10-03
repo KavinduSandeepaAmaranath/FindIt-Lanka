@@ -5,8 +5,7 @@ import {
   FiFileText,
   FiClock,
   FiBox,
-  FiXCircle,
-  FiTrash2,
+  FiXCircle
 } from "react-icons/fi";
 
 const iconMap = {
@@ -42,30 +41,15 @@ const toneStyles = {
   },
 };
 
-function NotificationCard({ notification, onMarkAsRead, onActionClick, onDelete }) {
+function NotificationCard({ notification, onMarkAsRead }) {
   const { id, tone, icon, title, description, time, actionLabel, isRead } = notification;
 
   const styles = toneStyles[tone] || toneStyles.blue;
   const Icon = iconMap[icon] || FiSearch;
 
-  const handleCardClick = () => {
-    onMarkAsRead(id);
-    if (onActionClick) {
-      onActionClick(notification);
-    }
-  };
-
-  const handleButtonClick = (e) => {
-    e.stopPropagation();
-    onMarkAsRead(id);
-    if (onActionClick) {
-      onActionClick(notification);
-    }
-  };
-
   return (
     <div
-      onClick={handleCardClick}
+      onClick={() => onMarkAsRead(id)}
       className={`relative flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border p-3 sm:p-4 cursor-pointer transition-shadow hover:shadow-md ${styles.card}`}
     >
       {/* icon + text */}
@@ -76,11 +60,11 @@ function NotificationCard({ notification, onMarkAsRead, onActionClick, onDelete 
           <Icon className="w-4.5 h-4.5" />
 
           <span
-            className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ring-2 ring-white ${
-              isRead ? "bg-slate-200" : "bg-blue-600"
-            }`}
-            aria-label={isRead ? "Read" : "Unread"}
-          />
+  className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full ring-2 ring-white ${
+    isRead ? "bg-slate-200" : "bg-blue-600"
+  }`}
+  aria-label={isRead ? "Read" : "Unread"}
+/>
         </div>
 
         <div className="flex-1 min-w-0">
@@ -100,30 +84,16 @@ function NotificationCard({ notification, onMarkAsRead, onActionClick, onDelete 
         </div>
       </div>
 
-      {/* action button + delete trash button on the right */}
-      <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-between sm:justify-end">
-        <button
-          type="button"
-          onClick={handleButtonClick}
-          className={`flex-1 sm:flex-initial sm:min-w-28 px-4 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${styles.button}`}
-        >
-          {actionLabel}
-        </button>
-
-        {onDelete && (
+      {/* action button */}
           <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(notification);
-            }}
-            className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-100/60 transition-colors shrink-0"
-            title="Delete this notification"
-          >
-            <FiTrash2 className="w-4 h-4" />
-          </button>
-        )}
-      </div>
+        onClick={(e) => {
+          e.stopPropagation();
+          onMarkAsRead(id);
+        }}
+        className={`w-full sm:w-auto sm:min-w-28 shrink-0 px-4 py-2 rounded-lg text-xs font-semibold transition-colors ${styles.button}`}
+      >
+        {actionLabel}
+      </button>
     </div>
   );
 }
