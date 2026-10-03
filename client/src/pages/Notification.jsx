@@ -20,7 +20,8 @@ import ReportRejectedModal from "../components/notifications/modals/ReportReject
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
 import { currentUser } from "../data/dashboardData";
-import { notificationCategories, notificationsData } from "../data/notificationData";
+import { notificationCategories } from "../data/notificationData";
+import { useNotifications } from "../context/NotificationContext";
 
 import {
   reportHeader as lostHeader,
@@ -36,8 +37,15 @@ const ITEMS_PER_PAGE = 7;
 const GROUPS = ["Today", "Yesterday", "Earlier"];
 
 function Notification() {
-  // The list lives in state so we can change isRead or delete notifications
-  const [notifications, setNotifications] = useState(notificationsData);
+  // Shared notification context state
+  const {
+    notifications,
+    setNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    deleteAllNotifications,
+  } = useNotifications();
   const [activeCategory, setActiveCategory] = useState("all");
   const [page, setPage] = useState(1);
 
@@ -93,13 +101,11 @@ function Notification() {
   };
 
   const handleMarkAsRead = (id) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+    markAsRead(id);
   };
 
   const handleConfirmMarkAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+    markAllAsRead();
   };
 
   const handlePageChange = (newPage) => {
@@ -123,17 +129,18 @@ function Notification() {
   // Confirm delete handler
   const handleConfirmDelete = () => {
     if (isBulkDelete) {
-      setNotifications([]);
+      deleteAllNotifications();
     } else if (notificationToDelete) {
-      setNotifications((prev) =>
-        prev.filter((n) => n.id !== notificationToDelete.id)
-      );
+      deleteNotification(notificationToDelete.id);
       setNotificationToDelete(null);
     }
   };
 
   // Handle click on notification action button or card
   const handleActionClick = (notification) => {
+    if (!notification.isRead) {
+      markAsRead(notification.id);
+    }
     setSelectedNotification(notification);
     const title = notification.title?.toLowerCase() || "";
     const action = notification.actionLabel?.toLowerCase() || "";

@@ -18,18 +18,18 @@ import Notification from "../pages/Notification";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
 import AllItems from "../pages/AdminModule/AllItems";
-import Settings from "../pages/Settings"; 
+import Settings from "../pages/Settings";
 import MyReturns from "../pages/MyReturns";
 import Help from "../pages/Help";
 
 
 
 function AppRoutes() {
-  
+
   return (
-    
-      <Routes>
-        <Route element={<Layout />}>
+
+    <Routes>
+      <Route element={<Layout />}>
 
         {/*public routes*/}
         <Route path="/" element={<Home />} />
@@ -40,24 +40,24 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/new-password" element={<NewPassword />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/notifications" element={<Notification />} />
-        <Route path="/dashboard/my-reports" element={<MyReports/>} />
-        <Route path="/dashboard/my-claims" element={<MyClaims/>} />
-        <Route path="/dashboard/settings" element={<Settings />} /> 
-        <Route path="/dashboard/my-returns" element={<MyReturns/>} />
+        <Route path="/dashboard/my-reports" element={<MyReports />} />
+        <Route path="/dashboard/my-claims" element={<MyClaims />} />
+        <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path="/dashboard/my-returns" element={<MyReturns />} />
         <Route path="/dashboard/help" element={<Help />} />
         <Route path="/help" element={<Help />} />
 
-        </Route>
+      </Route>
 
-        {/*admin route - outside the normal layout*/}
-        <Route path="/Admin-Dashboard" element={<AdminDashboard/>} />
-        <Route path="/All-Users" element={<AllUsers/>} />
-        <Route path="/Report-Management" element={<ReportManagement/>} />
-        <Route path="/All-Items" element={<AllItems/>} />
+      {/*admin route - outside the normal layout*/}
+      <Route path="/Admin-Dashboard" element={<AdminDashboard />} />
+      <Route path="/All-Users" element={<AllUsers />} />
+      <Route path="/Report-Management" element={<ReportManagement />} />
+      <Route path="/All-Items" element={<AllItems />} />
 
-      </Routes>
+    </Routes>
   );
 }
 
