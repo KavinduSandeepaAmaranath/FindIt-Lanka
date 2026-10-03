@@ -3,6 +3,7 @@ import { FiUser } from "react-icons/fi";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { FaBell } from "react-icons/fa";
 import { PiShieldCheckeredFill } from "react-icons/pi";
+import NotificationBell from "../components/common/NotificationBell";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 
@@ -147,10 +148,10 @@ function Settings() {
       prev.map((item) =>
         item.key === "profileVisibility"
           ? {
-              ...item,
-              enabled: val !== "only_me",
-              description: descMap[val] || item.description,
-            }
+            ...item,
+            enabled: val !== "only_me",
+            description: descMap[val] || item.description,
+          }
           : item
       )
     );
@@ -162,13 +163,13 @@ function Settings() {
       prev.map((item) =>
         item.key === "showPhoneNumber"
           ? {
-              ...item,
-              enabled: val === "show",
-              description:
-                val === "show"
-                  ? "Your number will be visible to all users."
-                  : "Your number will be hidden from other users.",
-            }
+            ...item,
+            enabled: val === "show",
+            description:
+              val === "show"
+                ? "Your number will be visible to all users."
+                : "Your number will be hidden from other users.",
+          }
           : item
       )
     );
@@ -185,10 +186,10 @@ function Settings() {
       prev.map((item) =>
         item.key === "locationVisibility"
           ? {
-              ...item,
-              enabled: val !== "hidden",
-              description: descMap[val] || item.description,
-            }
+            ...item,
+            enabled: val !== "hidden",
+            description: descMap[val] || item.description,
+          }
           : item
       )
     );
@@ -251,11 +252,7 @@ function Settings() {
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
-              <div className="relative">
-                  <FaBell className="w-6 h-6 text-yellow-500" />
-
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-                </div>
+              <NotificationBell />
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold text-slate-900">
                   {currentUser.name}
