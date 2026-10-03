@@ -42,7 +42,6 @@ export const createNotification = async (data) => {
 export const createAutoMatchNotifications = async (lostItem, foundItem) => {
   const notifications = [];
 
-  // Notification 1: To Lost Item Owner
   if (lostItem.userId) {
     notifications.push(
       Notification.create({
@@ -56,7 +55,6 @@ export const createAutoMatchNotifications = async (lostItem, foundItem) => {
     );
   }
 
-  // Notification 2: To Found Item Finder
   if (foundItem.userId) {
     notifications.push(
       Notification.create({
