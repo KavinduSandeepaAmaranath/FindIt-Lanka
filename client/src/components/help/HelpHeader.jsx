@@ -1,5 +1,6 @@
+import { Link } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
-import NotificationBell from "../common/NotificationBell";
+import { FaBell } from "react-icons/fa";
 
 function HelpHeader({ user }) {
   return (
@@ -16,7 +17,14 @@ function HelpHeader({ user }) {
 
       {/* User Profile & Notifications */}
       <div className="flex items-center gap-4 self-end sm:self-auto shrink-0">
-        <NotificationBell />
+        <Link
+          to="/dashboard/notifications"
+          className="relative p-2 text-amber-500 hover:text-amber-600 transition-colors"
+          title="Notifications"
+        >
+          <FaBell className="w-5 h-5" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+        </Link>
 
         <div className="text-right hidden sm:block">
           <p className="text-sm font-bold text-slate-900 leading-tight">

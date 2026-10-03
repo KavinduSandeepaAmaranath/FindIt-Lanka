@@ -16,8 +16,7 @@ import ReportModal from "../components/LostFoundForm/ReportModal";
 import { currentUser } from "../data/dashboardData";
 
 import {
-  myReports,
-  reportStats,
+  myReports as mockReports,
   dateFilterOptions,
   statusFilterOptions,
   REPORTS_PER_PAGE,
@@ -59,24 +58,148 @@ function MyReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
 
+  const [reportsList, setReportsList] = useState(mockReports);
+  const [liveStats, setLiveStats] = useState(null);
+
+  useEffect(() => {
+    const fetchBackendData = async () => {
+      try {
+        const [statsRes, lostRes, foundRes] = await Promise.all([
+          getDashboardStatistics().catch(() => null),
+          getMyLostItems().catch(() => null),
+          getMyFoundItems().catch(() => null),
+        ]);
+
+        if (statsRes?.statistics) {
+          setLiveStats(statsRes.statistics);
+        }
+
+        const lostItems = lostRes?.lostItems || [];
+        const foundItems = foundRes?.foundItems || [];
+
+        const formatBackendItem = (item, type) => {
+          let statusLabel = "Under Review";
+          if (item.approvalStatus === "pending") {
+            statusLabel = "Pending";
+          } else if (item.approvalStatus === "rejected") {
+            statusLabel = "Rejected";
+          } else if (item.status === "recovered" || item.status === "returned") {
+            statusLabel = "Resolved";
+          } else if (item.approvalStatus === "approved") {
+            statusLabel = "Under Review";
+          }
+
+          const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
+          let imageUrl = "https://via.placeholder.com/150?text=No+Image";
+          if (rawImg) {
+            imageUrl = rawImg.startsWith("http")
+              ? rawImg
+              : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+          }
+
+          const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
+
+          return {
+            id: item._id,
+            title: item.title,
+            location: `${item.location || ""}, ${item.district || ""}`.replace(/^,\s*/, "").replace(/,\s*$/, ""),
+            reportType: type,
+            reportedOn: item.lostDate || item.foundDate || item.createdAt,
+            description: item.description,
+            status: statusLabel,
+            image: imageUrl,
+            category: item.category || "General",
+            referenceNo: refNum,
+          };
+        };
+
+        const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
+        const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
+        const allFetched = [...formattedLost, ...formattedFound];
+
+        if (allFetched.length > 0) {
+          setReportsList(allFetched);
+        }
+      } catch (err) {
+        console.warn("Could not fetch user backend items:", err);
+      }
+    };
+
+    fetchBackendData();
+  }, []);
+
+  const dynamicReportStats = useMemo(() => {
+    const total = liveStats?.totalReports ?? reportsList.length;
+    const active = liveStats?.activeCases ?? reportsList.filter((r) => r.status === "Under Review" || r.status === "Active" || r.status === "Approved").length;
+    const recovered = liveStats?.recoveredItems ?? reportsList.filter((r) => r.status === "Resolved" || r.status === "Recovered").length;
+    const pending = liveStats?.pendingReports ?? reportsList.filter((r) => r.status === "Pending" || r.status === "Under Review").length;
+    const rejected = liveStats?.rejectedReports ?? reportsList.filter((r) => r.status === "Rejected").length;
+    const thisMonth = liveStats?.thisMonthCount ?? 2;
+
+    const formatVal = (val) => (val < 10 ? `0${val}` : `${val}`);
+
+    return [
+      {
+        id: "total",
+        label: "Total Reports",
+        value: formatVal(total),
+        note: `+${thisMonth} this month`,
+        icon: "total",
+        accent: "blue",
+      },
+      {
+        id: "active",
+        label: "Active Reports",
+        value: formatVal(active),
+        note: "still being processed",
+        icon: "active",
+        accent: "blue",
+      },
+      {
+        id: "recovered",
+        label: "Recovered",
+        value: formatVal(recovered),
+        note: "successfully recovered",
+        icon: "recovered",
+        accent: "emerald",
+      },
+      {
+        id: "pending",
+        label: "Pending",
+        value: formatVal(pending),
+        note: "Review Required",
+        icon: "pending",
+        accent: "orange",
+      },
+      {
+        id: "rejected",
+        label: "Rejected",
+        value: formatVal(rejected),
+        note: "rejected by admin",
+        icon: "rejected",
+        accent: "rose",
+      },
+    ];
+  }, [liveStats, reportsList]);
+
   const tabs = useMemo(
     () => [
       {
         value: "all",
         label: "All Reports",
-        count: myReports.length,
+        count: reportsList.length,
       },
       {
         value: "Lost Item",
         label: "Lost Reports",
-        count: myReports.filter(
+        count: reportsList.filter(
           (r) => r.reportType === "Lost Item"
         ).length,
       },
       {
         value: "Found Item",
         label: "Found Reports",
-        count: myReports.filter(
+        count: reportsList.filter(
           (r) => r.reportType === "Found Item"
         ).length,
       },
@@ -137,7 +260,7 @@ function MyReports() {
   const filteredReports = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
-    return myReports
+    return reportsList
       .filter((report) => {
         if (
           activeTab !== "all" &&
@@ -146,17 +269,11 @@ function MyReports() {
           return false;
         }
 
-        if (statusFilter !== "all") {
-          const filterNorm = normalizeStatus(statusFilter);
-          const reportNorm = normalizeStatus(report.status);
-
-          if (filterNorm === "pending") {
-            if (reportNorm !== "pending" && reportNorm !== "under-review") {
-              return false;
-            }
-          } else if (reportNorm !== filterNorm) {
-            return false;
-          }
+        if (
+          statusFilter !== "all" &&
+          report.status?.toLowerCase() !== statusFilter?.toLowerCase()
+        ) {
+          return false;
         }
 
         if (dateFilter !== "all") {
@@ -195,6 +312,7 @@ function MyReports() {
           new Date(b.reportedOn) - new Date(a.reportedOn)
       );
   }, [
+    reportsList,
     activeTab,
     searchTerm,
     dateFilter,
@@ -218,9 +336,10 @@ function MyReports() {
     statusFilter,
   ]);
 
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
   const visibleReports = filteredReports.slice(
-    (currentPage - 1) * REPORTS_PER_PAGE,
-    currentPage * REPORTS_PER_PAGE
+    (safePage - 1) * REPORTS_PER_PAGE,
+    safePage * REPORTS_PER_PAGE
   );
 
 
@@ -292,6 +411,18 @@ function MyReports() {
           {/*statistics*/}
           <MyReportsStats
             stats={computedStats}
+          {/* Header & User Profile Topbar in one aligned row */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <MyReportsHeader />
+            <DashboardTopbar
+              user={currentUser}
+              hideSearch
+            />
+          </div>
+
+          {/* Statistics overview cards */}
+          <MyReportsStats
+            stats={dynamicReportStats}
             activeStat={activeStat}
             onSelectStat={handleSelectStat}
           />
@@ -303,6 +434,19 @@ function MyReports() {
               activeTab={activeTab}
               onTabChange={setActiveTab}
             />
+          {/* Search Bar & Custom Filters Toolbar */}
+          <MyReportsFilters
+            searchDraft={searchDraft}
+            onSearchChange={handleSearchChange}
+            onSearchSubmit={handleSearchSubmit}
+            onClearSearch={handleClearSearch}
+            dateFilter={dateFilter}
+            onDateFilterChange={setDateFilter}
+            statusFilter={statusFilter}
+            onStatusFilterChange={handleStatusFilterChange}
+            dateOptions={dateFilterOptions}
+            statusOptions={statusFilterOptions}
+          />
 
             <MyReportsSearch searchTerm={searchTerm} onSearch={setSearchTerm} />
           </div>
@@ -311,11 +455,12 @@ function MyReports() {
           <ReportsList
             reports={visibleReports}
             onViewDetails={setSelectedReport}
+            onResetFilters={handleResetFilters}
           />
 
           {/*pagination*/}
           <MyReportsPagination
-            currentPage={currentPage}
+            currentPage={safePage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />

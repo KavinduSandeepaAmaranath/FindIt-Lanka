@@ -1,273 +1,223 @@
 import { useState } from "react";
 import UserViewModal from "./UserViewModal";
 import SuspendUserModal from "./SuspendUserModal";
+import Pagination from "../Pagination";
+import { Eye, ShieldOff } from "lucide-react";
 
-const UsersTable = ({ users }) => {
+const UsersTable = ({ users = [] }) => {
   // Pagination
   const rowsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(users.length / rowsPerPage);
-
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-
   const currentRows = users.slice(startIndex, endIndex);
 
-  const [selectedUser, setSelectedUser] =useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [suspendUser, setSuspendUser] = useState(null);
 
   return (
     <>
-      <div className="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-x-auto">
-
-        <table className="min-w-[1200px] w-full">
-
-          {/* Table Header */}
-          <thead className="bg-gray-50">
-            <tr className="text-sm text-slate-700">
-
-              <th className="px-4 py-4 border">User ID</th>
-              <th className="px-4 py-4 border">Profile</th>
-              <th className="px-4 py-4 border">Full Name</th>
-              <th className="px-4 py-4 border">Email</th>
-              <th className="px-4 py-4 border">Phone</th>
-              <th className="px-4 py-4 border">District</th>
-              <th className="px-4 py-4 border">Registered</th>
-              <th className="px-4 py-4 border">Lost</th>
-              <th className="px-4 py-4 border">Found</th>
-              <th className="px-4 py-4 border">Claims</th>
-              <th className="px-4 py-4 border">Status</th>
-              <th className="px-4 py-4 border">Action</th>
-
-            </tr>
-          </thead>
-
-          {/* Table Body */}
-          <tbody>
-            {currentRows.map((user) => (
-             <tr
-              key={user.id}
-              onClick={() => setSelectedUser(user)}
-              className="cursor-pointer hover:bg-blue-50 transition-colors duration-200"
-             >
-                <td className="border px-4 py-4">
-                  {user.id}
-                </td>
-
-                <td className="border px-4 py-4">
-                  <img
-                    src={user.image}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover mx-auto"
-                  />
-                </td>
-
-                <td className="border px-4 py-4">
-                  {user.name}
-                </td>
-
-                <td className="border px-4 py-4">
-                  {user.email}
-                </td>
-
-                <td className="border px-4 py-4">
-                  {user.phone}
-                </td>
-
-                <td className="border px-4 py-4">
-                  {user.district}
-                </td>
-
-                <td className="border px-4 py-4">
-                  {user.registered}
-                </td>
-
-                <td className="border px-4 py-4 text-center">
-                  {user.lost}
-                </td>
-
-                <td className="border px-4 py-4 text-center">
-                  {user.found}
-                </td>
-
-                <td className="border px-4 py-4 text-center">
-                  {user.claims}
-                </td>
-
-                <td className="border px-4 py-4 text-center">
-                  <span
-                    className={`font-semibold ${
-                      user.status === "Active"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {user.status}
-                  </span>
-                </td>
-
-                <td className="border px-4 py-4">
-                  <div className="flex justify-center gap-2">
-
-                    <button
-  onClick={(e) => {
-    e.stopPropagation();
-    setSuspendUser(user);
-  }}
-  className="
-    bg-red-600
-    hover:bg-red-700
-    text-white
-    text-xs
-    px-4
-    py-1
-    rounded-lg
-    transition
-  "
->
-  Suspend
-</button>
-
-                    <button
-                  onClick={(e) => {e.stopPropagation();setSelectedUser(user);}}
-                        className="
-                         bg-green-600
-                          hover:bg-green-700
-                           text-white
-                          text-xs
-                             px-4
-                           py-1
-                            rounded-lg
-                              transition
-                               "
-                               >
-                        View
-                    </button>
-                  </div>
-                </td>
-
+      <div className="mt-8 w-full overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-sm">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-[1200px] border-collapse">
+            {/* Table Header */}
+            <thead className="border-b border-gray-300 bg-gray-50">
+              <tr className="text-sm font-semibold text-[#2A3B63]">
+                <th className="border-r border-gray-200 px-3 py-4 text-left underline">User ID</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-center underline">Profile</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-left underline">Full Name</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-left underline">Email</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-left underline">Phone</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-left underline">District</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-left underline">Registered</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-center underline">Lost</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-center underline">Found</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-center underline">Claims</th>
+                <th className="border-r border-gray-200 px-3 py-4 text-center underline">Status</th>
+                <th className="px-3 py-4 text-center underline">Action</th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
 
-        </table>
+            {/* Table Body */}
+            <tbody>
+              {currentRows.map((user) => (
+                <tr
+                  key={user.id || user._id}
+                  onClick={() => setSelectedUser(user)}
+                  className="cursor-pointer border-b border-gray-200 transition-colors duration-200 hover:bg-gray-50"
+                >
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {user.id || user._id}
+                  </td>
 
-      </div>
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <img
+                      src={user.image}
+                      alt={user.name}
+                      className="mx-auto h-10 w-10 rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/150?text=User";
+                      }}
+                    />
+                  </td>
 
-      {/* Pagination */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm font-medium text-[#29292D]">
+                    {user.name}
+                  </td>
 
-        {/* Showing */}
-        <p className="text-sm text-gray-500">
-          Showing{" "}
-          <span className="font-semibold">
-            {startIndex + 1}
-          </span>
-          {" - "}
-          <span className="font-semibold">
-            {Math.min(endIndex, users.length)}
-          </span>
-          {" of "}
-          <span className="font-semibold">
-            {users.length}
-          </span>{" "}
-          users
-        </p>
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {user.email}
+                  </td>
 
-        {/* Buttons */}
-        <div className="flex items-center gap-2">
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {user.phone}
+                  </td>
 
-          {/* Previous */}
-          <button
-            onClick={() =>
-              setCurrentPage((prev) =>
-                Math.max(prev - 1, 1)
-              )
-            }
-            disabled={currentPage === 1}
-            className="
-              px-4
-              py-2
-              border
-              rounded-lg
-              disabled:opacity-40
-              hover:bg-blue-600
-              hover:text-white
-              transition
-            "
-          >
-            Previous
-          </button>
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {user.district}
+                  </td>
 
-          {/* Numbers */}
-          {Array.from(
-            { length: totalPages },
-            (_, index) => (
-              <button
-                key={index}
-                onClick={() =>
-                  setCurrentPage(index + 1)
-                }
-                className={`w-10 h-10 rounded-lg border transition ${
-                  currentPage === index + 1
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-blue-50"
-                }`}
-              >
-                {index + 1}
-              </button>
-            )
-          )}
+                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
+                    {user.registered}
+                  </td>
 
-          {/* Next */}
-          <button
-            onClick={() =>
-              setCurrentPage((prev) =>
-                Math.min(
-                  prev + 1,
-                  totalPages
-                )
-              )
-            }
-            disabled={
-              currentPage === totalPages
-            }
-            className="
-              px-4
-              py-2
-              border
-              rounded-lg
-              disabled:opacity-40
-              hover:bg-blue-600
-              hover:text-white
-              transition
-            "
-          >
-            Next
-          </button>
-          
+                  <td className="border-r border-gray-200 px-3 py-3 text-center text-sm font-medium text-[#29292D]">
+                    {user.lost}
+                  </td>
 
+                  <td className="border-r border-gray-200 px-3 py-3 text-center text-sm font-medium text-[#29292D]">
+                    {user.found}
+                  </td>
+
+                  <td className="border-r border-gray-200 px-3 py-3 text-center text-sm font-medium text-[#29292D]">
+                    {user.claims}
+                  </td>
+
+                  <td className="border-r border-gray-200 px-3 py-3 text-center">
+                    <UserStatusBadge status={user.status} />
+                  </td>
+
+                  <td className="px-3 py-3">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedUser(user);
+                        }}
+                        className="
+                          inline-flex
+                          items-center
+                          gap-1
+                          rounded-full
+                          bg-[#2563EB]
+                          px-3
+                          py-1.5
+                          text-xs
+                          font-semibold
+                          text-white
+                          transition-all
+                          duration-200
+                          hover:bg-[#0F3292]
+                          hover:shadow-md
+                          active:scale-95
+                          focus:outline-none
+                        "
+                      >
+                        <Eye size={13} />
+                        View
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSuspendUser(user);
+                        }}
+                        className="
+                          inline-flex
+                          items-center
+                          gap-1
+                          rounded-full
+                          bg-[#B63838]
+                          px-3
+                          py-1.5
+                          text-xs
+                          font-semibold
+                          text-white
+                          transition-all
+                          duration-200
+                          hover:bg-[#8F2C2C]
+                          hover:shadow-md
+                          active:scale-95
+                          focus:outline-none
+                        "
+                      >
+                        <ShieldOff size={13} />
+                        Suspend
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
+        {/* Pagination */}
+        <div className="p-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={users.length}
+            rowsPerPage={rowsPerPage}
+            onPageChange={setCurrentPage}
+            itemName="users"
+          />
+        </div>
       </div>
 
-        {selectedUser && (
-      <UserViewModal
-        user={selectedUser}
-        onClose={() => setSelectedUser(null)}
-      />
-    )}
+      {selectedUser && (
+        <UserViewModal
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
 
-    {suspendUser && (
-  <SuspendUserModal
-    user={suspendUser}
-    onClose={() => setSuspendUser(null)}
-  />
-)}
-
+      {suspendUser && (
+        <SuspendUserModal
+          user={suspendUser}
+          onClose={() => setSuspendUser(null)}
+        />
+      )}
     </>
-    
+  );
+};
+
+/* User Status Badge */
+const UserStatusBadge = ({ status }) => {
+  const isActive = status === "Active";
+
+  return (
+    <span
+      className={`
+        inline-flex
+        rounded-full
+        px-3
+        py-1
+        text-xs
+        font-semibold
+        ${isActive
+          ? "bg-[#009B50]/10 text-[#009B50]"
+          : "bg-[#B63838]/10 text-[#B63838]"
+        }
+      `}
+    >
+      {status}
+    </span>
   );
 };
 
