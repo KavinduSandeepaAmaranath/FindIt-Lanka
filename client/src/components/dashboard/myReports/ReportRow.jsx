@@ -1,4 +1,4 @@
-import { FiMapPin, FiEye, FiChevronRight } from "react-icons/fi";
+import { FiMapPin, FiEye } from "react-icons/fi";
 import {
   getStatusConfig,
   getTypeStyles,
@@ -82,27 +82,18 @@ function ReportRow({ report, onViewDetails }) {
               className={`inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg ${statusStyle.pill}`}
             >
               <StatusIcon className="w-3.5 h-3.5" />
-              {status}
+              {statusStyle.displayName || status}
             </span>
 
             <button
               type="button"
               onClick={() => onViewDetails(report)}
-              className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white transition-colors"
+              className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white transition-colors cursor-pointer"
             >
               <FiEye className="w-3.5 h-3.5" />
               View Details
             </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => onViewDetails(report)}
-            aria-label={`Open ${title}`}
-            className="hidden lg:flex w-8 h-8 rounded-full items-center justify-center text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors shrink-0"
-          >
-            <FiChevronRight className="w-5 h-5" />
-          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,4 @@
 import { useState, useMemo, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
-
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
 
@@ -8,6 +6,7 @@ import MyReportsHeader from "../components/dashboard/myReports/MyReportsHeader";
 import MyReportsStats from "../components/dashboard/myReports/MyReportsStats";
 import MyReportsFilters from "../components/dashboard/myReports/MyReportsFilters";
 import MyReportsTabs from "../components/dashboard/myReports/MyReportsTabs";
+import MyReportsSearch from "../components/dashboard/myReports/MyReportsSearch";
 import ReportsList from "../components/dashboard/myReports/ReportsList";
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
 import ReportDetailsModal from "../components/dashboard/myReports/ReportDetailsModal";
@@ -34,10 +33,12 @@ import {
   reportForm as foundForm,
 } from "../data/ReportFound";
 
+import { normalizeStatus } from "../components/dashboard/myReports/reportHelpers";
+
 /*status card for status filter mapping*/
 const statToStatus = {
   total: "all",
-  active: "Under Review",
+  active: "Approved-Active",
   recovered: "Resolved",
   pending: "Pending",
   rejected: "Rejected",
@@ -50,7 +51,6 @@ function MyReports() {
   const [activeTab, setActiveTab] = useState("all");
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchDraft, setSearchDraft] = useState("");
 
   const [dateFilter, setDateFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -81,8 +81,58 @@ function MyReports() {
         ).length,
       },
     ],
-    []
+    [],
   );
+
+  const computedStats = useMemo(() => {
+    return reportStats.map((st) => {
+      if (st.id === "total") {
+        return {
+          ...st,
+          value: String(myReports.length).padStart(2, "0"),
+        };
+      }
+      if (st.id === "active") {
+        const count = myReports.filter(
+          (r) => normalizeStatus(r.status) === "approved-active"
+        ).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      if (st.id === "recovered") {
+        const count = myReports.filter(
+          (r) => normalizeStatus(r.status) === "resolved"
+        ).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      if (st.id === "pending") {
+        // Pending card includes both Pending and Under Review items
+        const count = myReports.filter((r) => {
+          const s = normalizeStatus(r.status);
+          return s === "pending" || s === "under-review";
+        }).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      if (st.id === "rejected") {
+        const count = myReports.filter(
+          (r) => normalizeStatus(r.status) === "rejected"
+        ).length;
+        return {
+          ...st,
+          value: String(count).padStart(2, "0"),
+        };
+      }
+      return st;
+    });
+  }, []);
 
   const filteredReports = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
@@ -96,11 +146,17 @@ function MyReports() {
           return false;
         }
 
-        if (
-          statusFilter !== "all" &&
-          report.status !== statusFilter
-        ) {
-          return false;
+        if (statusFilter !== "all") {
+          const filterNorm = normalizeStatus(statusFilter);
+          const reportNorm = normalizeStatus(report.status);
+
+          if (filterNorm === "pending") {
+            if (reportNorm !== "pending" && reportNorm !== "under-review") {
+              return false;
+            }
+          } else if (reportNorm !== filterNorm) {
+            return false;
+          }
         }
 
         if (dateFilter !== "all") {
@@ -167,20 +223,7 @@ function MyReports() {
     currentPage * REPORTS_PER_PAGE
   );
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setSearchTerm(searchDraft.trim());
-  };
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-
-    setSearchDraft(value);
-
-    if (value === "") {
-      setSearchTerm("");
-    }
-  };
 
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
@@ -201,11 +244,19 @@ function MyReports() {
   const handleStatusFilterChange = (value) => {
     setStatusFilter(value);
 
-    const matchedStat = Object.keys(statToStatus).find(
-      (key) => statToStatus[key] === value
-    );
-
-    setActiveStat(matchedStat || null);
+    if (value === "all") {
+      setActiveStat("total");
+    } else if (
+      normalizeStatus(value) === "pending" ||
+      normalizeStatus(value) === "under-review"
+    ) {
+      setActiveStat("pending");
+    } else {
+      const matchedStat = Object.keys(statToStatus).find(
+        (key) => statToStatus[key] === value
+      );
+      setActiveStat(matchedStat || null);
+    }
   };
 
   return (
@@ -224,55 +275,37 @@ function MyReports() {
             hideSearch
           />
 
-          {/*page header*/}
-          <MyReportsHeader />
+          {/*title + date / status filters*/}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            <MyReportsHeader />
 
-          {/*My Reports search*/}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="w-full flex items-center bg-white rounded-2xl shadow-sm border border-slate-200 px-2 py-1.5"
-          >
-            <FiSearch className="w-5 h-5 text-slate-400 ml-3 shrink-0" />
-
-            <input
-              type="text"
-              value={searchDraft}
-              onChange={handleSearchChange}
-              placeholder="Search your reports..."
-              className="flex-1 min-w-0 px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none bg-transparent"
+            <MyReportsFilters
+              dateFilter={dateFilter}
+              onDateFilterChange={setDateFilter}
+              statusFilter={statusFilter}
+              onStatusFilterChange={handleStatusFilterChange}
+              dateOptions={dateFilterOptions}
+              statusOptions={statusFilterOptions}
             />
-
-            <button
-              type="submit"
-              className="px-6 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold transition-colors shrink-0"
-            >
-              Search
-            </button>
-          </form>
+          </div>
 
           {/*statistics*/}
           <MyReportsStats
-            stats={reportStats}
+            stats={computedStats}
             activeStat={activeStat}
             onSelectStat={handleSelectStat}
           />
 
-          {/*date & status filters*/}
-          <MyReportsFilters
-            dateFilter={dateFilter}
-            onDateFilterChange={setDateFilter}
-            statusFilter={statusFilter}
-            onStatusFilterChange={handleStatusFilterChange}
-            dateOptions={dateFilterOptions}
-            statusOptions={statusFilterOptions}
-          />
+          {/*tabs + search*/}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+            <MyReportsTabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
 
-          {/*report type tabs*/}
-          <MyReportsTabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
+            <MyReportsSearch searchTerm={searchTerm} onSearch={setSearchTerm} />
+          </div>
 
           {/*reports*/}
           <ReportsList
@@ -294,6 +327,22 @@ function MyReports() {
         <ReportDetailsModal
           report={selectedReport}
           onClose={() => setSelectedReport(null)}
+          onEdit={(report) => {
+            setSelectedReport(null);
+            if (report.reportType === "Found Item") {
+              setOpenFoundReport(true);
+            } else {
+              setOpenLostReport(true);
+            }
+          }}
+          onEditAndResubmit={(report) => {
+            setSelectedReport(null);
+            if (report.reportType === "Found Item") {
+              setOpenFoundReport(true);
+            } else {
+              setOpenLostReport(true);
+            }
+          }}
         />
       )}
 

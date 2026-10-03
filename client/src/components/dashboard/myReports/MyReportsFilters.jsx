@@ -9,7 +9,7 @@ function MyReportsFilters({
   statusOptions,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-3">
+    <div className="flex flex-col sm:flex-row gap-4 bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-3 shrink-0">
       {/*date filter*/}
       <div className="min-w-[170px]">
         <label
