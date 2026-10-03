@@ -9,11 +9,27 @@ import {
 
 import Pagination from "../Pagination";
 
-const AllItemsTable = ({ items = allItemsTableData }) => {
+const AllItemsTable = ({ items = [], loading, error }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const rowsPerPage = 5;
+
+    if (loading) {
+    return (
+      <div className="mt-8 flex justify-center py-10">
+        <p className="text-gray-500 font-medium">Loading items from database...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mt-8 flex justify-center py-10">
+        <p className="text-red-500 font-medium">{error}</p>
+      </div>
+    );
+  }
 
   const totalItems = items.length;
   const totalPages = Math.ceil(totalItems / rowsPerPage);

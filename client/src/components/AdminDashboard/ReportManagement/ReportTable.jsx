@@ -99,132 +99,130 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
     );
   }
 
+  const columns = [
+    { key: "item", label: reportTableText.columns.item, align: "left" },
+    { key: "reporter", label: reportTableText.columns.reporter, align: "left" },
+    { key: "location", label: reportTableText.columns.location, align: "left" },
+    { key: "type", label: reportTableText.columns.type, align: "center" },
+    { key: "date", label: reportTableText.columns.date, align: "left" },
+    { key: "status", label: reportTableText.columns.status, align: "center" },
+    { key: "actions", label: reportTableText.columns.actions, align: "center" },
+  ];
+
   return (
     <>
-      {/* Report Table */}
-      <div className="mt-8 w-full overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-sm">
-        <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-[1050px]">
-            <thead>
-              <tr className="border-b border-gray-300">
+      <section className="mt-8 w-full">
+        {/* table */}
+        <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1050px] border-collapse">
+              {/* table headers */}
+              <thead>
+                <tr className="border-b border-gray-300 bg-gray-50">
+                  {columns.map((column, index) => (
+                    <th
+                      key={column.key}
+                      className={`px-4 py-4 text-xs font-semibold text-[#2A3B63] underline underline-offset-2 ${
+                        column.align === "center" ? "text-center" : "text-left"
+                      } ${
+                        index !== columns.length - 1 ? "border-r border-gray-300" : ""
+                      }`}
+                    >
+                      {column.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
 
-                {/* Added vertical border to divide columns */}
-                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.item}
-                </th>
+              {/* table body */}
+              <tbody>
+                {currentReports.map((report) => (
+                  <tr
+                    key={report.id}
+                    className="border-b border-gray-200 transition-all duration-200 hover:bg-blue-50/40"
+                  >
+                    {/* Item */}
+                    <td className="border-r border-gray-200 px-4 py-2.5">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-100">
+                          <img
+                            src={report.itemImage}
+                            alt={report.itemName}
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                            }}
+                          />
+                        </div>
+                        <span className="whitespace-nowrap text-sm font-medium text-[#29292D]">
+                          {report.itemName}
+                        </span>
+                      </div>
+                    </td>
 
-                {/* Added vertical border to divide columns */}
-                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.reporter}
-                </th>
-
-                {/* Added vertical border to divide columns */}
-                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.location}
-                </th>
-
-                {/* Added vertical border to divide columns */}
-                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.type}
-                </th>
-
-                {/* Added vertical border to divide columns */}
-                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.date}
-                </th>
-
-                {/* Added vertical border to divide columns */}
-                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.status}
-                </th>
-
-                <th className="px-3 py-4 text-center text-sm font-semibold text-[#2A3B63] underline">
-                  {reportTableText.columns.actions}
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {currentReports.map((report) => (
-                <tr
-                  key={report.id}
-                  className="
-                    border-b border-gray-200
-                    transition-colors
-                    duration-200
-                    hover:bg-gray-50
-                  "
-                >
-                  {/* Item */}
-                  {/* Added vertical border to divide columns */}
-                  <td className="border-r border-gray-200 px-3 py-3">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={report.itemImage}
-                        alt={report.itemName}
-                        className="h-12 w-12 rounded-lg object-cover"
-                        onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
-                      />
-
-                      <span className="text-sm font-medium text-[#29292D]">
-                        {report.itemName}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Reporter */}
-                  {/* Added vertical border to divide columns */}
-                  <td className="border-r border-gray-200 px-3 py-3">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={report.reporterImage}
-                        alt={report.reporterName}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-
-                      <span className="text-sm font-medium text-[#29292D]">
+                    {/* Reported by */}
+                    <td className="border-r border-gray-200 px-4 py-2.5">
+                      <span className="whitespace-nowrap text-sm font-medium text-[#29292D]">
                         {report.reporterName}
                       </span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Location */}
-                  {/* Added vertical border to divide columns */}
-                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
-                    {report.location}
-                  </td>
+                    {/* Location */}
+                    <td className="border-r border-gray-200 px-4 py-2.5">
+                      <span className="text-sm text-[#29292D]">
+                        {report.location}
+                      </span>
+                    </td>
 
-                  {/* Type */}
-                  {/* Added vertical border to divide columns */}
-                  <td className="border-r border-gray-200 px-3 py-3">
-                    <ReportTypeBadge type={report.type} />
-                  </td>
+                    {/* Type */}
+                    <td className="border-r border-gray-200 px-4 py-2.5">
+                      <div className="flex justify-center">
+                        <ReportTypeBadge type={report.type} />
+                      </div>
+                    </td>
 
-                  {/* Date */}
-                  {/* Added vertical border to divide columns */}
-                  <td className="border-r border-gray-200 px-3 py-3 text-sm text-[#29292D]">
-                    {report.date}
-                  </td>
+                    {/* Date */}
+                    <td className="border-r border-gray-200 px-4 py-2.5">
+                      <span className="whitespace-nowrap text-sm text-[#29292D]">
+                        {report.date}
+                      </span>
+                    </td>
 
-                  {/* Status */}
-                  {/* Added vertical border to divide columns */}
-                  <td className="border-r border-gray-200 px-3 py-3">
-                    <ReportStatusBadge status={report.status} />
-                  </td>
+                    {/* Status */}
+                    <td className="border-r border-gray-200 px-4 py-2.5">
+                      <div className="flex justify-center">
+                        <ReportStatusBadge status={report.status} />
+                      </div>
+                    </td>
 
-                  {/* **Actions** */}
-                  <td className="px-3 py-3">
-                    <ReportActions
-                      report={report}
-                      onView={handleView}
-                      onApprove={handleApprove}
-                      onReject={handleReject}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    {/* Actions */}
+                    <td className="px-4 py-2.5">
+                      <div className="flex justify-center">
+                        <ReportActions
+                          report={report}
+                          onView={handleView}
+                          onApprove={handleApprove}
+                          onReject={handleReject}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Empty state */}
+          {currentReports.length === 0 && (
+            <div className="px-6 py-16 text-center">
+              <p className="text-base font-semibold text-[#2A3B63]">
+                No reports found
+              </p>
+              <p className="mt-1 text-sm text-[#64748B]">
+                Try changing your search or filter options.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Pagination */}
@@ -236,7 +234,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
           onPageChange={setCurrentPage}
           itemName="reports"
         />
-      </div>
+      </section>
 
       {/* Approve / Reject confirmation modal */}
       {selectedAction && (
@@ -265,18 +263,9 @@ const ReportTypeBadge = ({ type }) => {
 
   return (
     <span
-      className={`
-        inline-flex
-        rounded-full
-        px-3
-        py-1
-        text-xs
-        font-semibold
-        ${isLost
-          ? "bg-red-100 text-[#B63838]"
-          : "bg-green-100 text-[#009B50]"
-        }
-      `}
+      className={`inline-flex min-w-[85px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium ${
+        isLost ? "bg-[#F04450] text-white" : "bg-[#08A568] text-white"
+      }`}
     >
       {type}
     </span>
@@ -286,22 +275,16 @@ const ReportTypeBadge = ({ type }) => {
 /* Report Status Badge */
 const ReportStatusBadge = ({ status }) => {
   const statusStyles = {
-    Approved: "bg-green-100 text-[#009B50]",
-    Pending: "bg-yellow-100 text-yellow-700",
-    Rejected: "bg-red-100 text-[#B63838]",
+    Approved: "bg-[#08A568] text-white",
+    Pending: "bg-[#2F66E8] text-white",
+    Rejected: "bg-[#BE3B40] text-white",
   };
 
   return (
     <span
-      className={`
-        inline-flex
-        rounded-full
-        px-3
-        py-1
-        text-xs
-        font-semibold
-        ${statusStyles[status]}
-      `}
+      className={`inline-flex min-w-[95px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium ${
+        statusStyles[status] || "bg-gray-500 text-white"
+      }`}
     >
       {status}
     </span>
@@ -323,7 +306,7 @@ const ReportActions = ({
 
   return (
     <div className="flex items-center justify-center gap-2">
-      {/* View button - available for every report */}
+      {/* View button */}
       <button
         type="button"
         onClick={() => onView(report)}
@@ -344,8 +327,6 @@ const ReportActions = ({
           hover:shadow-md
           active:scale-95
           focus:outline-none
-          focus:ring-2
-          focus:ring-[#2563EB]/30
         "
       >
         <ViewIcon size={13} />
@@ -416,28 +397,11 @@ const ReportActions = ({
 const ReportDetailsModal = ({ report, onClose }) => {
   return (
     <div
-      className="
-        fixed
-        inset-0
-        z-50
-        flex
-        items-center
-        justify-center
-        bg-black/40
-        p-4
-        backdrop-blur-sm
-      "
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="
-          w-full
-          max-w-lg
-          rounded-2xl
-          bg-white
-          p-6
-          shadow-2xl
-        "
+        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -448,14 +412,7 @@ const ReportDetailsModal = ({ report, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="
-              rounded-full
-              p-2
-              text-gray-500
-              transition
-              hover:bg-gray-100
-              hover:text-[#2A3B63]
-            "
+            className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-[#2A3B63]"
           >
             <XIcon />
           </button>
@@ -469,39 +426,18 @@ const ReportDetailsModal = ({ report, onClose }) => {
         />
 
         <div className="mt-5 space-y-3">
-          <Detail
-            label="Item"
-            value={report.itemName}
-          />
-
-          <Detail
-            label="Reported by"
-            value={report.reporterName}
-          />
-
-          <Detail
-            label="Location"
-            value={report.location}
-          />
-
-          <Detail
-            label="Date"
-            value={report.date}
-          />
+          <Detail label="Item" value={report.itemName} />
+          <Detail label="Reported by" value={report.reporterName} />
+          <Detail label="Location" value={report.location} />
+          <Detail label="Date" value={report.date} />
 
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#64748B]">
-              Type
-            </span>
-
+            <span className="text-sm font-medium text-[#64748B]">Type</span>
             <ReportTypeBadge type={report.type} />
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#64748B]">
-              Status
-            </span>
-
+            <span className="text-sm font-medium text-[#64748B]">Status</span>
             <ReportStatusBadge status={report.status} />
           </div>
         </div>
@@ -509,19 +445,7 @@ const ReportDetailsModal = ({ report, onClose }) => {
         <button
           type="button"
           onClick={onClose}
-          className="
-            mt-6
-            w-full
-            rounded-xl
-            bg-[#2563EB]
-            px-4
-            py-3
-            text-base
-            font-semibold
-            text-white
-            transition
-            hover:bg-[#0F3292]
-          "
+          className="mt-6 w-full rounded-xl bg-[#2563EB] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#0F3292]"
         >
           Close
         </button>
@@ -534,13 +458,8 @@ const ReportDetailsModal = ({ report, onClose }) => {
 const Detail = ({ label, value }) => {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="text-sm font-medium text-[#64748B]">
-        {label}
-      </span>
-
-      <span className="text-right text-sm font-medium text-[#29292D]">
-        {value}
-      </span>
+      <span className="text-sm font-medium text-[#64748B]">{label}</span>
+      <span className="text-right text-sm font-medium text-[#29292D]">{value}</span>
     </div>
   );
 };
