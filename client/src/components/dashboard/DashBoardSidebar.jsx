@@ -8,6 +8,7 @@ import {
   FiBell,
   FiSettings,
   FiHelpCircle,
+  FiInfo,
   FiSend,
   FiMenu,
   FiX,
@@ -122,13 +123,10 @@ function DashboardSidebar({onOpenLostReport,
           </button>
         </div>
 
-        {/*new update this nav part*/}
-
         <nav className="flex-1 px-4 py-6 space-y-1">
   {navItems.map(({ label, to, icon: Icon }) => {
     const active = location.pathname === to;
 
-    // ✅ Report Lost Item -> Modal Open (or Link fallback)
     if (label === "Report Lost Item" || label === "Add Lost Reports") {
       if (onOpenLostReport) {
         return (
@@ -163,7 +161,6 @@ function DashboardSidebar({onOpenLostReport,
       }
     }
 
-    // ✅ Report Found Item -> Modal Open (or Link fallback)
     if (label === "Report Found Item" || label === "Add Found Reports") {
       if (onOpenFoundReport) {
         return (
@@ -198,8 +195,6 @@ function DashboardSidebar({onOpenLostReport,
       }
     }
 
-    // ✅ All other menu items
-    
     return (
       <Link
         key={label}
