@@ -4,24 +4,41 @@ import {
 } from "../../../data/AdminModuleData/AllItems";
 
 const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => {} }) => {
-  // Dynamic card value calculations
+  // Dynamic card value & percentage calculations
   const totalCount = items.length;
   const lostCount = items.filter((i) => i.type === "Lost").length;
   const foundCount = items.filter((i) => i.type === "Found").length;
   const claimedCount = items.filter((i) => i.claimStatus === "Claimed").length;
   const returnedCount = items.filter((i) => i.itemStatus === "Returned").length;
 
+  const calcPercent = (count) =>
+    totalCount > 0 ? ((count / totalCount) * 100).toFixed(1) : "0.0";
+
   const dynamicCards = AllItemsCardsData.map((card) => {
     let val = card.value;
-    if (card.id === 1) val = `${totalCount}`;
-    if (card.id === 2) val = `${lostCount}`;
-    if (card.id === 3) val = `${foundCount}`;
-    if (card.id === 4) val = `${claimedCount}`;
-    if (card.id === 5) val = `${returnedCount}`;
+    let subtitle = "";
+
+    if (card.id === 1) {
+      val = String(totalCount);
+      subtitle = String(totalCount) + " total registered items";
+    } else if (card.id === 2) {
+      val = String(lostCount);
+      subtitle = calcPercent(lostCount) + "% of total items";
+    } else if (card.id === 3) {
+      val = String(foundCount);
+      subtitle = calcPercent(foundCount) + "% of total items";
+    } else if (card.id === 4) {
+      val = String(claimedCount);
+      subtitle = calcPercent(claimedCount) + "% of total items";
+    } else if (card.id === 5) {
+      val = String(returnedCount);
+      subtitle = calcPercent(returnedCount) + "% of total items";
+    }
 
     return {
       ...card,
       value: val,
+      subtitle,
     };
   });
 
@@ -65,7 +82,7 @@ const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => {} }) =
             </div>
 
             <p className="mt-4 text-xs font-medium text-[#0F3292]">
-              +${Card.change} from last month
+              {Card.subtitle}
             </p>
           </button>
         );
