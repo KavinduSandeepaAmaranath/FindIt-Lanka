@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
+import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
@@ -17,8 +17,7 @@ import ReportModal from "../components/LostFoundForm/ReportModal";
 import { currentUser } from "../data/dashboardData";
 
 import {
-  myReports,
-  reportStats,
+  myReports as mockReports,
   dateFilterOptions,
   statusFilterOptions,
   REPORTS_PER_PAGE,
@@ -59,35 +58,159 @@ function MyReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
 
+  const [reportsList, setReportsList] = useState(mockReports);
+  const [liveStats, setLiveStats] = useState(null);
+
+  useEffect(() => {
+    const fetchBackendData = async () => {
+      try {
+        const [statsRes, lostRes, foundRes] = await Promise.all([
+          getDashboardStatistics().catch(() => null),
+          getMyLostItems().catch(() => null),
+          getMyFoundItems().catch(() => null),
+        ]);
+
+        if (statsRes?.statistics) {
+          setLiveStats(statsRes.statistics);
+        }
+
+        const lostItems = lostRes?.lostItems || [];
+        const foundItems = foundRes?.foundItems || [];
+
+        const formatBackendItem = (item, type) => {
+          let statusLabel = "Under Review";
+          if (item.approvalStatus === "pending") {
+            statusLabel = "Pending";
+          } else if (item.approvalStatus === "rejected") {
+            statusLabel = "Rejected";
+          } else if (item.status === "recovered" || item.status === "returned") {
+            statusLabel = "Resolved";
+          } else if (item.approvalStatus === "approved") {
+            statusLabel = "Under Review";
+          }
+
+          const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
+          let imageUrl = "https://via.placeholder.com/150?text=No+Image";
+          if (rawImg) {
+            imageUrl = rawImg.startsWith("http")
+              ? rawImg
+              : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+          }
+
+          const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
+
+          return {
+            id: item._id,
+            title: item.title,
+            location: `${item.location || ""}, ${item.district || ""}`.replace(/^,\s*/, "").replace(/,\s*$/, ""),
+            reportType: type,
+            reportedOn: item.lostDate || item.foundDate || item.createdAt,
+            description: item.description,
+            status: statusLabel,
+            image: imageUrl,
+            category: item.category || "General",
+            referenceNo: refNum,
+          };
+        };
+
+        const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
+        const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
+        const allFetched = [...formattedLost, ...formattedFound];
+
+        if (allFetched.length > 0) {
+          setReportsList(allFetched);
+        }
+      } catch (err) {
+        console.warn("Could not fetch user backend items:", err);
+      }
+    };
+
+    fetchBackendData();
+  }, []);
+
+  const dynamicReportStats = useMemo(() => {
+    const total = liveStats?.totalReports ?? reportsList.length;
+    const active = liveStats?.activeCases ?? reportsList.filter((r) => r.status === "Under Review" || r.status === "Active" || r.status === "Approved").length;
+    const recovered = liveStats?.recoveredItems ?? reportsList.filter((r) => r.status === "Resolved" || r.status === "Recovered").length;
+    const pending = liveStats?.pendingReports ?? reportsList.filter((r) => r.status === "Pending" || r.status === "Under Review").length;
+    const rejected = liveStats?.rejectedReports ?? reportsList.filter((r) => r.status === "Rejected").length;
+    const thisMonth = liveStats?.thisMonthCount ?? 2;
+
+    const formatVal = (val) => (val < 10 ? `0${val}` : `${val}`);
+
+    return [
+      {
+        id: "total",
+        label: "Total Reports",
+        value: formatVal(total),
+        note: `+${thisMonth} this month`,
+        icon: "total",
+        accent: "blue",
+      },
+      {
+        id: "active",
+        label: "Active Reports",
+        value: formatVal(active),
+        note: "still being processed",
+        icon: "active",
+        accent: "blue",
+      },
+      {
+        id: "recovered",
+        label: "Recovered",
+        value: formatVal(recovered),
+        note: "successfully recovered",
+        icon: "recovered",
+        accent: "emerald",
+      },
+      {
+        id: "pending",
+        label: "Pending",
+        value: formatVal(pending),
+        note: "Review Required",
+        icon: "pending",
+        accent: "orange",
+      },
+      {
+        id: "rejected",
+        label: "Rejected",
+        value: formatVal(rejected),
+        note: "rejected by admin",
+        icon: "rejected",
+        accent: "rose",
+      },
+    ];
+  }, [liveStats, reportsList]);
+
   const tabs = useMemo(
     () => [
       {
         value: "all",
         label: "All Reports",
-        count: myReports.length,
+        count: reportsList.length,
       },
       {
         value: "Lost Item",
         label: "Lost Reports",
-        count: myReports.filter(
+        count: reportsList.filter(
           (r) => r.reportType === "Lost Item"
         ).length,
       },
       {
         value: "Found Item",
         label: "Found Reports",
-        count: myReports.filter(
+        count: reportsList.filter(
           (r) => r.reportType === "Found Item"
         ).length,
       },
     ],
-    []
+    [reportsList]
   );
 
   const filteredReports = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
-    return myReports
+    return reportsList
       .filter((report) => {
         if (
           activeTab !== "all" &&
@@ -98,7 +221,7 @@ function MyReports() {
 
         if (
           statusFilter !== "all" &&
-          report.status !== statusFilter
+          report.status?.toLowerCase() !== statusFilter?.toLowerCase()
         ) {
           return false;
         }
@@ -139,6 +262,7 @@ function MyReports() {
           new Date(b.reportedOn) - new Date(a.reportedOn)
       );
   }, [
+    reportsList,
     activeTab,
     searchTerm,
     dateFilter,
@@ -162,9 +286,10 @@ function MyReports() {
     statusFilter,
   ]);
 
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
   const visibleReports = filteredReports.slice(
-    (currentPage - 1) * REPORTS_PER_PAGE,
-    currentPage * REPORTS_PER_PAGE
+    (safePage - 1) * REPORTS_PER_PAGE,
+    safePage * REPORTS_PER_PAGE
   );
 
   const handleSearchSubmit = (e) => {
@@ -174,12 +299,22 @@ function MyReports() {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-
     setSearchDraft(value);
+    setSearchTerm(value.trim());
+  };
 
-    if (value === "") {
-      setSearchTerm("");
-    }
+  const handleClearSearch = () => {
+    setSearchDraft("");
+    setSearchTerm("");
+  };
+
+  const handleResetFilters = () => {
+    setSearchDraft("");
+    setSearchTerm("");
+    setDateFilter("all");
+    setStatusFilter("all");
+    setActiveTab("all");
+    setActiveStat("total");
   };
 
   const handlePageChange = (page) => {
@@ -218,47 +353,28 @@ function MyReports() {
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
 
-          {/*topbar without search*/}
-          <DashboardTopbar
-            user={currentUser}
-            hideSearch
-          />
-
-          {/*page header*/}
-          <MyReportsHeader />
-
-          {/*My Reports search*/}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="w-full flex items-center bg-white rounded-2xl shadow-sm border border-slate-200 px-2 py-1.5"
-          >
-            <FiSearch className="w-5 h-5 text-slate-400 ml-3 shrink-0" />
-
-            <input
-              type="text"
-              value={searchDraft}
-              onChange={handleSearchChange}
-              placeholder="Search your reports..."
-              className="flex-1 min-w-0 px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none bg-transparent"
+          {/* Header & User Profile Topbar in one aligned row */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <MyReportsHeader />
+            <DashboardTopbar
+              user={currentUser}
+              hideSearch
             />
+          </div>
 
-            <button
-              type="submit"
-              className="px-6 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold transition-colors shrink-0"
-            >
-              Search
-            </button>
-          </form>
-
-          {/*statistics*/}
+          {/* Statistics overview cards */}
           <MyReportsStats
-            stats={reportStats}
+            stats={dynamicReportStats}
             activeStat={activeStat}
             onSelectStat={handleSelectStat}
           />
 
-          {/*date & status filters*/}
+          {/* Search Bar & Custom Filters Toolbar */}
           <MyReportsFilters
+            searchDraft={searchDraft}
+            onSearchChange={handleSearchChange}
+            onSearchSubmit={handleSearchSubmit}
+            onClearSearch={handleClearSearch}
             dateFilter={dateFilter}
             onDateFilterChange={setDateFilter}
             statusFilter={statusFilter}
@@ -278,11 +394,12 @@ function MyReports() {
           <ReportsList
             reports={visibleReports}
             onViewDetails={setSelectedReport}
+            onResetFilters={handleResetFilters}
           />
 
           {/*pagination*/}
           <MyReportsPagination
-            currentPage={currentPage}
+            currentPage={safePage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
