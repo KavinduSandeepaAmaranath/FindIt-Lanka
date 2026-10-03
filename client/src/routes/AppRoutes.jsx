@@ -18,7 +18,7 @@ import Notification from "../pages/Notification";
 import MyReports from "../pages/MyReports";
 import MyClaims from "../pages/MyClaims";
 import AllItems from "../pages/AdminModule/AllItems";
-import Settings from "../pages/Settings"; 
+import Settings from "../pages/Settings";
 import MyReturns from "../pages/MyReturns";
 import Help from "../pages/Help";
 
