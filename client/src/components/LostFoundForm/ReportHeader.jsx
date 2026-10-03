@@ -1,6 +1,12 @@
 import ProfileImg from "../../assets/icons/ProfileImg.jpeg";
 
+<<<<<<< HEAD
 const ReportHeader = ({ header }) => {
+=======
+const ReportHeader = ({ header, user }) => {
+  const BellIcon = header.icons.bell;
+
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
   return (
     <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
 
@@ -26,11 +32,11 @@ const ReportHeader = ({ header }) => {
           <div className="hidden sm:block text-right">
 
             <h3 className="font-semibold text-slate-800 text-sm lg:text-base">
-              {header.profile.name}
+              {user?.name}
             </h3>
 
             <p className="text-xs lg:text-sm text-gray-500">
-              {header.profile.role}
+              {user?.membership || "Community Member"}
             </p>
 
           </div>

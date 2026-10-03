@@ -1,16 +1,8 @@
-import { FiSettings, FiCheckCircle, FiUser, FiTrash2 } from "react-icons/fi";
+import { FiSettings, FiCheckCircle, FiUser } from "react-icons/fi";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import NotificationBell from "../common/NotificationBell";
 
-function NotificationHeader({
-  user,
-  onOpenSettings,
-  onOpenMarkAllRead,
-  onMarkAllRead,
-  onOpenDeleteAll,
-}) {
-  const handleMarkAll = onOpenMarkAllRead || onMarkAllRead;
-
+function NotificationHeader({ user, onMarkAllRead }) {
   return (
     <div className="flex flex-col gap-5">
       {/* title + user */}
@@ -22,14 +14,22 @@ function NotificationHeader({
               Notifications
             </h1>
             <p className="text-sm text-slate-500 mt-3">
-              Stay updated about your reports, claims, and lost &amp; found activity.
+              Stay updated about your reports, claims, and lost & found activity.
             </p>
           </div>
         </div>
 
         {/* user info */}
         <div className="flex items-center gap-3 shrink-0">
+<<<<<<< HEAD
           <NotificationBell />
+=======
+            <div className="relative">
+  <FaBell className="w-6 h-6 text-yellow-500" />
+
+  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+</div>
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
           <div className="text-right hidden sm:block">
             <p className="text-sm font-bold text-slate-900">{user.name}</p>
             <p className="text-xs text-blue-600 font-medium">{user.membership}</p>
@@ -42,34 +42,18 @@ function NotificationHeader({
       </div>
 
       {/* buttons */}
-      <div className="flex flex-wrap gap-3 sm:justify-end items-center">
-        <button
-          type="button"
-          onClick={onOpenSettings}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-300 text-blue-700 text-sm font-semibold shadow-sm transition-colors cursor-pointer"
-        >
+      <div className="flex flex-wrap gap-3 sm:justify-end">
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-300 text-blue-700 text-sm font-semibold shadow-sm transition-colors">
           <FiSettings className="w-4 h-4" />
           Notification Settings
         </button>
 
         <button
-          type="button"
-          onClick={handleMarkAll}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-300 text-blue-700 text-sm font-semibold shadow-sm transition-colors cursor-pointer"
+          onClick={onMarkAllRead}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-300 text-blue-700 text-sm font-semibold shadow-sm transition-colors"
         >
           <FiCheckCircle className="w-4 h-4" />
           Mark all as read
-        </button>
-
-        {/* Trash bin button to delete all notifications on the right side */}
-        <button
-          type="button"
-          onClick={onOpenDeleteAll}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-100 hover:bg-red-200 text-red-700 text-sm font-semibold shadow-sm transition-colors cursor-pointer"
-          title="Delete all notifications"
-        >
-          <FiTrash2 className="w-4 h-4" />
-          Delete All
         </button>
       </div>
     </div>
