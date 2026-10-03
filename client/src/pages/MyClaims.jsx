@@ -39,14 +39,14 @@ import {
 const tabStatusMap = {
   all: null,
   pending: ["Pending Verification", "Under Review"],
-  approved: ["Claimed"],
+  approved: ["Approved", "Claimed"],
   rejected: ["Rejected"],
 };
 
-/*status card  mapping*/
+/*status card mapping*/
 const statToType = {
-  claimed: "all",
-  approved: "Claimed",
+  claimed: "Claimed",
+  approved: "Approved",
   pending: "Pending Verification",
   rejected: "Rejected",
 };
@@ -59,9 +59,35 @@ function MyClaims() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [activeStat, setActiveStat] = useState("claimed");
+  const [activeStat, setActiveStat] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedClaim, setSelectedClaim] = useState(null);
+
+  /*dynamic stats counts*/
+  const displayStats = useMemo(() => {
+    const claimedCount = myClaims.filter((c) => c.status === "Claimed").length;
+    const approvedCount = myClaims.filter((c) => c.status === "Approved").length;
+    const pendingCount = myClaims.filter(
+      (c) => c.status === "Pending Verification" || c.status === "Under Review"
+    ).length;
+    const rejectedCount = myClaims.filter((c) => c.status === "Rejected").length;
+
+    return claimStats.map((stat) => {
+      if (stat.id === "claimed") {
+        return { ...stat, value: String(claimedCount).padStart(2, "0") };
+      }
+      if (stat.id === "approved") {
+        return { ...stat, value: String(approvedCount).padStart(2, "0") };
+      }
+      if (stat.id === "pending") {
+        return { ...stat, value: String(pendingCount).padStart(2, "0") };
+      }
+      if (stat.id === "rejected") {
+        return { ...stat, value: String(rejectedCount).padStart(2, "0") };
+      }
+      return stat;
+    });
+  }, []);
 
   /*tab counts*/
   const tabs = useMemo(
@@ -152,8 +178,13 @@ function MyClaims() {
   };
 
   const handleSelectStat = (statId) => {
-    setActiveStat(statId);
-    setTypeFilter(statToType[statId] ?? "all");
+    if (activeStat === statId) {
+      setActiveStat(null);
+      setTypeFilter("all");
+    } else {
+      setActiveStat(statId);
+      setTypeFilter(statToType[statId] ?? "all");
+    }
     setActiveTab("all");
   };
 
@@ -191,7 +222,7 @@ function MyClaims() {
           </div>
 
           <MyClaimsStats
-            stats={claimStats}
+            stats={displayStats}
             activeStat={activeStat}
             onSelectStat={handleSelectStat}
           />
