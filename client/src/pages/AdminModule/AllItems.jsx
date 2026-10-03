@@ -23,13 +23,13 @@ const AllItems = () => {
     if (cardId === 1) {
       setSelectedFilters({ type: "All", status: "All", date: "All Time" });
     } else if (cardId === 2) {
-      setSelectedFilters((prev) => ({ ...prev, type: "Lost" }));
+      setSelectedFilters((prev) => ({ ...prev, type: "Lost", status: "All" }));
     } else if (cardId === 3) {
-      setSelectedFilters((prev) => ({ ...prev, type: "Found" }));
+      setSelectedFilters((prev) => ({ ...prev, type: "Found", status: "All" }));
     } else if (cardId === 4) {
-      setSelectedFilters((prev) => ({ ...prev, status: "Claimed" }));
+      setSelectedFilters((prev) => ({ ...prev, type: "All", status: "Claimed" }));
     } else if (cardId === 5) {
-      setSelectedFilters((prev) => ({ ...prev, status: "Returned" }));
+      setSelectedFilters((prev) => ({ ...prev, type: "All", status: "Returned" }));
     }
   };
 
