@@ -43,7 +43,7 @@ const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => {} }) =
   });
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       {dynamicCards.map((Card) => {
         const Icon = Card.icon;
 
@@ -53,35 +53,35 @@ const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => {} }) =
             type="button"
             onClick={() => onCardSelect(Card.id)}
             className="
-              group w-full rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm
+              group flex flex-col justify-between w-full min-h-[145px] rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 text-left shadow-sm
               transition-all duration-300 ease-in-out hover:-translate-y-1 hover:border-[#2563EB] hover:shadow-lg
               focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30
             "
           >
             {/*card headers*/}
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-3">
               {/* Icons */}
               <div
-                className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-105 ${Card.iconBg}`}
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-105 ${Card.iconBg}`}
               >
-                <Icon size={27} strokeWidth={2} className={Card.iconColor} />
+                <Icon size={22} strokeWidth={2} className={Card.iconColor} />
               </div>
 
               {/* Card Content */}
               <div className="min-w-0 flex-1">
-                <h3 className="text-lg sm:text-xl font-semibold text-[#2A3B63] leading-tight truncate">
+                <h3 className="text-sm sm:text-base font-semibold text-[#2A3B63] leading-snug">
                   {Card.title}
                 </h3>
-                <p className="mt-1 text-3xl font-bold text-[#0F3292] leading-tight">
+                <p className="mt-1 text-2xl sm:text-3xl font-bold text-[#0F3292] leading-tight">
                   {Card.value}
                 </p>
-                <p className="mt-1 text-sm font-normal text-[#29292D] leading-5 truncate">
+                <p className="mt-0.5 text-xs font-normal text-[#64748B] leading-tight">
                   {Card.description}
                 </p>
               </div>
             </div>
 
-            <p className="mt-4 text-xs font-medium text-[#0F3292]">
+            <p className="mt-3 text-xs font-medium text-[#0F3292]">
               {Card.subtitle}
             </p>
           </button>
