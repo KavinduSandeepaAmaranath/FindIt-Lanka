@@ -3,27 +3,28 @@ import { useState } from "react";
 import {
   reportTableIcons,
   reportTableText,
+  reportsData,
 } from "../../../data/AdminModuleData/ReportManagement";
-
-import {
-  approveLostItem,
-  rejectLostItem,
-  approveFoundItem,
-  rejectFoundItem,
-} from "../../../services/adminService";
 
 import Pagination from "../Pagination";
 import ReportActionModal from "./ReportActionModal";
 
-const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
+const ReportTable = () => {
   const [selectedReport, setSelectedReport] = useState(null);
+
+  const [reportList, setReportList] = useState(reportsData);
+
   const [selectedAction, setSelectedAction] = useState(null);
 
   const rowsPerPage = 5;
+
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(reports.length / rowsPerPage);
+
+  const totalPages = Math.ceil(reportList.length / rowsPerPage);
+
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const currentReports = reports.slice(
+
+  const currentReports = reportList.slice(
     startIndex,
     startIndex + rowsPerPage
   );
@@ -47,38 +48,42 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
   };
 
   // Confirm Approve / Reject action
-  const handleConfirmAction = async () => {
+  const handleConfirmAction = (updatedReport) => {
     if (!selectedAction) {
       return;
     }
 
-    const { type, report } = selectedAction;
-    const isLost = report.type === "Lost";
-
-    try {
-      if (type === "approve") {
-        if (isLost) {
-          await approveLostItem(report.id);
-        } else {
-          await approveFoundItem(report.id);
+    setReportList((prevReports) =>
+      prevReports.map((report) => {
+        if (report.id !== updatedReport.id) {
+          return report;
         }
-      } else if (type === "reject") {
-        if (isLost) {
-          await rejectLostItem(report.id);
-        } else {
-          await rejectFoundItem(report.id);
-        }
-      }
 
-      setSelectedAction(null);
-      if (onRefresh) {
-        onRefresh();
-      }
-    } catch (err) {
-      console.error("Failed to update report status:", err);
-    }
+        //  Approve report
+        if (selectedAction.type === "approve") {
+          return {
+            ...report,
+            status: "Approved",
+          };
+        }
+
+        // Reject report
+        if (selectedAction.type === "reject") {
+          return {
+            ...report,
+            status: "Rejected",
+          };
+        }
+
+        return report;
+      })
+    );
+
+    setSelectedAction(null);
   };
 
+<<<<<<< HEAD
+=======
   if (loading) {
     return (
       <div className="mt-8 flex justify-center py-10">
@@ -109,6 +114,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
     { key: "actions", label: reportTableText.columns.actions, align: "center" },
   ];
 
+>>>>>>> 8dd1c422806a30eed6d0237448c7e727ff73ca4d
   return (
     <>
       <section className="mt-8 w-full">
@@ -160,9 +166,81 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
                       </div>
                     </td>
 
+<<<<<<< HEAD
+                {/* Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.reporter}
+                </th>
+
+                {/* Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.location}
+                </th>
+
+                {/* Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.type}
+                </th>
+
+                {/* Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.date}
+                </th>
+
+                {/* Added vertical border to divide columns */}
+                <th className="border-r border-gray-200 px-3 py-4 text-left text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.status}
+                </th>
+
+                <th className="px-3 py-4 text-center text-sm font-semibold text-[#2A3B63] underline">
+                  {reportTableText.columns.actions}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {currentReports.map((report) => (
+                <tr
+                  key={report.id}
+                  className="
+                    border-b border-gray-200
+                    transition-colors
+                    duration-200
+                    hover:bg-gray-50
+                  "
+                >
+                  {/* Item */}
+                  {/* Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={report.itemImage}
+                        alt={report.itemName}
+                        className="h-12 w-12 rounded-lg object-cover"
+                      />
+
+                      <span className="text-sm font-medium text-[#29292D]">
+                        {report.itemName}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Reporter */}
+                  {/* Added vertical border to divide columns */}
+                  <td className="border-r border-gray-200 px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={report.reporterImage}
+                        alt={report.reporterName}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+
+                      <span className="text-sm font-medium text-[#29292D]">
+=======
                     {/* Reported by */}
                     <td className="border-r border-gray-200 px-4 py-2.5">
                       <span className="whitespace-nowrap text-sm font-medium text-[#29292D]">
+>>>>>>> 8dd1c422806a30eed6d0237448c7e727ff73ca4d
                         {report.reporterName}
                       </span>
                     </td>
@@ -229,7 +307,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalItems={reports.length}
+          totalItems={reportList.length}
           rowsPerPage={rowsPerPage}
           onPageChange={setCurrentPage}
           itemName="reports"
@@ -263,9 +341,25 @@ const ReportTypeBadge = ({ type }) => {
 
   return (
     <span
+<<<<<<< HEAD
+      className={`
+        inline-flex
+        rounded-full
+        px-3
+        py-1
+        text-xs
+        font-semibold
+        ${
+          isLost
+            ? "bg-red-100 text-[#B63838]"
+            : "bg-green-100 text-[#009B50]"
+        }
+      `}
+=======
       className={`inline-flex min-w-[85px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium ${
         isLost ? "bg-[#F04450] text-white" : "bg-[#08A568] text-white"
       }`}
+>>>>>>> 8dd1c422806a30eed6d0237448c7e727ff73ca4d
     >
       {type}
     </span>
@@ -302,8 +396,6 @@ const ReportActions = ({
   const ApproveIcon = reportTableIcons.approve;
   const RejectIcon = reportTableIcons.reject;
 
-  const isPending = report.status === "Pending";
-
   return (
     <div className="flex items-center justify-center gap-2">
       {/* View button */}
@@ -333,62 +425,59 @@ const ReportActions = ({
         {reportTableText.actions.view}
       </button>
 
-      {/* Approve & Reject buttons - available ONLY if report status is Pending */}
-      {isPending && (
-        <>
-          <button
-            type="button"
-            onClick={() => onApprove(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#009B50]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#007A3F]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <ApproveIcon size={13} />
-            {reportTableText.actions.approve}
-          </button>
+      {/* Approve button - available for every report */}
+      <button
+        type="button"
+        onClick={() => onApprove(report)}
+        className="
+          inline-flex
+          items-center
+          gap-1
+          rounded-full
+          bg-[#009B50]
+          px-3
+          py-1.5
+          text-xs
+          font-semibold
+          text-white
+          transition-all
+          duration-200
+          hover:bg-[#007A3F]
+          hover:shadow-md
+          active:scale-95
+          focus:outline-none
+        "
+      >
+        <ApproveIcon size={13} />
+        {reportTableText.actions.approve}
+      </button>
 
-          <button
-            type="button"
-            onClick={() => onReject(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#B63838]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#8F2C2C]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <RejectIcon size={13} />
-            {reportTableText.actions.reject}
-          </button>
-        </>
-      )}
+      {/* Reject button - available for every report */}
+      <button
+        type="button"
+        onClick={() => onReject(report)}
+        className="
+          inline-flex
+          items-center
+          gap-1
+          rounded-full
+          bg-[#B63838]
+          px-3
+          py-1.5
+          text-xs
+          font-semibold
+          text-white
+          transition-all
+          duration-200
+          hover:bg-[#8F2C2C]
+          hover:shadow-md
+          active:scale-95
+          focus:outline-none
+        "
+      >
+        <RejectIcon size={13} />
+        {reportTableText.actions.reject}
+      </button>
     </div>
   );
 };
@@ -462,6 +551,45 @@ const ReportDetailsModal = ({ report, onClose }) => {
               bg-gray-100
             "
           >
+<<<<<<< HEAD
+            <XIcon />
+          </button>
+        </div>
+
+        <img
+          src={report.itemImage}
+          alt={report.itemName}
+          className="mt-5 h-48 w-full rounded-xl object-cover"
+        />
+
+        <div className="mt-5 space-y-3">
+          <Detail
+            label="Item"
+            value={report.itemName}
+          />
+
+          <Detail
+            label="Reported by"
+            value={report.reporterName}
+          />
+
+          <Detail
+            label="Location"
+            value={report.location}
+          />
+
+          <Detail
+            label="Date"
+            value={report.date}
+          />
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-[#64748B]">
+              Type
+            </span>
+
+            <ReportTypeBadge type={report.type} />
+=======
             <img
               src={report.itemImage}
               alt={report.itemName}
@@ -471,6 +599,7 @@ const ReportDetailsModal = ({ report, onClose }) => {
                 e.target.src = "https://via.placeholder.com/150?text=No+Image";
               }}
             />
+>>>>>>> 8dd1c422806a30eed6d0237448c7e727ff73ca4d
           </div>
 
           {/* summary details */}

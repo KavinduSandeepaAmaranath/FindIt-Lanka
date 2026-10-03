@@ -1,17 +1,29 @@
+
 import { useState } from "react";
 import { reportFilterIcons, reportFiltersData } from "../../../data/AdminModuleData/ReportManagement";
 
-const ReportFilters = ({
-  searchTerm = "",
-  onSearchChange = () => {},
-  filters = { reportType: "All", status: "All", date: "All Time" },
-  onFilterChange = () => {},
-}) => {
+const ReportFilters = () => {
   const SearchIcon = reportFilterIcons.search;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState(
+    reportFiltersData.filters.reduce((acc, filter) => {
+      acc[filter.id] = filter.defaultValue;
+      return acc;
+    }, {})
+  );
   const [openFilter, setOpenFilter] = useState(null);
 
+  const handleSearch = () => {
+    console.log("Search:", searchTerm);
+    console.log("Filters:", selectedFilters);
+  };
+
   const handleFilterChange = (filterId, value) => {
-    onFilterChange(filterId, value);
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [filterId]: value,
+    }));
+
     setOpenFilter(null);
   };
 
@@ -31,7 +43,12 @@ const ReportFilters = ({
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
             placeholder={reportFiltersData.search.placeholder}
             className="
               h-12 w-full
@@ -53,6 +70,7 @@ const ReportFilters = ({
 
         <button
           type="button"
+          onClick={handleSearch}
           className="
             h-12
             shrink-0
@@ -82,7 +100,7 @@ const ReportFilters = ({
           <FilterButton
             key={filter.id}
             filter={filter}
-            value={filters[filter.id] || "All"}
+            value={selectedFilters[filter.id]}
             isOpen={openFilter === filter.id}
             onToggle={() =>
               setOpenFilter(

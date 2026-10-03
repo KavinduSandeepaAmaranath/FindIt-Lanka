@@ -160,7 +160,6 @@ export const LostFoundFormSections = {
 =========================================== */
 
 export const reportForm = {
-  type: "found",
   // Item Details
   itemTitlePlaceholder: "e.g., iPhone 13 - Midnight Blue",
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaEnvelope,
   FaLock,
@@ -9,51 +9,12 @@ import {
 } from "react-icons/fa";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 
-import { login } from "../services/authService.js";
-
 import googleIcon from "../assets/icons/google.png";
 import facebookIcon from "../assets/icons/facebook.png";
 import LoginBgImage from "../assets/images/LoginRegBackground.png";
 
 const Login = () => {
-  const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setError("");
-
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter your email and password.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const result = await login(email, password);
-
-      if (result.user.role === "admin") {
-        navigate("/Admin-Dashboard");
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Login failed. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="
@@ -189,7 +150,7 @@ const Login = () => {
           </div>
 
           {/*  Form fields  */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:gap-2.5">
+          <div className="flex flex-col gap-2 sm:gap-2.5">
 
             {/* Email */}
             <div>
@@ -198,8 +159,6 @@ const Login = () => {
                 <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   style={{ paddingLeft: "36px" }}
                   className="
@@ -217,19 +176,17 @@ const Login = () => {
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-[#64748B] text-xs font-medium">Password</label>
-                <Link
-                  to="/forgot-password"
+                <a
+                  href="#"
                   className="text-[#2563EB] text-xs font-medium hover:underline"
                 >
                   Forgot?
-                </Link>
+                </a>
               </div>
               <div className="relative mt-1">
                 <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                 <input
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   style={{ paddingLeft: "36px" }}
                   className="
@@ -249,11 +206,6 @@ const Login = () => {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
-              {error && (
-                <p className="text-sm text-red-500 mt-2">
-                  {error}
-                </p>
-              )}
             </div>
 
             {/* Remember me */}
@@ -265,7 +217,6 @@ const Login = () => {
             {/* Login Button */}
             <button
               type="submit"
-              disabled={loading}
               className="
                 w-full h-10 sm:h-11 lg:h-10
                 bg-[#2F6BFF] text-white rounded-xl
@@ -273,11 +224,9 @@ const Login = () => {
                 hover:bg-[#1D4ED8]
                 transition duration-300 hover:shadow-lg
                 flex items-center justify-center gap-2
-                disabled:opacity-70
-                disabled:cursor-not-allowed
               "
             >
-              {loading ? "Signing In..." : "Sign In"}
+              Sign In
               <FaArrowRight />
             </button>
 
@@ -328,7 +277,7 @@ const Login = () => {
               </Link>
             </p>
 
-          </form>
+          </div>
         </div>
       </div>
     </div>
