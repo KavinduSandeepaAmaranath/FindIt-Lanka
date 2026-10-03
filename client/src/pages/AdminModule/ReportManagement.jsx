@@ -13,6 +13,8 @@ import { getAllLostItems, getAllFoundItems } from "../../services/adminService";
 
 const ReportManagement = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+<<<<<<< HEAD
+=======
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -145,6 +147,7 @@ const ReportManagement = () => {
 
     return matchesSearch && matchesType && matchesStatus && matchesDate;
   });
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -176,10 +179,14 @@ const ReportManagement = () => {
 
           {/* Report Cards */}
           <section className="mt-6">
+<<<<<<< HEAD
+            <ReportCards />
+=======
             <ReportCards
               reports={reports}
               onCardSelect={(statusVal) => handleFilterChange("status", statusVal)}
             />
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
           </section>
 
           {/* Filters */}

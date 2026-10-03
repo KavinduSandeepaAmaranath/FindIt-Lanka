@@ -9,7 +9,8 @@ import NotificationPagination from "../components/notifications/NotificationPagi
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
 import { currentUser } from "../data/dashboardData";
-import { notificationCategories, notificationsData } from "../data/notificationData";
+import { notificationCategories } from "../data/notificationData";
+import { useNotifications } from "../context/NotificationContext";
 
 import {
   reportHeader as lostHeader,
@@ -25,8 +26,20 @@ const ITEMS_PER_PAGE = 7;
 const GROUPS = ["Today", "Yesterday", "Earlier"]; 
 
 function Notification() {
+<<<<<<< HEAD
+  // Shared notification context state
+  const {
+    notifications,
+    setNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    deleteAllNotifications,
+  } = useNotifications();
+=======
    // The list lives in state so we can change isRead when the user clicks.
   const [notifications, setNotifications] = useState(notificationsData);
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
   const [activeCategory, setActiveCategory] = useState("all");
   const [page, setPage] = useState(1);
 
@@ -67,19 +80,129 @@ function Notification() {
   };
 
   const handleMarkAsRead = (id) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+    markAsRead(id);
   };
 
+<<<<<<< HEAD
+  const handleConfirmMarkAllAsRead = () => {
+    markAllAsRead();
+=======
   const handleMarkAllAsRead = () => {
     setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
   };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
   };
 
+<<<<<<< HEAD
+  // Delete all notifications trigger
+  const handleOpenDeleteAll = () => {
+    setIsBulkDelete(true);
+    setNotificationToDelete(null);
+    setOpenDeleteModal(true);
+  };
+
+  // Delete single notification trigger
+  const handleDeleteNotification = (notification) => {
+    setIsBulkDelete(false);
+    setNotificationToDelete(notification);
+    setOpenDeleteModal(true);
+  };
+
+  // Confirm delete handler
+  const handleConfirmDelete = () => {
+    if (isBulkDelete) {
+      deleteAllNotifications();
+    } else if (notificationToDelete) {
+      deleteNotification(notificationToDelete.id);
+      setNotificationToDelete(null);
+    }
+  };
+
+  // Handle click on notification action button or card
+  const handleActionClick = (notification) => {
+    if (!notification.isRead) {
+      markAsRead(notification.id);
+    }
+    setSelectedNotification(notification);
+    const title = notification.title?.toLowerCase() || "";
+    const action = notification.actionLabel?.toLowerCase() || "";
+    const category = notification.category?.toLowerCase() || "";
+    const icon = notification.icon || "";
+
+    // 1. Rejected Report Modal (reject notifi----view report btn)
+    if (icon === "reject" || title.includes("rejected")) {
+      setOpenReportRejectedModal(true);
+      return;
+    }
+
+    // 2. Report Approved Modal (view Report)
+    if (
+      title.includes("report has been approved") ||
+      title.includes("report was approved") ||
+      (action === "view report" && !title.includes("rejected"))
+    ) {
+      setOpenReportApprovedModal(true);
+      return;
+    }
+
+    // 3. Your Found Item Received a Claim (review Claim)
+    if (
+      title.includes("found item received a claim") ||
+      action === "review claim" ||
+      action === "view details" ||
+      category === "found"
+    ) {
+      setOpenFoundItemClaimModal(true);
+      return;
+    }
+
+    // 4. Message from Admin (openChatBtn)
+    if (
+      action === "open chat" ||
+      category === "system" ||
+      title.includes("message")
+    ) {
+      setOpenMessageAdminModal(true);
+      return;
+    }
+
+    // 5. Claim Approved (claimApproved)
+    if (
+      action === "view claim" ||
+      category === "claims" ||
+      title.includes("approved")
+    ) {
+      setOpenClaimApprovedModal(true);
+      return;
+    }
+
+    // 6. Possible Match Found (viewItemBtn)
+    if (
+      action === "view item" ||
+      category === "matches" ||
+      title.includes("match")
+    ) {
+      setOpenPossibleMatchModal(true);
+      return;
+    }
+
+    // Fallback based on action label
+    if (action.includes("chat")) {
+      setOpenMessageAdminModal(true);
+    } else if (action.includes("claim")) {
+      setOpenClaimApprovedModal(true);
+    } else if (action.includes("report")) {
+      setOpenReportApprovedModal(true);
+    } else {
+      setOpenPossibleMatchModal(true);
+    }
+  };
+
+=======
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
   return (
     <div className="flex bg-slate-50">
       <DashboardSidebar

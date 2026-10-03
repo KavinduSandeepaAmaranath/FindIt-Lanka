@@ -83,7 +83,11 @@ const ReportCards = ({ reports = [], onCardSelect = () => {} }) => {
               </div>
             </div>
 
+<<<<<<< HEAD
+            <p className="mt-4 text-xs font-medium text-[#0F3292]">
+=======
             <p className="mt-4 text-xs font-medium text-[30F3292]">
+>>>>>>> a87a55d30925d3414e11d29ac75ec9fdb7764dd3
               {getCardPercentageChange(Card.title)} from last month
             </p>
           </button>
@@ -91,7 +95,6 @@ const ReportCards = ({ reports = [], onCardSelect = () => {} }) => {
       })}
     </div>
   );
-
 };
 
 export default ReportCards;
