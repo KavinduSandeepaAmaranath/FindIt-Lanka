@@ -397,78 +397,222 @@ const ReportActions = ({
 const ReportDetailsModal = ({ report, onClose }) => {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      className="
+        fixed
+        inset-0
+        z-50
+        flex
+        items-center
+        justify-center
+        bg-black/40
+        px-4
+        py-6
+        backdrop-blur-sm
+      "
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        className="
+          w-full
+          max-w-[350px]
+          rounded-2xl
+          border-[10px]
+          border-[#0F3292]
+          bg-white
+          px-4
+          py-5
+          shadow-2xl
+          sm:max-w-[370px]
+        "
+        onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-[#2A3B63]">
-            Report Details
-          </h2>
+        {/* title */}
+        <h2
+          className="
+            mb-2
+            text-[24px]
+            font-semibold
+            text-[#2A3B63]
+          "
+        >
+          Report Details
+        </h2>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-[#2A3B63]"
+        {/* item summary */}
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+            rounded-xl
+            border
+            border-gray-300
+            bg-gray-50
+            p-3
+          "
+        >
+          {/* item image */}
+          <div
+            className="
+              h-[90px]
+              w-[90px]
+              shrink-0
+              overflow-hidden
+              rounded-lg
+              bg-gray-100
+            "
           >
-            <XIcon />
-          </button>
-        </div>
-
-        <img
-          src={report.itemImage}
-          alt={report.itemName}
-          className="mt-5 h-48 w-full rounded-xl object-cover"
-          onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
-        />
-
-        <div className="mt-5 space-y-3">
-          <Detail label="Item" value={report.itemName} />
-          <Detail label="Reported by" value={report.reporterName} />
-          <Detail label="Location" value={report.location} />
-          <Detail label="Date" value={report.date} />
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#64748B]">Type</span>
-            <ReportTypeBadge type={report.type} />
+            <img
+              src={report.itemImage}
+              alt={report.itemName}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/150?text=No+Image";
+              }}
+            />
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#64748B]">Status</span>
-            <ReportStatusBadge status={report.status} />
+          {/* summary details */}
+          <div className="space-y-1 text-sm min-w-0 flex-1">
+            <p className="font-medium text-[#173B80] truncate">
+              {report.itemName}
+            </p>
+
+            <p className="text-[#173B80]">
+              <span className="mr-2">Type:</span>
+              <span
+                className={
+                  report.type === "Lost"
+                    ? "font-semibold text-[#BE3B40]"
+                    : "font-semibold text-[#08A568]"
+                }
+              >
+                {report.type}
+              </span>
+            </p>
+
+            <p className="text-[#173B80]">
+              <span className="mr-2">Status:</span>
+              <span
+                className={
+                  report.status === "Approved"
+                    ? "font-semibold text-[#08A568]"
+                    : report.status === "Pending"
+                    ? "font-semibold text-[#2F66E8]"
+                    : "font-semibold text-[#BE3B40]"
+                }
+              >
+                {report.status}
+              </span>
+            </p>
           </div>
         </div>
 
+        {/* item info */}
+        <div
+          className="
+            mt-2
+            rounded-xl
+            border
+            border-gray-300
+            bg-gray-50
+            px-3
+            py-2
+          "
+        >
+          <h3
+            className="
+              mb-2
+              text-[14px]
+              font-medium
+              text-[#2A3B63]
+              underline
+              underline-offset-2
+            "
+          >
+            Item Information
+          </h3>
+
+          <div className="space-y-1.5 text-[13px] text-[#173B80]">
+            <p>
+              <span className="font-medium">Type: </span>
+              {report.type}
+            </p>
+
+            <p>
+              <span className="font-medium">Location: </span>
+              {report.location}
+            </p>
+
+            <p>
+              <span className="font-medium">Date Reported: </span>
+              {report.date}
+            </p>
+          </div>
+        </div>
+
+        {/* report info */}
+        <div
+          className="
+            mt-2
+            rounded-xl
+            border
+            border-gray-300
+            bg-gray-50
+            px-3
+            py-2
+          "
+        >
+          <h3
+            className="
+              mb-2
+              text-[14px]
+              font-medium
+              text-[#2A3B63]
+              underline
+              underline-offset-2
+            "
+          >
+            Report Information
+          </h3>
+
+          <div className="space-y-1.5 text-[13px] text-[#173B80]">
+            <p>
+              <span className="font-medium">Reported By: </span>
+              {report.reporterName || "Not available"}
+            </p>
+          </div>
+        </div>
+
+        {/* done btn */}
         <button
           type="button"
           onClick={onClose}
-          className="mt-6 w-full rounded-xl bg-[#2563EB] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#0F3292]"
+          className="
+            mx-auto
+            mt-5
+            block
+            w-[180px]
+            rounded-xl
+            bg-[#2563EB]
+            px-4
+            py-2
+            text-sm
+            font-semibold
+            text-white
+            transition-all
+            duration-200
+            hover:bg-[#0F3292]
+            hover:shadow-md
+            active:scale-[0.98]
+          "
         >
-          Close
+          Done
         </button>
       </div>
     </div>
   );
-};
-
-/* Detail */
-const Detail = ({ label, value }) => {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <span className="text-sm font-medium text-[#64748B]">{label}</span>
-      <span className="text-right text-sm font-medium text-[#29292D]">{value}</span>
-    </div>
-  );
-};
-
-/* Close Icon */
-const XIcon = () => {
-  const Icon = reportTableIcons.reject;
-
-  return <Icon size={20} />;
 };
 
 export default ReportTable;
