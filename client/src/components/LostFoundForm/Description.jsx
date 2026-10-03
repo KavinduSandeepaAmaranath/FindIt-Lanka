@@ -1,12 +1,10 @@
+import { useState } from "react";
 import SectionTitle from "./SectionTitle";
 
-const Description = ({
-  formData,
-  formValues,
-  setFormValues,
-}) => {
+const Description = ({ formData }) => {
   const Icon = formData.sections.description.icon;
 
+  const [description, setDescription] = useState("");
 
   return (
     <section className="mb-8">
@@ -20,13 +18,8 @@ const Description = ({
       <div>
 
         <textarea
-          value={formValues.description}
-          onChange={(e) =>
-            setFormValues({
-              ...formValues,
-              description: e.target.value,
-            })
-          }
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           maxLength={formData.description.maxLength}
           rows={6}
           placeholder={formData.description.placeholder}
@@ -50,7 +43,7 @@ const Description = ({
         <div className="flex justify-end mt-2">
 
           <span className="text-xs text-gray-500">
-            {formValues.description.length} / {formData.description.maxLength}
+            {description.length} / {formData.description.maxLength}
           </span>
 
         </div>

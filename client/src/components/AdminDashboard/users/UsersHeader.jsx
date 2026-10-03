@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiMenu, FiChevronDown } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import { usersHeader } from "../../../data/AllUsersData";
 
 
@@ -7,11 +7,15 @@ const UsersHeader = ({ setIsOpen }) => {
 
   const SearchIcon = usersHeader.icons.search;
 
-  const [filter, setFilter] = useState(usersHeader.filterOptions[0]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const [filter, setFilter] = useState(
+    usersHeader.filterOptions[0]
+  );
+
 
   return (
     <section className="mb-6 sm:mb-8">
+
 
       {/* Mobile Menu Button */}
       <button
@@ -35,6 +39,8 @@ const UsersHeader = ({ setIsOpen }) => {
         <FiMenu size={24} />
       </button>
 
+
+
       <div
         className="
           flex
@@ -46,8 +52,10 @@ const UsersHeader = ({ setIsOpen }) => {
         "
       >
 
+
         {/* Left */}
         <div className="flex-1">
+
 
           <h1
             className="
@@ -62,6 +70,7 @@ const UsersHeader = ({ setIsOpen }) => {
             {usersHeader.title}
           </h1>
 
+
           <p
             className="
               mt-2
@@ -74,7 +83,12 @@ const UsersHeader = ({ setIsOpen }) => {
             {usersHeader.subtitle}
           </p>
 
+
         </div>
+
+
+
+
 
         {/* Right */}
         <div
@@ -88,6 +102,7 @@ const UsersHeader = ({ setIsOpen }) => {
           "
         >
 
+
           {/* Search */}
           <div
             className="
@@ -96,6 +111,7 @@ const UsersHeader = ({ setIsOpen }) => {
               xl:w-[480px]
             "
           >
+
 
             <SearchIcon
               className="
@@ -108,6 +124,8 @@ const UsersHeader = ({ setIsOpen }) => {
                 sm:text-xl
               "
             />
+
+
 
             <input
               type="text"
@@ -133,6 +151,8 @@ const UsersHeader = ({ setIsOpen }) => {
               "
             />
 
+
+
             <button
               className="
                 absolute
@@ -157,88 +177,61 @@ const UsersHeader = ({ setIsOpen }) => {
               Search
             </button>
 
+
           </div>
 
-          {/* Filter Dropdown */}
-          <div className="relative w-full sm:w-52">
-            <button
-              type="button"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="
-                w-full
-                flex
-                items-center
-                justify-between
-                rounded-2xl
-                border
-                border-gray-200
-                bg-white
-                py-3
-                px-4
-                text-sm
-                font-medium
-                text-slate-700
-                shadow-sm
-                outline-none
-                transition-all
-                hover:border-blue-400
-                focus:border-blue-500
-                focus:ring-4
-                focus:ring-blue-500/10
-              "
-            >
-              <span>{filter}</span>
-              <FiChevronDown
-                className={`text-gray-400 text-lg transition-transform duration-200 ${isDropdownOpen ? "rotate-180 text-blue-600" : ""
-                  }`}
-              />
-            </button>
-            {/* Floating Custom Menu */}
-            {isDropdownOpen && (
-              <>
-                {/* Backdrop to close menu when clicking outside */}
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setIsDropdownOpen(false)}
-                />
-                <div className="absolute right-0 mt-2 w-full rounded-2xl border border-gray-100 bg-white p-2 shadow-xl z-50">
-                  {usersHeader.filterOptions.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => {
-                        setFilter(option);
-                        setIsDropdownOpen(false);
-                      }}
-                      className={`
-                        w-full
-                        text-left
-                        px-3.5
-                        py-2.5
-                        rounded-xl
-                        text-sm
-                        font-medium
-                        transition-colors
-                        ${filter === option
-                          ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                        }
-                      `}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </>
+
+
+
+
+          {/* Filter */}
+          <select
+            value={filter}
+            onChange={(e) =>
+              setFilter(e.target.value)
+            }
+            className="
+              w-full
+              sm:w-48
+              rounded-2xl
+              border
+              border-gray-300
+              bg-white
+              px-4
+              py-3
+              text-sm
+              sm:text-base
+              outline-none
+              transition
+              focus:border-blue-500
+              focus:ring-2
+              focus:ring-blue-200
+            "
+          >
+
+            {usersHeader.filterOptions.map(
+              (option) => (
+                <option
+                  key={option}
+                  value={option}
+                >
+                  {option}
+                </option>
+              )
             )}
-          </div>
+
+          </select>
+
 
         </div>
 
+
       </div>
+
 
     </section>
   );
 };
+
 
 export default UsersHeader;

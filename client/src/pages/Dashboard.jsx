@@ -1,11 +1,4 @@
-import { useState, useEffect } from "react";
-import { 
-  getDashboardProfile,
-  getDashboardStatistics,
-  getMyLostItems,
-  getMyFoundItems,
-  getRecentActivities,
-} from "../services/dashboardService.js";
+import { useState } from "react";{/* අලුතින් ඇඩ් කලා */}
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
@@ -18,9 +11,16 @@ import BadgesEarned from "../components/dashboard/BadgesEarned";
 import SafetyTipCard from "../components/dashboard/SafetyTipCard";
 
 
-import ReportModal from "../components/LostFoundForm/ReportModal";
+import ReportModal from "../components/LostFoundForm/ReportModal";{/*අලුතින් ඇඩ් කලා */}
 
-import { badges } from "../data/dashboardData";
+import {
+    currentUser,
+    stats,
+    myLostItems,
+    myFoundItems,
+    recentActivities,
+    badges,
+} from "../data/dashboardData";
 
 import {
   reportHeader as lostHeader,
@@ -35,99 +35,7 @@ import {
 function Dashboard() {
 
   const [openLostReport, setOpenLostReport] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState([]);
-  const [openFoundReport, setOpenFoundReport] = useState(false);
-  const [lostItems, setLostItems] = useState([]);
-  const [foundItems, setFoundItems] = useState([]);
-  const [activities, setActivities] = useState([]);
-
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const [
-          profileResponse,
-          statisticsResponse,
-          lostItemsResponse,
-          foundItemsResponse,
-          activitiesResponse,
-        ] = await Promise.all([
-          getDashboardProfile(),
-          getDashboardStatistics(),
-          getMyLostItems(),
-          getMyFoundItems(),
-          getRecentActivities(),
-        ]);
-
-        setCurrentUser({
-          ...profileResponse.profile,
-          membership: "Community Member",
-          trustScore: 98,
-          trustLabel: "Trusted Member",
-        });
-
-        setStats([
-        {
-          label: "Total Reports",
-          value: statisticsResponse.statistics.totalReports,
-          note: `${statisticsResponse.statistics.totalLostReports} Lost • ${statisticsResponse.statistics.totalFoundReports} Found`,
-          icon: "trend",
-        },
-        {
-          label: "Recovered Items",
-          value: statisticsResponse.statistics.recoveredItems,
-          note: "Successfully completed",
-          icon: "pie",
-        },
-        {
-          label: "Active Cases",
-          value: statisticsResponse.statistics.activeCases,
-          note: "Currently active",
-          icon: "alert",
-        },
-        {
-          label: "Member Since",
-          value: new Date(
-            statisticsResponse.statistics.memberSince
-          ).getFullYear(),
-          note: "Community member",
-          icon: "calendar",
-        },
-      ]);
-      
-      setLostItems(
-        lostItemsResponse.lostItems.map((item) => ({
-          ...item,
-          date: new Date(item.lostDate).toLocaleDateString(),
-        }))
-      );
-
-      setFoundItems(
-        foundItemsResponse.foundItems.map((item) => ({
-          ...item,
-          date: new Date(item.foundDate).toLocaleDateString(),
-        }))
-      );
-
-      setActivities(activitiesResponse.activities);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfile();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading Dashboard...
-      </div>
-    );
-  }
+  const [openFoundReport, setOpenFoundReport] = useState(false); {/* අලුතින් ඇඩ් කලා */}
 
   return (
     <div className="flex bg-slate-50">
@@ -149,21 +57,19 @@ function Dashboard() {
             <div className="xl:col-span-2">
               <ItemsGridSection
                 title="My Lost Items"
-                items={lostItems}
+                items={myLostItems}
                 addLabel="Add another Lost item"
-                onAddClick={() => setOpenLostReport(true)}
               />
             </div>
-            <RecentActivity activities={activities} />
+            <RecentActivity activities={recentActivities} />
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
             <div className="xl:col-span-2">
               <ItemsGridSection
                 title="My Found Items"
-                items={foundItems}
+                items={myFoundItems}
                 addLabel="Add another found item"
-                onAddClick={() => setOpenFoundReport(true)}
               />
             </div>
             <div className="flex flex-col gap-6">
@@ -176,6 +82,8 @@ function Dashboard() {
         </div>
 
       </div>
+
+{/* Lost Report Modal අලුතින් ඇඩ් කලා */}
 
 {openLostReport && (
   <ReportModal

@@ -3,27 +3,28 @@ import { useState } from "react";
 import {
   reportTableIcons,
   reportTableText,
+  reportsData,
 } from "../../../data/AdminModuleData/ReportManagement";
-
-import {
-  approveLostItem,
-  rejectLostItem,
-  approveFoundItem,
-  rejectFoundItem,
-} from "../../../services/adminService";
 
 import Pagination from "../Pagination";
 import ReportActionModal from "./ReportActionModal";
 
-const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
+const ReportTable = () => {
   const [selectedReport, setSelectedReport] = useState(null);
+
+  const [reportList, setReportList] = useState(reportsData);
+
   const [selectedAction, setSelectedAction] = useState(null);
 
   const rowsPerPage = 5;
+
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(reports.length / rowsPerPage);
+
+  const totalPages = Math.ceil(reportList.length / rowsPerPage);
+
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const currentReports = reports.slice(
+
+  const currentReports = reportList.slice(
     startIndex,
     startIndex + rowsPerPage
   );
@@ -47,57 +48,39 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
   };
 
   // Confirm Approve / Reject action
-  const handleConfirmAction = async () => {
+  const handleConfirmAction = (updatedReport) => {
     if (!selectedAction) {
       return;
     }
 
-    const { type, report } = selectedAction;
-    const isLost = report.type === "Lost";
-
-    try {
-      if (type === "approve") {
-        if (isLost) {
-          await approveLostItem(report.id);
-        } else {
-          await approveFoundItem(report.id);
+    setReportList((prevReports) =>
+      prevReports.map((report) => {
+        if (report.id !== updatedReport.id) {
+          return report;
         }
-      } else if (type === "reject") {
-        if (isLost) {
-          await rejectLostItem(report.id);
-        } else {
-          await rejectFoundItem(report.id);
-        }
-      }
 
-      setSelectedAction(null);
-      if (onRefresh) {
-        onRefresh();
-      }
-    } catch (err) {
-      console.error("Failed to update report status:", err);
-    }
+        //  Approve report
+        if (selectedAction.type === "approve") {
+          return {
+            ...report,
+            status: "Approved",
+          };
+        }
+
+        // Reject report
+        if (selectedAction.type === "reject") {
+          return {
+            ...report,
+            status: "Rejected",
+          };
+        }
+
+        return report;
+      })
+    );
+
+    setSelectedAction(null);
   };
-
-  if (loading) {
-    return (
-      <div className="mt-8 flex justify-center py-10">
-        <p className="text-gray-500 font-medium">
-          Loading reports from database...
-        </p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="mt-8 flex justify-center py-10">
-        <p className="text-red-500 font-medium">
-          {error}
-        </p>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -163,7 +146,6 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
                         src={report.itemImage}
                         alt={report.itemName}
                         className="h-12 w-12 rounded-lg object-cover"
-                        onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
                       />
 
                       <span className="text-sm font-medium text-[#29292D]">
@@ -231,7 +213,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalItems={reports.length}
+          totalItems={reportList.length}
           rowsPerPage={rowsPerPage}
           onPageChange={setCurrentPage}
           itemName="reports"
@@ -272,9 +254,10 @@ const ReportTypeBadge = ({ type }) => {
         py-1
         text-xs
         font-semibold
-        ${isLost
-          ? "bg-red-100 text-[#B63838]"
-          : "bg-green-100 text-[#009B50]"
+        ${
+          isLost
+            ? "bg-red-100 text-[#B63838]"
+            : "bg-green-100 text-[#009B50]"
         }
       `}
     >
@@ -319,8 +302,6 @@ const ReportActions = ({
   const ApproveIcon = reportTableIcons.approve;
   const RejectIcon = reportTableIcons.reject;
 
-  const isPending = report.status === "Pending";
-
   return (
     <div className="flex items-center justify-center gap-2">
       {/* View button - available for every report */}
@@ -352,62 +333,59 @@ const ReportActions = ({
         {reportTableText.actions.view}
       </button>
 
-      {/* Approve & Reject buttons - available ONLY if report status is Pending */}
-      {isPending && (
-        <>
-          <button
-            type="button"
-            onClick={() => onApprove(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#009B50]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#007A3F]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <ApproveIcon size={13} />
-            {reportTableText.actions.approve}
-          </button>
+      {/* Approve button - available for every report */}
+      <button
+        type="button"
+        onClick={() => onApprove(report)}
+        className="
+          inline-flex
+          items-center
+          gap-1
+          rounded-full
+          bg-[#009B50]
+          px-3
+          py-1.5
+          text-xs
+          font-semibold
+          text-white
+          transition-all
+          duration-200
+          hover:bg-[#007A3F]
+          hover:shadow-md
+          active:scale-95
+          focus:outline-none
+        "
+      >
+        <ApproveIcon size={13} />
+        {reportTableText.actions.approve}
+      </button>
 
-          <button
-            type="button"
-            onClick={() => onReject(report)}
-            className="
-              inline-flex
-              items-center
-              gap-1
-              rounded-full
-              bg-[#B63838]
-              px-3
-              py-1.5
-              text-xs
-              font-semibold
-              text-white
-              transition-all
-              duration-200
-              hover:bg-[#8F2C2C]
-              hover:shadow-md
-              active:scale-95
-              focus:outline-none
-            "
-          >
-            <RejectIcon size={13} />
-            {reportTableText.actions.reject}
-          </button>
-        </>
-      )}
+      {/* Reject button - available for every report */}
+      <button
+        type="button"
+        onClick={() => onReject(report)}
+        className="
+          inline-flex
+          items-center
+          gap-1
+          rounded-full
+          bg-[#B63838]
+          px-3
+          py-1.5
+          text-xs
+          font-semibold
+          text-white
+          transition-all
+          duration-200
+          hover:bg-[#8F2C2C]
+          hover:shadow-md
+          active:scale-95
+          focus:outline-none
+        "
+      >
+        <RejectIcon size={13} />
+        {reportTableText.actions.reject}
+      </button>
     </div>
   );
 };
@@ -465,7 +443,6 @@ const ReportDetailsModal = ({ report, onClose }) => {
           src={report.itemImage}
           alt={report.itemName}
           className="mt-5 h-48 w-full rounded-xl object-cover"
-          onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
         />
 
         <div className="mt-5 space-y-3">
