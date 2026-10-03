@@ -20,7 +20,7 @@ const ReportManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     reportType: "All",
-    status: "All",
+    status: "Pending",
     date: "All Time",
   });
 
@@ -96,11 +96,25 @@ const ReportManagement = () => {
   };
 
   const filteredReports = reports.filter((report) => {
-    const matchesSearch =
-      !searchTerm ||
-      report.itemName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.reporterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.location?.toLowerCase().includes(searchTerm.toLowerCase());
+    const query = searchTerm.trim().toLowerCase();
+
+    let matchesSearch = true;
+    if (query) {
+      const searchHaystack = [
+        report.itemName,
+        report.reporterName,
+        report.location,
+        report.type,
+        report.status,
+        report.category,
+        report.id,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      matchesSearch = searchHaystack.includes(query);
+    }
 
     const matchesType =
       !filters.reportType ||
@@ -164,6 +178,7 @@ const ReportManagement = () => {
           <section className="mt-6">
             <ReportCards
               reports={reports}
+              onCardSelect={(statusVal) => handleFilterChange("status", statusVal)}
             />
           </section>
 

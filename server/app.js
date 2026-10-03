@@ -6,6 +6,7 @@ import foundItemRoutes from "./routes/foundItemRoutes.js";
 import claimRoutes from "./routes/claimRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import userDashboardRoutes from "./routes/userDashboardRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 const app = express();
 
 app.use(cors());
@@ -19,5 +20,6 @@ app.use("/api/found", foundItemRoutes);
 app.use("/api/claim", claimRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/dashboard", userDashboardRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 export default app;
