@@ -24,6 +24,7 @@ import BrowseItems from "../pages/BrowseItems";
 import AdminDashboard from "../pages/AdminDashboard";
 import AllUsers from "../pages/AllUsers";
 import ReportManagement from "../pages/AdminModule/ReportManagement";
+import ClaimManagement from "../pages/AdminModule/ClaimManagement";
 
 function AppRoutes() {
   return (
@@ -94,6 +95,9 @@ function AppRoutes() {
       <Route path="/Admin-Dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
       <Route path="/All-Users" element={<ProtectedAdminRoute><AllUsers /></ProtectedAdminRoute>} />
       <Route path="/Report-Management" element={<ProtectedAdminRoute><ReportManagement /></ProtectedAdminRoute>} />
+
+      <Route path="/Claim-Management" element={<ClaimManagement />} />
+
     </Routes>
   );
 }
