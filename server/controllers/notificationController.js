@@ -4,6 +4,7 @@ import {
   markAllAsRead,
   deleteNotification,
   deleteAllNotifications,
+  sendAdminSystemMessage,
 } from "../services/notificationService.js";
 
 export const getUserNotificationsController = async (req, res) => {
@@ -82,5 +83,27 @@ export const deleteAllNotificationsController = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+export const sendAdminSystemMessageController = async (req, res) => {
+  try {
+    const { targetUserId, title, message, claimId, lostItemId, foundItemId } = req.body;
+    if (!targetUserId || !message) {
+      return res.status(400).json({ success: false, message: "targetUserId and message are required" });
+    }
+
+    const notification = await sendAdminSystemMessage({
+      targetUserId,
+      title,
+      message,
+      claimId,
+      lostItemId,
+      foundItemId,
+    });
+
+    res.status(201).json({ success: true, notification });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

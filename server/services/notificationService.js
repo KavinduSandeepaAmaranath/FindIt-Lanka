@@ -173,3 +173,26 @@ export const deleteAllNotifications = async (userId) => {
   await Notification.deleteMany({ userId });
   return { success: true };
 };
+
+export const sendAdminSystemMessage = async ({
+  targetUserId,
+  title = "Message from Admin",
+  message,
+  claimId,
+  lostItemId,
+  foundItemId,
+}) => {
+  return await createNotification({
+    userId: targetUserId,
+    title,
+    message,
+    type: "system",
+    category: "system",
+    tone: "gray",
+    icon: "message",
+    actionLabel: "Open Chat",
+    claimId,
+    lostItemId,
+    foundItemId,
+  });
+};

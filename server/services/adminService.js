@@ -1,3 +1,4 @@
+import { createNotification } from "./notificationService.js";
 import User from "../models/User.js";
 import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";

@@ -1,3 +1,5 @@
+import LostItem from "../models/LostItem.js";
+import { createAutoMatchNotifications } from "./notificationService.js";
 import FoundItem from "../models/FoundItem.js";
 
 export const createFoundItem = async ({
@@ -10,7 +12,7 @@ export const createFoundItem = async ({
     images,
     userId,
 }) => {
-    return await FoundItem.create({
+    const foundItem = await FoundItem.create({
         title,
         category,
         description,
@@ -20,6 +22,22 @@ export const createFoundItem = async ({
         images,
         userId,
     });
+
+    try {
+        const matchingLostItems = await LostItem.find({
+            category,
+            district,
+            status: "lost",
+        });
+
+        for (const lostItem of matchingLostItems) {
+            await createAutoMatchNotifications(lostItem, foundItem);
+        }
+    } catch (err) {
+        console.error("Auto match check error on createFoundItem:", err.message);
+    }
+
+    return foundItem;
 };
 
 export const getAllFoundItems = async () => {
