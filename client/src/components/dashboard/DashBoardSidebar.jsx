@@ -41,19 +41,18 @@ const navItems = [
   { label: "My Claims", to: "/dashboard/my-claims", icon: FiCheckSquare },
   { label: "My Returns", to: "/dashboard/my-returns", icon: MyReturnsIcon },
   {
-    label: "Report Lost Item",
+    label: "Add Lost Reports",
     to: "/report-lost-item",
     icon: FiSend,
   },
   {
-    label: "Report Found Item",
+    label: "Add Found Reports",
     to: "/report-found-item",
     icon: FiSend,
   },
   { label: "Notifications", to: "/dashboard/notifications", icon: FiBell },
   { label: "Settings", to: "/dashboard/settings", icon: FiSettings },
   { label: "Help", to: "/dashboard/help", icon: FiHelpCircle },
-  
 ];
 
 function DashboardSidebar({onOpenLostReport,
@@ -125,7 +124,11 @@ function DashboardSidebar({onOpenLostReport,
 
         <nav className="flex-1 px-4 py-6 space-y-1">
   {navItems.map(({ label, to, icon: Icon }) => {
-    const active = location.pathname === to;
+    const active =
+      location.pathname === to ||
+      (to === "/dashboard/browse" &&
+        (location.pathname === "/dashboard/browse" ||
+          location.pathname === "/browse"));
 
     if (label === "Report Lost Item" || label === "Add Lost Reports") {
       if (onOpenLostReport) {
