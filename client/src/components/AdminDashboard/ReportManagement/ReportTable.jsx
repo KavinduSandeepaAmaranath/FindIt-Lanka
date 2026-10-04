@@ -46,14 +46,15 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
     });
   };
 
-  // Confirm Approve / Reject action
-  const handleConfirmAction = async () => {
+      // Confirm Approve / Reject action
+  const handleConfirmAction = async (payload) => {
     if (!selectedAction) {
       return;
     }
 
     const { type, report } = selectedAction;
-    const isLost = report.type === "Lost";
+    const typeStr = (report.type || "").toLowerCase();
+    const isLost = typeStr.includes("lost");
 
     try {
       if (type === "approve") {
@@ -63,19 +64,42 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
           await approveFoundItem(report.id);
         }
       } else if (type === "reject") {
+        const rejectionReason = typeof payload === "string" ? payload : "";
         if (isLost) {
-          await rejectLostItem(report.id);
+          await rejectLostItem(report.id, rejectionReason);
         } else {
-          await rejectFoundItem(report.id);
+          await rejectFoundItem(report.id, rejectionReason);
         }
       }
-
+    } catch (err) {
+      console.error("Primary report action failed, trying alternative item type...", err);
+      try {
+        const rejectionReason = typeof payload === "string" ? payload : "";
+        if (type === "reject") {
+          if (isLost) {
+            await rejectFoundItem(report.id, rejectionReason);
+          } else {
+            await rejectLostItem(report.id, rejectionReason);
+          }
+        } else if (type === "approve") {
+          if (isLost) {
+            await approveFoundItem(report.id);
+          } else {
+            await approveLostItem(report.id);
+          }
+        }
+      } catch (fallbackErr) {
+        console.error("Fallback report action also failed:", fallbackErr);
+      }
+    } finally {
       setSelectedAction(null);
       if (onRefresh) {
-        onRefresh();
+        try {
+          await onRefresh();
+        } catch (e) {
+          console.error("Failed refreshing reports table:", e);
+        }
       }
-    } catch (err) {
-      console.error("Failed to update report status:", err);
     }
   };
 

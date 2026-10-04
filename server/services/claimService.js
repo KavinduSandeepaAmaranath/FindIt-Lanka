@@ -1,3 +1,4 @@
+import { createNotification } from "./notificationService.js";
 import Claim from "../models/Claim.js";
 import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
@@ -51,6 +52,21 @@ export const createClaim = async ({
         lostItemId,
         message,
     });
+
+    if (foundItem.userId) {
+        await createNotification({
+            userId: foundItem.userId,
+            title: "Your found item received a claim",
+            message: `Someone has submitted an ownership claim for your found item (${foundItem.title}).`,
+            type: "found",
+            category: "found",
+            tone: "green",
+            icon: "box",
+            actionLabel: "Review Claim",
+            foundItemId: foundItem._id,
+            claimId: claim._id,
+        });
+    }
 
     return claim;
 
@@ -140,6 +156,22 @@ export const approveClaim = async (claimId, userId, reviewNote) => {
     
     await foundItem.save();
     await lostItem.save();
+
+    if (claim.claimantId) {
+        await createNotification({
+            userId: claim.claimantId,
+            title: "Your claim was approved!",
+            message: `Your claim for the ${foundItem.title} has been approved.`,
+            type: "claim",
+            category: "claims",
+            tone: "green",
+            icon: "shield",
+            actionLabel: "View Claim",
+            foundItemId: foundItem._id,
+            lostItemId: lostItem._id,
+            claimId: claim._id,
+        });
+    }
 
     return claim;
 };
