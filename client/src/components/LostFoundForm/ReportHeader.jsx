@@ -1,4 +1,4 @@
-import ProfileImg from "../../assets/icons/ProfileImg.jpeg";
+import UserProfileBadge from "../common/UserProfileBadge";
 
 const ReportHeader = ({ header, user }) => {
   return (
@@ -21,27 +21,7 @@ const ReportHeader = ({ header, user }) => {
       <div className="flex items-center justify-end gap-4">
 
         {/* Profile */}
-        <button className="flex items-center gap-3 rounded-xl p-2 hover:bg-gray-100 transition">
-
-          <div className="hidden sm:block text-right">
-
-            <h3 className="font-semibold text-slate-800 text-sm lg:text-base">
-              {user?.name}
-            </h3>
-
-            <p className="text-xs lg:text-sm text-gray-500">
-              {user?.membership || "Community Member"}
-            </p>
-
-          </div>
-
-          <img
-            src={ProfileImg}
-            alt="Profile"
-            className="w-10 h-10 rounded-full object-cover border"
-          />
-
-        </button>
+        <UserProfileBadge user={user} />
 
       </div>
 

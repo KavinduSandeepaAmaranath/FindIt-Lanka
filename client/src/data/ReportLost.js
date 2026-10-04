@@ -19,7 +19,7 @@ export const reportHeader = {
     "Help the community identify your item by providing as much detail as possible.",
 
   profile: {
-    name: "Kasun Perera",
+    name: "Saranga Hewage",
     role: "Pro Member",
   },
 

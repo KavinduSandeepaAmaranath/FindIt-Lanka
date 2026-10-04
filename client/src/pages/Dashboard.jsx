@@ -62,7 +62,8 @@ function Dashboard() {
 
         setCurrentUser({
           ...profileResponse.profile,
-          membership: "Community Member",
+          name: profileResponse.profile?.name || "Saranga Hewage",
+          membership: "Pro Member",
           trustScore: 98,
           trustLabel: "Trusted Member",
         });

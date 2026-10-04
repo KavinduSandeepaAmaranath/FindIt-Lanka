@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { FiSearch, FiUser } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import NotificationBell from "../common/NotificationBell";
-import userPhoto from "../../assets/images/LpKasunPerera.jpg";
+import UserProfileBadge from "../common/UserProfileBadge";
 
 function BrowseTopbar({ user, onSearch, initialSearchTerm = "" }) {
   const [searchInput, setSearchInput] = useState(initialSearchTerm);
@@ -50,31 +50,7 @@ function BrowseTopbar({ user, onSearch, initialSearchTerm = "" }) {
       <div className="flex items-center justify-end gap-5 shrink-0 self-end md:self-auto">
         <NotificationBell />
 
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <p className="text-sm font-bold text-slate-900 leading-tight">
-              {user?.name || "Kasun Perera"}
-            </p>
-            <p className="text-xs text-amber-500 font-medium">
-              {user?.membership || "Pro Member"}
-            </p>
-          </div>
-
-          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white overflow-hidden shadow-xs border-2 border-white">
-            {userPhoto ? (
-              <img
-                src={userPhoto}
-                alt={user?.name || "User Avatar"}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-              />
-            ) : (
-              <FiUser className="w-5 h-5 text-white" />
-            )}
-          </div>
-        </div>
+        <UserProfileBadge user={user} />
       </div>
     </div>
   );
