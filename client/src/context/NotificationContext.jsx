@@ -1,58 +1,87 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { notificationsData as defaultNotificationsData } from "../data/notificationData";
+import {
+  fetchNotifications,
+  markNotificationAsReadApi,
+  markAllNotificationsAsReadApi,
+  deleteNotificationApi,
+  deleteAllNotificationsApi,
+} from "../services/notificationService";
 
 const NotificationContext = createContext(null);
 
-const STORAGE_KEY = "findit_lanka_notifications_state";
-
 export function NotificationProvider({ children }) {
-  const [notifications, setNotifications] = useState(() => {
+  const [notifications, setNotifications] = useState(defaultNotificationsData);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch real notifications from backend on mount
+  const loadNotifications = async () => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          return parsed;
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      if (token) {
+        const data = await fetchNotifications();
+        if (data && data.success && Array.isArray(data.notifications)) {
+          setNotifications(data.notifications);
         }
       }
     } catch (err) {
-      console.error("Error reading notifications from localStorage:", err);
+      console.warn("Using fallback notification data:", err.message);
+    } finally {
+      setLoading(false);
     }
-    return defaultNotificationsData;
-  });
+  };
 
-  // Sync state with localStorage
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
-    } catch (err) {
-      console.error("Error saving notifications to localStorage:", err);
-    }
-  }, [notifications]);
+    loadNotifications();
+  }, []);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const hasUnread = unreadCount > 0;
 
-  const markAsRead = (id) => {
+  const markAsRead = async (id) => {
+    // Optimistic UI update
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      prev.map((n) => (n.id === id || n._id === id ? { ...n, isRead: true } : n))
     );
+    try {
+      await markNotificationAsReadApi(id);
+    } catch (err) {
+      console.error("Error marking notification read:", err);
+    }
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
+    // Optimistic UI update
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    try {
+      await markAllNotificationsAsReadApi();
+    } catch (err) {
+      console.error("Error marking all notifications read:", err);
+    }
   };
 
-  const deleteNotification = (id) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const deleteNotification = async (id) => {
+    // Optimistic UI update
+    setNotifications((prev) => prev.filter((n) => n.id !== id && n._id !== id));
+    try {
+      await deleteNotificationApi(id);
+    } catch (err) {
+      console.error("Error deleting notification:", err);
+    }
   };
 
-  const deleteAllNotifications = () => {
+  const deleteAllNotifications = async () => {
+    // Optimistic UI update
     setNotifications([]);
+    try {
+      await deleteAllNotificationsApi();
+    } catch (err) {
+      console.error("Error deleting all notifications:", err);
+    }
   };
 
-  const resetNotifications = () => {
-    setNotifications(defaultNotificationsData);
+  const refreshNotifications = () => {
+    loadNotifications();
   };
 
   return (
@@ -62,11 +91,12 @@ export function NotificationProvider({ children }) {
         setNotifications,
         unreadCount,
         hasUnread,
+        loading,
         markAsRead,
         markAllAsRead,
         deleteNotification,
         deleteAllNotifications,
-        resetNotifications,
+        refreshNotifications,
       }}
     >
       {children}
@@ -83,11 +113,12 @@ export function useNotifications() {
       setNotifications: () => {},
       unreadCount: unread,
       hasUnread: unread > 0,
+      loading: false,
       markAsRead: () => {},
       markAllAsRead: () => {},
       deleteNotification: () => {},
       deleteAllNotifications: () => {},
-      resetNotifications: () => {},
+      refreshNotifications: () => {},
     };
   }
   return context;

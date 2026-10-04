@@ -3,6 +3,7 @@ import {
   markAsRead,
   markAllAsRead,
   deleteNotification,
+  deleteAllNotifications,
 } from "../services/notificationService.js";
 
 export const getUserNotificationsController = async (req, res) => {
@@ -63,6 +64,21 @@ export const deleteNotificationController = async (req, res) => {
     });
   } catch (error) {
     res.status(404).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteAllNotificationsController = async (req, res) => {
+  try {
+    await deleteAllNotifications(req.user.userId);
+    res.status(200).json({
+      success: true,
+      message: "All notifications deleted",
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
       message: error.message,
     });
