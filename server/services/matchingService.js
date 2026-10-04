@@ -87,7 +87,12 @@ export const calculateMatchScore = (lostItem, foundItem) => {
 };
 
 // Trigger matches for a Lost Item against all active Found Items
-export const findAndTriggerMatchesForLostItem = async (lostItem) => {
+export const findAndTriggerMatchesForLostItem = async (lostItemArg) => {
+  let lostItem = lostItemArg;
+  if (!lostItem) return [];
+  if (typeof lostItem === "string" || (typeof lostItem === "object" && !lostItem.category)) {
+    lostItem = await LostItem.findById(lostItemArg);
+  }
   if (!lostItem || lostItem.approvalStatus !== "approved") return [];
 
   const candidateFoundItems = await FoundItem.find({
@@ -153,7 +158,12 @@ export const findAndTriggerMatchesForLostItem = async (lostItem) => {
 };
 
 // Trigger matches for a Found Item against all active Lost Items
-export const findAndTriggerMatchesForFoundItem = async (foundItem) => {
+export const findAndTriggerMatchesForFoundItem = async (foundItemArg) => {
+  let foundItem = foundItemArg;
+  if (!foundItem) return [];
+  if (typeof foundItem === "string" || (typeof foundItem === "object" && !foundItem.category)) {
+    foundItem = await FoundItem.findById(foundItemArg);
+  }
   if (!foundItem || foundItem.approvalStatus !== "approved") return [];
 
   const candidateLostItems = await LostItem.find({

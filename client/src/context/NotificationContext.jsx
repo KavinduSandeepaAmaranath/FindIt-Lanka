@@ -41,14 +41,36 @@ export function NotificationProvider({ children }) {
   useEffect(() => {
     loadNotifications();
 
-    // Listen for storage events (e.g. login/logout token changes)
+    // Listen for storage and window focus events
     const handleStorageChange = () => {
       loadNotifications();
     };
 
+    const handleFocus = () => {
+      loadNotifications();
+    };
+
     window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("focus", handleFocus);
+
+    // Auto-refresh notifications every 5 seconds if logged in
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      if (token) {
+        fetchNotifications()
+          .then((data) => {
+            if (data && data.success && Array.isArray(data.notifications)) {
+              setNotifications(data.notifications);
+            }
+          })
+          .catch(() => {});
+      }
+    }, 5000);
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleFocus);
+      clearInterval(interval);
     };
   }, [loadNotifications]);
 

@@ -321,18 +321,30 @@ export const approveLostItem = async (itemId) => {
 
     await lostItem.save();
 
-    if (lostItem.userId) {
-        await createNotification({
-            userId: lostItem.userId,
-            title: "Your lost item report has been approved",
-            message: `Your report (${lostItem.title}) has been approved and is now visible to other users.`,
-            type: "approval",
-            category: "reports",
-            tone: "blue",
-            icon: "report",
-            actionLabel: "View Report",
-            lostItemId: lostItem._id,
-        });
+    // 1. Send approval notification in isolated try-catch
+    try {
+        if (lostItem.userId) {
+            await createNotification({
+                userId: lostItem.userId,
+                title: "Your lost item report has been approved",
+                message: `Your report (${lostItem.title}) has been approved and is now visible to other users.`,
+                type: "approval",
+                category: "reports",
+                tone: "blue",
+                icon: "report",
+                actionLabel: "View Report",
+                lostItemId: lostItem._id,
+            });
+        }
+    } catch (notifErr) {
+        console.error("Error creating approval notification:", notifErr);
+    }
+
+    // 2. Trigger matching mechanism in isolated try-catch
+    try {
+        await findAndTriggerMatchesForLostItem(lostItem._id);
+    } catch (matchErr) {
+        console.error("Error running matching mechanism:", matchErr);
     }
 
     return lostItem;
@@ -426,18 +438,30 @@ export const approveFoundItem = async (itemId) => {
 
     await foundItem.save();
 
-    if (foundItem.userId) {
-        await createNotification({
-            userId: foundItem.userId,
-            title: "Your Found item report has been approved",
-            message: `Your found item report (${foundItem.title}) has been approved.`,
-            type: "approval",
-            category: "found",
-            tone: "green",
-            icon: "box",
-            actionLabel: "View Report",
-            foundItemId: foundItem._id,
-        });
+    // 1. Send approval notification in isolated try-catch
+    try {
+        if (foundItem.userId) {
+            await createNotification({
+                userId: foundItem.userId,
+                title: "Your Found item report has been approved",
+                message: `Your found item report (${foundItem.title}) has been approved.`,
+                type: "approval",
+                category: "found",
+                tone: "green",
+                icon: "box",
+                actionLabel: "View Report",
+                foundItemId: foundItem._id,
+            });
+        }
+    } catch (notifErr) {
+        console.error("Error creating approval notification:", notifErr);
+    }
+
+    // 2. Trigger matching mechanism in isolated try-catch
+    try {
+        await findAndTriggerMatchesForFoundItem(foundItem._id);
+    } catch (matchErr) {
+        console.error("Error running matching mechanism:", matchErr);
     }
 
     return foundItem;
