@@ -108,6 +108,7 @@ export const getUserNotifications = async (userId) => {
       tone,
       icon,
       actionLabel,
+      matchScore: n.matchScore || 0,
       group: getDateGroup(createdAt),
       date: formatDate(createdAt),
       time: formatTime(createdAt),

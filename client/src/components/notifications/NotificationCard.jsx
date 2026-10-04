@@ -85,13 +85,20 @@ function NotificationCard({ notification, onMarkAsRead, onActionClick, onDelete 
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
-            <p
-              className={`text-sm break-words ${
-                isRead ? "font-semibold text-blue-800" : "font-bold text-blue-800"
-              }`}
-            >
-              {title}
-            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p
+                className={`text-sm break-words ${
+                  isRead ? "font-semibold text-blue-800" : "font-bold text-blue-800"
+                }`}
+              >
+                {title}
+              </p>
+              {notification?.matchScore > 0 && (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px] shrink-0 border border-emerald-200">
+                  {notification.matchScore}% Match
+                </span>
+              )}
+            </div>
             <span className="text-xs text-slate-500 shrink-0 mr-3 sm:mr-0">{time}</span>
           </div>
           <p className="text-xs sm:text-sm text-blue-700/70 leading-snug mt-0.5 break-words">

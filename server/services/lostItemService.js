@@ -23,19 +23,7 @@ export const createLostItem = async ({
         userId,
     });
 
-    try {
-        const matchingFoundItems = await FoundItem.find({
-            category,
-            district,
-            status: "found",
-        });
-
-        for (const foundItem of matchingFoundItems) {
-            await createAutoMatchNotifications(lostItem, foundItem);
-        }
-    } catch (err) {
-        console.error("Auto match check error on createLostItem:", err.message);
-    }
+    // Matching is triggered upon Admin approval
 
     return lostItem;
 };

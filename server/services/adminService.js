@@ -1,3 +1,4 @@
+import { findAndTriggerMatchesForLostItem, findAndTriggerMatchesForFoundItem } from "./matchingService.js";
 import { createNotification } from "./notificationService.js";
 import User from "../models/User.js";
 import LostItem from "../models/LostItem.js";

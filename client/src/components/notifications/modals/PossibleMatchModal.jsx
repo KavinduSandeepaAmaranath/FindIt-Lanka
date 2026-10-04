@@ -85,7 +85,9 @@ function PossibleMatchModal({ isOpen, onClose, notification }) {
               {itemTitle}
             </h4>
             <p className="text-xs text-slate-500">{itemCategory}</p>
-            <p className="text-xs font-semibold text-emerald-600">Matched Item</p>
+            <p className="text-xs font-bold text-emerald-600">
+              {notification?.matchScore ? `${notification.matchScore}% Match` : "Matched Item"}
+            </p>
           </div>
         </div>
 
@@ -108,6 +110,12 @@ function PossibleMatchModal({ isOpen, onClose, notification }) {
             <div className="flex items-center justify-between text-slate-600">
               <span>Category</span>
               <span className="font-semibold text-slate-900">{itemCategory}</span>
+            </div>
+            <div className="flex items-center justify-between text-slate-600">
+              <span>Match Confidence</span>
+              <span className="font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                {notification?.matchScore ? `${notification.matchScore}% Match` : "85% Match"}
+              </span>
             </div>
           </div>
         </div>

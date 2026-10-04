@@ -38,6 +38,10 @@ const notificationSchema = new mongoose.Schema(
       ref: "Claim",
       default: null,
     },
+    matchScore: {
+      type: Number,
+      default: 0,
+    },
     isRead: {
       type: Boolean,
       default: false,
