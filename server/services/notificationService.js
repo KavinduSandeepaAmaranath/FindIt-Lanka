@@ -78,6 +78,13 @@ export const getUserNotifications = async (userId) => {
       tone = "red";
       icon = "reject";
       actionLabel = "View Report";
+      if (n.title === "Your report was rejected" || !n.title) {
+        n.title = n.lostItemId
+          ? "Your lost item report was rejected"
+          : n.foundItemId
+          ? "Your found item report was rejected"
+          : "Your report was rejected";
+      }
     } else if (n.type === "found") {
       category = "found";
       tone = "green";

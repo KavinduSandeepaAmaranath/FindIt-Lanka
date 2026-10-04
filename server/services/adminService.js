@@ -354,7 +354,7 @@ export const rejectLostItem = async (itemId, rejectionReason) => {
     if (lostItem.userId) {
         await createNotification({
             userId: lostItem.userId,
-            title: "Your report was rejected",
+            title: "Your lost item report was rejected",
             message: rejectionReason || `Your lost item report (${lostItem.title}) was rejected by admin.`,
             type: "rejection",
             category: "reports",
@@ -459,7 +459,7 @@ export const rejectFoundItem = async (itemId, rejectionReason) => {
     if (foundItem.userId) {
         await createNotification({
             userId: foundItem.userId,
-            title: "Your report was rejected",
+            title: "Your found item report was rejected",
             message: rejectionReason || `Your found item report (${foundItem.title}) was rejected by admin.`,
             type: "rejection",
             category: "reports",
