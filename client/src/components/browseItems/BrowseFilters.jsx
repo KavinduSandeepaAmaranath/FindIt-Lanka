@@ -7,7 +7,7 @@ function DropdownItem({
   options,
   icon: Icon,
   onChange,
-  defaultPlaceholder = "Pending",
+  defaultPlaceholder = "All",
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
@@ -27,7 +27,11 @@ function DropdownItem({
     value === "all" || !value ? defaultPlaceholder : selectedOption?.label || value;
 
   return (
-    <div className="flex-1 min-w-[150px]" ref={containerRef}>
+    <div
+      className={`flex-1 min-w-[150px] transition-all ${isOpen ? "relative z-50" : "relative z-10"
+        }`}
+      ref={containerRef}
+    >
       <label className="block text-xs text-slate-500 font-medium mb-1.5 truncate">
         {label}
       </label>
@@ -36,13 +40,12 @@ function DropdownItem({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between gap-2 px-3 py-2 bg-white rounded-xl border transition-all text-left shadow-2xs cursor-pointer ${
-            isOpen
-              ? "border-blue-500 ring-2 ring-blue-100"
-              : value !== "all"
+          className={`w-full flex items-center justify-between gap-2 px-3 py-2 bg-white rounded-xl border transition-all text-left shadow-2xs cursor-pointer ${isOpen
+            ? "border-blue-500 ring-2 ring-blue-100"
+            : value !== "all"
               ? "border-blue-400 bg-blue-50/20 text-slate-900"
               : "border-slate-200 hover:border-slate-300 text-slate-700"
-          }`}
+            }`}
         >
           <div className="flex items-center gap-2 min-w-0 truncate">
             <Icon className="w-4 h-4 text-slate-400 shrink-0" />
@@ -52,14 +55,13 @@ function DropdownItem({
           </div>
 
           <FiChevronDown
-            className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${
-              isOpen ? "rotate-180 text-blue-600" : ""
-            }`}
+            className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-blue-600" : ""
+              }`}
           />
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 mt-1 z-30 bg-white rounded-xl shadow-lg border border-slate-200 py-1 max-h-56 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white rounded-xl shadow-xl border border-slate-200 py-1 max-h-60 overflow-y-auto">
             {options.map((opt, idx) => {
               const isSelected = opt.value === value;
               return (
@@ -70,11 +72,10 @@ function DropdownItem({
                     onChange(opt.value);
                     setIsOpen(false);
                   }}
-                  className={`w-full px-3 py-2 text-xs sm:text-sm text-left flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${
-                    isSelected
-                      ? "text-blue-600 font-semibold bg-blue-50/50"
-                      : "text-slate-700"
-                  }`}
+                  className={`w-full px-3 py-2 text-xs sm:text-sm text-left flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${isSelected
+                    ? "text-blue-600 font-semibold bg-blue-50/50"
+                    : "text-slate-700"
+                    }`}
                 >
                   <span className="truncate">{opt.label}</span>
                   {isSelected && (
@@ -97,9 +98,6 @@ function BrowseFilters({
   district,
   onDistrictChange,
   districtOptions,
-  location,
-  onLocationChange,
-  locationOptions,
   date,
   onDateChange,
   dateOptions,
@@ -110,15 +108,16 @@ function BrowseFilters({
   hasActiveFilters,
 }) {
   return (
-    <div className="bg-white/70 backdrop-blur-xs p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 items-end">
+    <div className="relative z-30 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+      {/* 4 Filters in a responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 items-end">
         <DropdownItem
           label="Filter By Category"
           value={category}
           options={categoryOptions}
           icon={FiClock}
           onChange={onCategoryChange}
-          defaultPlaceholder="Pending"
+          defaultPlaceholder="All Categories"
         />
 
         <DropdownItem
@@ -127,16 +126,7 @@ function BrowseFilters({
           options={districtOptions}
           icon={FiClock}
           onChange={onDistrictChange}
-          defaultPlaceholder="Pending"
-        />
-
-        <DropdownItem
-          label="Filter By Location"
-          value={location}
-          options={locationOptions}
-          icon={FiClock}
-          onChange={onLocationChange}
-          defaultPlaceholder="Pending"
+          defaultPlaceholder="All Districts"
         />
 
         <DropdownItem
@@ -154,7 +144,7 @@ function BrowseFilters({
           options={statusOptions}
           icon={FiClock}
           onChange={onStatusChange}
-          defaultPlaceholder="Pending"
+          defaultPlaceholder="All Status"
         />
       </div>
 

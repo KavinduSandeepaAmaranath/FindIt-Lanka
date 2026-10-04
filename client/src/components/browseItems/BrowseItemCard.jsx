@@ -1,7 +1,7 @@
 import { FiMapPin, FiCalendar, FiEye } from "react-icons/fi";
 import fallbackImage from "../../assets/images/acerLaptop.jpg";
 
-function BrowseItemCard({ item }) {
+function BrowseItemCard({ item, onViewDetails }) {
   const isLost = item.status === "Lost";
 
   return (
@@ -57,9 +57,14 @@ function BrowseItemCard({ item }) {
           </div>
         </div>
 
-        {/* View Details Button (UI design with icon only, no functionality yet) */}
+        {/* View Details Button */}
         <button
           type="button"
+          onClick={() => {
+            if (onViewDetails) {
+              onViewDetails(item);
+            }
+          }}
           className="mt-4 w-full py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
         >
           <FiEye className="w-4 h-4" />

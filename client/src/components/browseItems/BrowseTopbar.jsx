@@ -16,8 +16,8 @@ function BrowseTopbar({ user, onSearch, initialSearchTerm = "" }) {
   const handleInputChange = (e) => {
     const val = e.target.value;
     setSearchInput(val);
-    if (onSearch) {
-      onSearch(val.trim());
+    if (val === "" && onSearch) {
+      onSearch("");
     }
   };
 
