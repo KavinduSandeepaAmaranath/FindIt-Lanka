@@ -148,7 +148,8 @@ export const approveLostItemController = async (req, res) => {
 
 export const rejectLostItemController = async (req, res) => {
     try {
-        const lostItem = await rejectLostItem(req.params.id);
+        const { rejectionReason } = req.body || {};
+        const lostItem = await rejectLostItem(req.params.id, rejectionReason);
 
         res.status(200).json({
             success: true,
@@ -249,7 +250,8 @@ export const approveFoundItemController = async (req, res) => {
 
 export const rejectFoundItemController = async (req, res) => {
     try {
-        const foundItem = await rejectFoundItem(req.params.id);
+        const { rejectionReason } = req.body || {};
+        const foundItem = await rejectFoundItem(req.params.id, rejectionReason);
 
         res.status(200).json({
             success: true,

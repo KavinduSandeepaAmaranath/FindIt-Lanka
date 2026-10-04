@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { notificationsData as defaultNotificationsData } from "../data/notificationData";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import {
   fetchNotifications,
   markNotificationAsReadApi,
@@ -11,35 +10,52 @@ import {
 const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
-  const [notifications, setNotifications] = useState(defaultNotificationsData);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch real notifications from backend on mount
-  const loadNotifications = async () => {
+  // Fetch real notifications from backend
+  const loadNotifications = useCallback(async () => {
+    const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+    if (!token) {
+      setNotifications([]);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
-      if (token) {
-        const data = await fetchNotifications();
-        if (data && data.success && Array.isArray(data.notifications)) {
-          setNotifications(data.notifications);
-        }
+      setLoading(true);
+      const data = await fetchNotifications();
+      if (data && data.success && Array.isArray(data.notifications)) {
+        setNotifications(data.notifications);
+      } else {
+        setNotifications([]);
       }
     } catch (err) {
-      console.warn("Using fallback notification data:", err.message);
+      console.warn("Error loading notifications from backend API:", err.message);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadNotifications();
-  }, []);
+
+    // Listen for storage events (e.g. login/logout token changes)
+    const handleStorageChange = () => {
+      loadNotifications();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [loadNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   const hasUnread = unreadCount > 0;
 
   const markAsRead = async (id) => {
-    // Optimistic UI update
     setNotifications((prev) =>
       prev.map((n) => (n.id === id || n._id === id ? { ...n, isRead: true } : n))
     );
@@ -51,7 +67,6 @@ export function NotificationProvider({ children }) {
   };
 
   const markAllAsRead = async () => {
-    // Optimistic UI update
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     try {
       await markAllNotificationsAsReadApi();
@@ -61,7 +76,6 @@ export function NotificationProvider({ children }) {
   };
 
   const deleteNotification = async (id) => {
-    // Optimistic UI update
     setNotifications((prev) => prev.filter((n) => n.id !== id && n._id !== id));
     try {
       await deleteNotificationApi(id);
@@ -71,7 +85,6 @@ export function NotificationProvider({ children }) {
   };
 
   const deleteAllNotifications = async () => {
-    // Optimistic UI update
     setNotifications([]);
     try {
       await deleteAllNotificationsApi();
@@ -107,12 +120,11 @@ export function NotificationProvider({ children }) {
 export function useNotifications() {
   const context = useContext(NotificationContext);
   if (!context) {
-    const unread = defaultNotificationsData.filter((n) => !n.isRead).length;
     return {
-      notifications: defaultNotificationsData,
+      notifications: [],
       setNotifications: () => {},
-      unreadCount: unread,
-      hasUnread: unread > 0,
+      unreadCount: 0,
+      hasUnread: false,
       loading: false,
       markAsRead: () => {},
       markAllAsRead: () => {},

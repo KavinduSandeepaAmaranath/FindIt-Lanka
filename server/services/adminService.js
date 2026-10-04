@@ -320,22 +320,50 @@ export const approveLostItem = async (itemId) => {
 
     await lostItem.save();
 
+    if (lostItem.userId) {
+        await createNotification({
+            userId: lostItem.userId,
+            title: "Your lost item report has been approved",
+            message: `Your report (${lostItem.title}) has been approved and is now visible to other users.`,
+            type: "approval",
+            category: "reports",
+            tone: "blue",
+            icon: "report",
+            actionLabel: "View Report",
+            lostItemId: lostItem._id,
+        });
+    }
+
     return lostItem;
 };
 
-export const rejectLostItem = async (itemId) => {
+export const rejectLostItem = async (itemId, rejectionReason) => {
     const lostItem = await LostItem.findById(itemId);
 
-    if(!lostItem) {
-        throw new Error("Lost item not Found");
-    }
-    if (lostItem.approvalStatus !== "pending") {
-        throw new Error("Only pending lost items can be rejected");
+    if (!lostItem) {
+        throw new Error("Lost item not found");
     }
 
     lostItem.approvalStatus = "rejected";
+    if (rejectionReason) {
+        lostItem.rejectionReason = rejectionReason;
+    }
 
     await lostItem.save();
+
+    if (lostItem.userId) {
+        await createNotification({
+            userId: lostItem.userId,
+            title: "Your report was rejected",
+            message: rejectionReason || `Your lost item report (${lostItem.title}) was rejected by admin.`,
+            type: "rejection",
+            category: "reports",
+            tone: "red",
+            icon: "reject",
+            actionLabel: "View Report",
+            lostItemId: lostItem._id,
+        });
+    }
 
     return lostItem;
 };
@@ -397,22 +425,50 @@ export const approveFoundItem = async (itemId) => {
 
     await foundItem.save();
 
+    if (foundItem.userId) {
+        await createNotification({
+            userId: foundItem.userId,
+            title: "Found item report approved",
+            message: `Your found item report (${foundItem.title}) has been approved.`,
+            type: "approval",
+            category: "found",
+            tone: "green",
+            icon: "box",
+            actionLabel: "View Report",
+            foundItemId: foundItem._id,
+        });
+    }
+
     return foundItem;
 };
 
-export const rejectFoundItem = async (itemId) => {
+export const rejectFoundItem = async (itemId, rejectionReason) => {
     const foundItem = await FoundItem.findById(itemId);
 
-    if(!foundItem) {
-        throw new Error("Found item not Found");
-    }
-    if (foundItem.approvalStatus !== "pending") {
-        throw new Error("Only pending found items can be rejected");
+    if (!foundItem) {
+        throw new Error("Found item not found");
     }
 
     foundItem.approvalStatus = "rejected";
+    if (rejectionReason) {
+        foundItem.rejectionReason = rejectionReason;
+    }
 
     await foundItem.save();
+
+    if (foundItem.userId) {
+        await createNotification({
+            userId: foundItem.userId,
+            title: "Your report was rejected",
+            message: rejectionReason || `Your found item report (${foundItem.title}) was rejected by admin.`,
+            type: "rejection",
+            category: "reports",
+            tone: "red",
+            icon: "reject",
+            actionLabel: "View Report",
+            foundItemId: foundItem._id,
+        });
+    }
 
     return foundItem;
 };

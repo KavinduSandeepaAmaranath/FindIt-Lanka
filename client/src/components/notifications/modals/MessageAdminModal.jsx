@@ -8,6 +8,11 @@ function MessageAdminModal({ isOpen, onClose, notification }) {
 
   if (!isOpen) return null;
 
+  const item = notification?.lostItemId || notification?.foundItemId;
+  const itemTitle = item?.title || notification?.title || "Reported Item";
+  const messageText = notification?.description || notification?.message || "Please check the latest update regarding your report or claim.";
+  const time = notification?.time || "10:15 AM";
+
   const handleSendReply = (e) => {
     e.preventDefault();
     if (!replyText.trim()) return;
@@ -48,7 +53,7 @@ function MessageAdminModal({ isOpen, onClose, notification }) {
               Message from Admin
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Regarding Claim CLM-1024
+              Regarding {itemTitle}
             </p>
           </div>
         </div>
@@ -57,10 +62,10 @@ function MessageAdminModal({ isOpen, onClose, notification }) {
         <div className="border border-blue-200 rounded-xl p-3.5 bg-blue-50/20 space-y-1.5">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-700">
             <FiInfo className="w-3.5 h-3.5 text-blue-500" />
-            <span>Admin • 10:15 AM</span>
+            <span>Admin • {time}</span>
           </div>
           <p className="text-xs text-slate-700 leading-relaxed">
-            Please confirm your preferred handover location for your claim. Ensure you bring the necessary ownership verification details.
+            {messageText}
           </p>
         </div>
 
@@ -68,11 +73,11 @@ function MessageAdminModal({ isOpen, onClose, notification }) {
         <div className="space-y-1.5 text-xs pt-1">
           <div className="flex items-center justify-between text-slate-600">
             <span>Related Item</span>
-            <span className="font-semibold text-blue-600">iPhone 13</span>
+            <span className="font-semibold text-blue-600">{itemTitle}</span>
           </div>
           <div className="flex items-center justify-between text-slate-600">
-            <span>Claim Status</span>
-            <span className="font-semibold text-emerald-600">Approved</span>
+            <span>Status</span>
+            <span className="font-semibold text-emerald-600">Active</span>
           </div>
         </div>
 
