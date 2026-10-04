@@ -8,6 +8,16 @@ import BrowseItemsGrid from "../components/browseItems/BrowseItemsGrid";
 import BrowsePagination from "../components/browseItems/BrowsePagination";
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
+// Modals for Lost Items Flow
+import LostItemDetailsModal from "../components/browseItems/LostItemDetailsModal";
+import ReportMethodModal from "../components/browseItems/ReportMethodModal";
+import EligibleFoundReportsModal from "../components/browseItems/EligibleFoundReportsModal";
+
+// Modals for Found Items Flow
+import FoundItemDetailsModal from "../components/browseItems/FoundItemDetailsModal";
+import ReportLostMethodModal from "../components/browseItems/ReportLostMethodModal";
+import EligibleLostReportsModal from "../components/browseItems/EligibleLostReportsModal";
+
 import { currentUser } from "../data/dashboardData";
 import {
   initialBrowseItems,
@@ -42,6 +52,19 @@ function BrowseItems() {
 
   const [openLostReport, setOpenLostReport] = useState(false);
   const [openFoundReport, setOpenFoundReport] = useState(false);
+
+  // Modals for Lost Items Flow (Return Item)
+  const [selectedLostItem, setSelectedLostItem] = useState(null);
+  const [isReportMethodOpen, setIsReportMethodOpen] = useState(false);
+  const [isEligibleReportsOpen, setIsEligibleReportsOpen] = useState(false);
+
+  // Modals for Found Items Flow (Claim Item)
+  const [selectedFoundItem, setSelectedFoundItem] = useState(null);
+  const [isLostMethodOpen, setIsLostMethodOpen] = useState(false);
+  const [isEligibleLostReportsOpen, setIsEligibleLostReportsOpen] = useState(false);
+
+  // Toast Notification
+  const [submissionToast, setSubmissionToast] = useState("");
 
   // Filter items according to search, dropdowns, and active tab
   const filteredItems = useMemo(() => {
@@ -98,7 +121,7 @@ function BrowseItems() {
     searchTerm,
   ]);
 
-  // Dynamic counts for tabs based on current search & filter state (excluding tab filter itself)
+  // Dynamic counts for tabs based on current search & filter state
   const tabCounts = useMemo(() => {
     const baseItems = items.filter((item) => {
       if (statusFilter !== "all" && item.status.toLowerCase() !== statusFilter.toLowerCase()) {
@@ -190,6 +213,71 @@ function BrowseItems() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // View Details Click: route to Lost or Found modal based on item.status
+  const handleViewDetails = (item) => {
+    if (item.status === "Lost") {
+      setSelectedLostItem(item);
+    } else if (item.status === "Found") {
+      setSelectedFoundItem(item);
+    }
+  };
+
+  /* ============================================================
+     LOST ITEM FLOW (Return Item)
+  ============================================================ */
+  const handleReturnItem = () => {
+    setSelectedLostItem(null);
+    setIsReportMethodOpen(true);
+  };
+
+  const handleSelectMyReport = () => {
+    setIsReportMethodOpen(false);
+    setIsEligibleReportsOpen(true);
+  };
+
+  const handleCreateNewFoundReport = () => {
+    setIsReportMethodOpen(false);
+    setOpenFoundReport(true);
+  };
+
+  const handleSubmitEligibleReport = (report) => {
+    setIsEligibleReportsOpen(false);
+    setSubmissionToast(
+      `Successfully linked found report "${report?.title || "Found Item"}" for return!`
+    );
+    setTimeout(() => {
+      setSubmissionToast("");
+    }, 4500);
+  };
+
+  /* ============================================================
+     FOUND ITEM FLOW (Claim Item)
+  ============================================================ */
+  const handleClaimItem = () => {
+    setSelectedFoundItem(null);
+    setIsLostMethodOpen(true);
+  };
+
+  const handleSelectMyLostReport = () => {
+    setIsLostMethodOpen(false);
+    setIsEligibleLostReportsOpen(true);
+  };
+
+  const handleCreateNewLostReport = () => {
+    setIsLostMethodOpen(false);
+    setOpenLostReport(true); // Links directly to "Add Lost Reports" page/modal!
+  };
+
+  const handleSubmitEligibleLostReport = (report) => {
+    setIsEligibleLostReportsOpen(false);
+    setSubmissionToast(
+      `Successfully linked your lost report "${report?.title || "Lost Item"}" for claiming!`
+    );
+    setTimeout(() => {
+      setSubmissionToast("");
+    }, 4500);
+  };
+
   return (
     <div className="flex bg-slate-50 min-h-screen">
       {/* Sidebar with active link highlighting */}
@@ -201,6 +289,21 @@ function BrowseItems() {
       {/* Main Content Area */}
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-10 py-7 space-y-6">
+          {/* Success Toast Notification */}
+          {submissionToast && (
+            <div className="fixed top-5 right-5 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+              <span className="w-2 h-2 rounded-full bg-white shrink-0" />
+              <p className="text-xs sm:text-sm font-semibold">{submissionToast}</p>
+              <button
+                type="button"
+                onClick={() => setSubmissionToast("")}
+                className="ml-2 text-white/80 hover:text-white text-xs cursor-pointer font-bold"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           {/* Topbar: Search Bar + Kasun Perera User Profile */}
           <BrowseTopbar
             user={currentUser}
@@ -214,7 +317,7 @@ function BrowseItems() {
             onOpenLostReport={() => setOpenLostReport(true)}
           />
 
-          {/* 4 Filter Dropdowns Bar (Overlayed above tabs and cards) */}
+          {/* 4 Filter Dropdowns Bar */}
           <div className="relative z-30">
             <BrowseFilters
               category={categoryFilter}
@@ -248,6 +351,7 @@ function BrowseItems() {
             <BrowseItemsGrid
               items={visibleItems}
               onResetFilters={handleResetFilters}
+              onViewDetails={handleViewDetails}
             />
           </div>
 
@@ -260,7 +364,59 @@ function BrowseItems() {
         </div>
       </div>
 
-      {/* Modals for Reporting Lost and Found Items */}
+      {/* ============================================================
+          LOST ITEM MODALS (Return Flow)
+      ============================================================ */}
+      {selectedLostItem && (
+        <LostItemDetailsModal
+          item={selectedLostItem}
+          onClose={() => setSelectedLostItem(null)}
+          onReturnItem={handleReturnItem}
+        />
+      )}
+
+      {isReportMethodOpen && (
+        <ReportMethodModal
+          onClose={() => setIsReportMethodOpen(false)}
+          onSelectMyReport={handleSelectMyReport}
+          onCreateNewReport={handleCreateNewFoundReport}
+        />
+      )}
+
+      {isEligibleReportsOpen && (
+        <EligibleFoundReportsModal
+          onClose={() => setIsEligibleReportsOpen(false)}
+          onSubmit={handleSubmitEligibleReport}
+        />
+      )}
+
+      {/* ============================================================
+          FOUND ITEM MODALS (Claim Flow)
+      ============================================================ */}
+      {selectedFoundItem && (
+        <FoundItemDetailsModal
+          item={selectedFoundItem}
+          onClose={() => setSelectedFoundItem(null)}
+          onClaimItem={handleClaimItem}
+        />
+      )}
+
+      {isLostMethodOpen && (
+        <ReportLostMethodModal
+          onClose={() => setIsLostMethodOpen(false)}
+          onSelectMyReport={handleSelectMyLostReport}
+          onCreateNewReport={handleCreateNewLostReport}
+        />
+      )}
+
+      {isEligibleLostReportsOpen && (
+        <EligibleLostReportsModal
+          onClose={() => setIsEligibleLostReportsOpen(false)}
+          onSubmit={handleSubmitEligibleLostReport}
+        />
+      )}
+
+      {/* Sidebar & Action Header Report Modals */}
       {openLostReport && (
         <ReportModal
           header={lostHeader}

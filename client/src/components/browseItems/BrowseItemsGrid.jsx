@@ -1,7 +1,7 @@
 import BrowseItemCard from "./BrowseItemCard";
 import { FiInbox } from "react-icons/fi";
 
-function BrowseItemsGrid({ items, onResetFilters }) {
+function BrowseItemsGrid({ items, onResetFilters, onViewDetails }) {
   if (!items || items.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center flex flex-col items-center justify-center">
@@ -30,7 +30,11 @@ function BrowseItemsGrid({ items, onResetFilters }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
       {items.map((item) => (
-        <BrowseItemCard key={item.id} item={item} />
+        <BrowseItemCard
+          key={item.id}
+          item={item}
+          onViewDetails={onViewDetails}
+        />
       ))}
     </div>
   );

@@ -13,6 +13,38 @@ import { lostItemCategories, districts } from "./ReportLost";
 import { dateFilterOptions as myReportsDateFilterOptions } from "./myReportsData";
 
 export const initialBrowseItems = [
+  // Exact item matching Report Details UI image
+  {
+    id: "bi-00",
+    title: "iPhone 13",
+    category: "Electronics",
+    location: "Hiniduma",
+    district: "Galle",
+    date: "02 September 2026",
+    rawDate: "2026-09-02",
+    lostTime: "12 .00 p.m",
+    description: "black iPhone 13 with red color back cover",
+    reportedDate: "02 September 2026",
+    status: "Lost",
+    image: iphone1,
+    images: [iphone1, iphone1, iphone1, iphone1],
+  },
+  // Exact item matching Report Details (Found) UI image
+  {
+    id: "bi-00-found",
+    title: "iPhone 13",
+    category: "Electronics",
+    location: "Hiniduma",
+    district: "Galle",
+    date: "02 September 2026",
+    rawDate: "2026-09-02",
+    foundTime: "12 .00 p.m",
+    description: "black iPhone 13 with red color back cover",
+    reportedDate: "02 September 2026",
+    status: "Found",
+    image: iphone1,
+    images: [iphone1, iphone1, iphone1, iphone1],
+  },
   // Row 1
   {
     id: "bi-01",
@@ -22,8 +54,12 @@ export const initialBrowseItems = [
     district: "Galle",
     date: "June 20, 2026",
     rawDate: "2026-06-20",
+    lostTime: "10 .30 a.m",
+    description: "Dell 14-inch silver laptop with power adapter.",
+    reportedDate: "20 June 2026",
     status: "Lost",
     image: acerLaptop,
+    images: [acerLaptop, acerLaptop, acerLaptop, acerLaptop],
   },
   {
     id: "bi-02",
@@ -44,8 +80,12 @@ export const initialBrowseItems = [
     district: "Galle",
     date: "June 20, 2026",
     rawDate: "2026-06-20",
+    lostTime: "02 .15 p.m",
+    description: "Asus dark gray laptop with university sticker.",
+    reportedDate: "20 June 2026",
     status: "Lost",
     image: acerLaptop,
+    images: [acerLaptop, acerLaptop, acerLaptop, acerLaptop],
   },
   {
     id: "bi-04",
@@ -55,8 +95,12 @@ export const initialBrowseItems = [
     district: "Galle",
     date: "June 20, 2026",
     rawDate: "2026-06-20",
+    lostTime: "04 .00 p.m",
+    description: "Lenovo ThinkPad black laptop with red trackpoint.",
+    reportedDate: "20 June 2026",
     status: "Lost",
     image: acerLaptop,
+    images: [acerLaptop, acerLaptop, acerLaptop, acerLaptop],
   },
 
   // Row 2
