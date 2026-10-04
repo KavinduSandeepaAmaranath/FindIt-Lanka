@@ -73,6 +73,9 @@ export const getUserNotifications = async (userId) => {
       tone = "blue";
       icon = "report";
       actionLabel = "View Report";
+      if (n.title === "Found item report approved") {
+        n.title = "Your Found item report has been approved";
+      }
     } else if (n.type === "rejection") {
       category = "reports";
       tone = "red";

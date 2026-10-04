@@ -428,7 +428,7 @@ export const approveFoundItem = async (itemId) => {
     if (foundItem.userId) {
         await createNotification({
             userId: foundItem.userId,
-            title: "Found item report approved",
+            title: "Your Found item report has been approved",
             message: `Your found item report (${foundItem.title}) has been approved.`,
             type: "approval",
             category: "found",
