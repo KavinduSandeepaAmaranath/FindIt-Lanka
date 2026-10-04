@@ -9,11 +9,14 @@ import handBag from "../assets/images/LpLeatherHandbag.avif";
 import bicycle from "../assets/images/LpBicycle1.avif";
 import cat from "../assets/images/LpPersianCat.avif";
 
+import { lostItemCategories, districts } from "./ReportLost";
+import { dateFilterOptions as myReportsDateFilterOptions } from "./myReportsData";
+
 export const initialBrowseItems = [
   // Row 1
   {
     id: "bi-01",
-    title: "acer Laptop",
+    title: "dell Laptop",
     category: "Electronics",
     location: "Galle",
     district: "Galle",
@@ -35,7 +38,7 @@ export const initialBrowseItems = [
   },
   {
     id: "bi-03",
-    title: "acer Laptop",
+    title: "asus Laptop",
     category: "Electronics",
     location: "Galle",
     district: "Galle",
@@ -46,7 +49,7 @@ export const initialBrowseItems = [
   },
   {
     id: "bi-04",
-    title: "acer Laptop",
+    title: "lenovo Laptop",
     category: "Electronics",
     location: "Galle",
     district: "Galle",
@@ -209,7 +212,7 @@ export const initialBrowseItems = [
   {
     id: "bi-18",
     title: "Leather Handbag",
-    category: "Wallets & Bags",
+    category: "Bags & Wallets",
     location: "Galle Fort",
     district: "Galle",
     date: "June 17, 2026",
@@ -220,7 +223,7 @@ export const initialBrowseItems = [
   {
     id: "bi-19",
     title: "Toyota Smart Key",
-    category: "Keys",
+    category: "Personal Items",
     location: "Matara",
     district: "Matara",
     date: "June 15, 2026",
@@ -231,7 +234,7 @@ export const initialBrowseItems = [
   {
     id: "bi-20",
     title: "Classic Wristwatch",
-    category: "Accessories",
+    category: "Jewellery",
     location: "Kandy",
     district: "Kandy",
     date: "June 14, 2026",
@@ -242,7 +245,7 @@ export const initialBrowseItems = [
   {
     id: "bi-21",
     title: "Black Travel Umbrella",
-    category: "Accessories",
+    category: "Personal Items",
     location: "University Campus",
     district: "Colombo",
     date: "June 12, 2026",
@@ -253,7 +256,7 @@ export const initialBrowseItems = [
   {
     id: "bi-22",
     title: "Brown Leather Wallet",
-    category: "Wallets & Bags",
+    category: "Bags & Wallets",
     location: "Main Library",
     district: "Galle",
     date: "June 10, 2026",
@@ -264,7 +267,7 @@ export const initialBrowseItems = [
   {
     id: "bi-23",
     title: "Golden Retriever",
-    category: "Pets",
+    category: "Pets & Animals",
     location: "Galle",
     district: "Galle",
     date: "June 08, 2026",
@@ -286,7 +289,7 @@ export const initialBrowseItems = [
   {
     id: "bi-25",
     title: "Persian Cat",
-    category: "Pets",
+    category: "Pets & Animals",
     location: "Kandy",
     district: "Kandy",
     date: "June 02, 2026",
@@ -296,56 +299,23 @@ export const initialBrowseItems = [
   },
 ];
 
+// 1. Filter by Category -> Use categories from Report a Lost Item page
 export const categoryFilterOptions = [
-  { value: "all", label: "Pending" },
   { value: "all", label: "All Categories" },
-  { value: "Electronics", label: "Electronics" },
-  { value: "Wallets & Bags", label: "Wallets & Bags" },
-  { value: "Documents & Cards", label: "Documents & Cards" },
-  { value: "Keys", label: "Keys" },
-  { value: "Accessories", label: "Accessories" },
-  { value: "Pets", label: "Pets" },
-  { value: "Vehicles", label: "Vehicles" },
-  { value: "Other", label: "Other" },
+  ...lostItemCategories.map((cat) => ({ value: cat, label: cat })),
 ];
 
+// 2. Filter by District -> Use districts from Report a Lost Item page
 export const districtFilterOptions = [
-  { value: "all", label: "Pending" },
   { value: "all", label: "All Districts" },
-  { value: "Galle", label: "Galle" },
-  { value: "Colombo", label: "Colombo" },
-  { value: "Gampaha", label: "Gampaha" },
-  { value: "Kandy", label: "Kandy" },
-  { value: "Matara", label: "Matara" },
-  { value: "Badulla", label: "Badulla" },
-  { value: "Nuwara Eliya", label: "Nuwara Eliya" },
-  { value: "Jaffna", label: "Jaffna" },
-  { value: "Kurunegala", label: "Kurunegala" },
+  ...districts.map((dist) => ({ value: dist, label: dist })),
 ];
 
-export const locationFilterOptions = [
-  { value: "all", label: "Pending" },
-  { value: "all", label: "All Locations" },
-  { value: "Galle", label: "Galle" },
-  { value: "University Campus", label: "University Campus" },
-  { value: "Main Library", label: "Main Library" },
-  { value: "Galle Fort", label: "Galle Fort" },
-  { value: "Colombo 07", label: "Colombo 07" },
-  { value: "Science Faculty", label: "Science Faculty" },
-  { value: "Engineering Faculty", label: "Engineering Faculty" },
-  { value: "Bus Stand", label: "Bus Stand" },
-];
+// 3. Filter by Date -> Use date options from My Reports page
+export const dateFilterOptions = myReportsDateFilterOptions;
 
-export const dateFilterOptions = [
-  { value: "all", label: "All Time" },
-  { value: "7", label: "Last 7 Days" },
-  { value: "30", label: "Last 30 Days" },
-  { value: "90", label: "Last 3 Months" },
-  { value: "365", label: "This Year" },
-];
-
+// 4. Filter by Status -> only Lost and Found
 export const statusFilterOptions = [
-  { value: "all", label: "Pending" },
   { value: "all", label: "All Status" },
   { value: "Lost", label: "Lost" },
   { value: "Found", label: "Found" },

@@ -13,7 +13,6 @@ import {
   initialBrowseItems,
   categoryFilterOptions,
   districtFilterOptions,
-  locationFilterOptions,
   dateFilterOptions,
   statusFilterOptions,
   ITEMS_PER_PAGE,
@@ -36,7 +35,6 @@ function BrowseItems() {
 
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [districtFilter, setDistrictFilter] = useState("all");
-  const [locationFilter, setLocationFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -68,15 +66,7 @@ function BrowseItems() {
         return false;
       }
 
-      // 5. Location filter
-      if (
-        locationFilter !== "all" &&
-        !item.location.toLowerCase().includes(locationFilter.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // 6. Date filter
+      // 5. Date filter
       if (dateFilter !== "all" && item.rawDate) {
         const days = Number(dateFilter);
         const itemDate = new Date(item.rawDate);
@@ -87,7 +77,7 @@ function BrowseItems() {
         }
       }
 
-      // 7. Search keyword
+      // 6. Search keyword
       if (searchTerm) {
         const query = searchTerm.toLowerCase();
         const haystack = `${item.title} ${item.category} ${item.location} ${item.district} ${item.status}`.toLowerCase();
@@ -104,7 +94,6 @@ function BrowseItems() {
     statusFilter,
     categoryFilter,
     districtFilter,
-    locationFilter,
     dateFilter,
     searchTerm,
   ]);
@@ -119,12 +108,6 @@ function BrowseItems() {
         return false;
       }
       if (districtFilter !== "all" && item.district !== districtFilter) {
-        return false;
-      }
-      if (
-        locationFilter !== "all" &&
-        !item.location.toLowerCase().includes(locationFilter.toLowerCase())
-      ) {
         return false;
       }
       if (dateFilter !== "all" && item.rawDate) {
@@ -159,7 +142,6 @@ function BrowseItems() {
     statusFilter,
     categoryFilter,
     districtFilter,
-    locationFilter,
     dateFilter,
     searchTerm,
   ]);
@@ -168,7 +150,6 @@ function BrowseItems() {
   const hasActiveFilters =
     categoryFilter !== "all" ||
     districtFilter !== "all" ||
-    locationFilter !== "all" ||
     dateFilter !== "all" ||
     statusFilter !== "all" ||
     Boolean(searchTerm);
@@ -177,7 +158,6 @@ function BrowseItems() {
     setSearchTerm("");
     setCategoryFilter("all");
     setDistrictFilter("all");
-    setLocationFilter("all");
     setDateFilter("all");
     setStatusFilter("all");
     setActiveTab("all");
@@ -192,7 +172,6 @@ function BrowseItems() {
     statusFilter,
     categoryFilter,
     districtFilter,
-    locationFilter,
     dateFilter,
     searchTerm,
   ]);
@@ -235,39 +214,42 @@ function BrowseItems() {
             onOpenLostReport={() => setOpenLostReport(true)}
           />
 
-          {/* 5 Filter Dropdowns Bar */}
-          <BrowseFilters
-            category={categoryFilter}
-            onCategoryChange={setCategoryFilter}
-            categoryOptions={categoryFilterOptions}
-            district={districtFilter}
-            onDistrictChange={setDistrictFilter}
-            districtOptions={districtFilterOptions}
-            location={locationFilter}
-            onLocationChange={setLocationFilter}
-            locationOptions={locationFilterOptions}
-            date={dateFilter}
-            onDateChange={setDateFilter}
-            dateOptions={dateFilterOptions}
-            status={statusFilter}
-            onStatusChange={setStatusFilter}
-            statusOptions={statusFilterOptions}
-            onResetFilters={handleResetFilters}
-            hasActiveFilters={hasActiveFilters}
-          />
+          {/* 4 Filter Dropdowns Bar (Overlayed above tabs and cards) */}
+          <div className="relative z-30">
+            <BrowseFilters
+              category={categoryFilter}
+              onCategoryChange={setCategoryFilter}
+              categoryOptions={categoryFilterOptions}
+              district={districtFilter}
+              onDistrictChange={setDistrictFilter}
+              districtOptions={districtFilterOptions}
+              date={dateFilter}
+              onDateChange={setDateFilter}
+              dateOptions={dateFilterOptions}
+              status={statusFilter}
+              onStatusChange={setStatusFilter}
+              statusOptions={statusFilterOptions}
+              onResetFilters={handleResetFilters}
+              hasActiveFilters={hasActiveFilters}
+            />
+          </div>
 
           {/* Tab Pills Bar: All Items, Lost Items, Found Items */}
-          <BrowseTabs
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            counts={tabCounts}
-          />
+          <div className="relative z-10">
+            <BrowseTabs
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              counts={tabCounts}
+            />
+          </div>
 
           {/* 4-Column Responsive Items Grid */}
-          <BrowseItemsGrid
-            items={visibleItems}
-            onResetFilters={handleResetFilters}
-          />
+          <div className="relative z-0">
+            <BrowseItemsGrid
+              items={visibleItems}
+              onResetFilters={handleResetFilters}
+            />
+          </div>
 
           {/* Pagination Controls */}
           <BrowsePagination

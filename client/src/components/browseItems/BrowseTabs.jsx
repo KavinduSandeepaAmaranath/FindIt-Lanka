@@ -18,7 +18,7 @@ function BrowseTabs({ activeTab, onTabChange, counts }) {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="relative z-10 flex flex-wrap items-center gap-3">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
