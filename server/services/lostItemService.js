@@ -29,7 +29,7 @@ export const createLostItem = async ({
 };
 
 export const getAllLostItems = async () => {
-    return await LostItem.find();
+    return await LostItem.find({ approvalStatus: "approved" }).populate("userId", "name email phoneNumber district").sort({ createdAt: -1 });
 };
 
 export const getMyLostItems = async (userId) => {

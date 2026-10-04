@@ -19,6 +19,8 @@ import ReportLostMethodModal from "../components/browseItems/ReportLostMethodMod
 import EligibleLostReportsModal from "../components/browseItems/EligibleLostReportsModal";
 
 import { currentUser } from "../data/dashboardData";
+import { getAllApprovedLostItems } from "../services/lostItemService.js";
+import { getAllApprovedFoundItems } from "../services/foundItemService.js";
 import {
   initialBrowseItems,
   categoryFilterOptions,
@@ -39,7 +41,49 @@ import {
 } from "../data/ReportFound";
 
 function BrowseItems() {
-  const [items] = useState(initialBrowseItems);
+    const [items, setItems] = useState(initialBrowseItems);
+
+  useEffect(() => {
+    const fetchLiveItems = async () => {
+      try {
+        const [lostRes, foundRes] = await Promise.all([
+          getAllApprovedLostItems().catch(() => null),
+          getAllApprovedFoundItems().catch(() => null),
+        ]);
+
+        const lostItems = (lostRes?.lostItems || []).map((item) => ({
+          ...item,
+          id: item._id,
+          status: "Lost",
+          reportType: "Lost Item",
+          date: new Date(item.lostDate || item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          rawDate: (item.lostDate || item.createdAt || "").split("T")[0],
+          image: item.images && item.images.length > 0 ? `http://localhost:5000/${item.images[0]}` : null,
+          images: item.images ? item.images.map(img => `http://localhost:5000/${img}`) : [],
+        }));
+
+        const foundItems = (foundRes?.foundItems || []).map((item) => ({
+          ...item,
+          id: item._id,
+          status: "Found",
+          reportType: "Found Item",
+          date: new Date(item.foundDate || item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          rawDate: (item.foundDate || item.createdAt || "").split("T")[0],
+          image: item.images && item.images.length > 0 ? `http://localhost:5000/${item.images[0]}` : null,
+          images: item.images ? item.images.map(img => `http://localhost:5000/${img}`) : [],
+        }));
+
+        const liveCombined = [...lostItems, ...foundItems];
+        if (liveCombined.length > 0) {
+          setItems(liveCombined);
+        }
+      } catch (err) {
+        console.error("Error fetching live approved items:", err);
+      }
+    };
+
+    fetchLiveItems();
+  }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
