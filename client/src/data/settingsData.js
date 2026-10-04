@@ -1,8 +1,8 @@
 export const profileFormData = {
-  fullName: "Kasun Perera",
-  email: "kasun@gmail.com",
+  fullName: "Saranga Hewage",
+  email: "saranga@example.com",
   phone: "077 123 4567",
-  district: "Galle",
+  district: "Hiniduma, Galle",
 };
 
 // Toggles under Notification Preferences
