@@ -15,7 +15,7 @@ import ClaimDetailsModal from "../components/dashboard/myClaims/ClaimDetailsModa
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
-import { getMyClaims } from "../services/claimService.js";
+import { getMyClaims, approveClaim } from "../services/claimService.js";
 
 import {
   myClaims as initialClaims,
@@ -83,6 +83,34 @@ function MyClaims() {
             if (c.status === "rejected") uiStatus = "Rejected";
             if (c.status === "cancelled") uiStatus = "Cancelled";
 
+            const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+            const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
+            const isReturnOffer = c.foundItemId?.userId ? (c.foundItemId.userId.toString() !== currentUserId?.toString()) : true;
+
+            const founderUser = c.foundItemId?.userId || c.claimantId || {};
+            const displayUser = founderUser.fullName || founderUser.name || (isReturnOffer ? "Item Founder" : "Claimant");
+            const isApproved = c.status === "approved" || c.status === "returned";
+
+            const claimantEmail = isApproved 
+              ? (founderUser.email || "Contact via system") 
+              : "Contact via system (Protected until approval)";
+            const claimantPhone = isApproved 
+              ? (founderUser.phone || founderUser.phoneNumber || "Contact via system") 
+              : "Contact via system (Protected until approval)";
+
+            const userPic = founderUser.profilePicture || founderUser.avatar || founderUser.profileImage;
+            const hasRealAvatar = Boolean(userPic);
+            const claimantAvatar = hasRealAvatar
+              ? (userPic.startsWith("http") ? userPic : `http://localhost:5000/${userPic}`)
+              : null;
+
+            const itemDesc = lost.description || found.description || c.message || "Report details registered in system.";
+            const proofImgs = (lost.images && lost.images.length > 0)
+              ? lost.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+              : (found.images && found.images.length > 0)
+              ? found.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+              : [fullImg];
+
             return {
               ...c,
               id: c._id,
@@ -90,6 +118,14 @@ function MyClaims() {
               title: lost.title || found.title || "Claimed Item",
               category: lost.category || found.category || "General",
               location: lost.district || found.district || lost.location || found.location || "Sri Lanka",
+              claimedBy: displayUser,
+              claimantEmail: claimantEmail,
+              claimantPhone: claimantPhone,
+              claimantAvatar: claimantAvatar,
+              hasRealAvatar: hasRealAvatar,
+              itemDescription: itemDesc,
+              proofImages: proofImgs,
+              isReturnOffer: isReturnOffer,
               claimedOn: new Date(c.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "2-digit",
@@ -235,8 +271,89 @@ function MyClaims() {
     setActiveStat(matchedStat || null);
   };
 
+    const handleConfirmApprove = async (claim) => {
+    try {
+      await approveClaim(claim.id || claim._id, "Return confirmed and accepted by owner.");
+      setSelectedClaim(null);
+      getMyClaims()
+        .then((res) => {
+          if (res?.claims) {
+            const liveClaims = res.claims.map((c) => {
+              const lost = c.lostItemId || {};
+              const found = c.foundItemId || {};
+              const imgPath = lost.images?.[0] || found.images?.[0];
+              const fullImg = imgPath
+                ? (imgPath.startsWith("http") ? imgPath : `http://localhost:5000/${imgPath}`)
+                : fallbackImg;
+
+              let uiStatus = "Pending Verification";
+              if (c.status === "approved") uiStatus = "Claimed";
+              if (c.status === "rejected") uiStatus = "Rejected";
+              if (c.status === "cancelled") uiStatus = "Cancelled";
+
+              const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+              const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
+              const isReturnOffer = c.foundItemId?.userId ? (c.foundItemId.userId.toString() !== currentUserId?.toString()) : true;
+
+              const founderUser = c.foundItemId?.userId || c.claimantId || {};
+              const displayUser = founderUser.fullName || founderUser.name || (isReturnOffer ? "Item Founder" : "Claimant");
+              const isApproved = c.status === "approved" || c.status === "returned";
+
+              const claimantEmail = isApproved 
+                ? (founderUser.email || "Contact via system") 
+                : "Contact via system (Protected until approval)";
+              const claimantPhone = isApproved 
+                ? (founderUser.phone || founderUser.phoneNumber || "Contact via system") 
+                : "Contact via system (Protected until approval)";
+
+              const userPic = founderUser.profilePicture || founderUser.avatar || founderUser.profileImage;
+              const hasRealAvatar = Boolean(userPic);
+              const claimantAvatar = hasRealAvatar
+                ? (userPic.startsWith("http") ? userPic : `http://localhost:5000/${userPic}`)
+                : null;
+
+              const itemDesc = lost.description || found.description || c.message || "Report details registered in system.";
+              const proofImgs = (lost.images && lost.images.length > 0)
+                ? lost.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+                : (found.images && found.images.length > 0)
+                ? found.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+                : [fullImg];
+
+              return {
+                ...c,
+                id: c._id,
+                referenceNo: `CLM-${c._id.slice(-6).toUpperCase()}`,
+                title: lost.title || found.title || "Claimed Item",
+                category: lost.category || found.category || "General",
+                location: lost.district || found.district || lost.location || found.location || "Sri Lanka",
+                claimedBy: displayUser,
+                claimantEmail: claimantEmail,
+                claimantPhone: claimantPhone,
+                claimantAvatar: claimantAvatar,
+                hasRealAvatar: hasRealAvatar,
+                itemDescription: itemDesc,
+                proofImages: proofImgs,
+                isReturnOffer: isReturnOffer,
+                claimedOn: new Date(c.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                }),
+                status: uiStatus,
+                reportType: "Claim Request",
+                image: fullImg,
+              };
+            });
+            setClaimsList(liveClaims);
+          }
+        });
+    } catch (err) {
+      console.error("Error approving claim:", err);
+    }
+  };
+
   return (
-    <div className="flex bg-slate-50">
+    <div className="flex bg-[#f8faff] min-h-screen">
       <DashboardSidebar
         onOpenLostReport={() => setOpenLostReport(true)}
         onOpenFoundReport={() => setOpenFoundReport(true)}
@@ -280,6 +397,7 @@ function MyClaims() {
           <ClaimsList
             claims={visibleClaims}
             onViewDetails={setSelectedClaim}
+            onConfirmApprove={handleConfirmApprove}
           />
 
           <MyReportsPagination
@@ -295,6 +413,7 @@ function MyClaims() {
         <ClaimDetailsModal
           claim={selectedClaim}
           onClose={() => setSelectedClaim(null)}
+          onConfirmApprove={handleConfirmApprove}
         />
       )}
 

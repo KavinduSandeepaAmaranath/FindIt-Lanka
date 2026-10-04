@@ -18,3 +18,9 @@ export const getAllApprovedLostItems = async () => {
     const response = await api.get("/lost/all");
     return response.data;
 };
+
+
+export const getMyLostItems = async () => {
+  const response = await api.get("/lost/my-items");
+  return response.data;
+};

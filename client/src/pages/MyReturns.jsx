@@ -204,7 +204,7 @@ function MyReturns() {
     return [
       {
         id: "approved",
-        label: "Approved Claims",
+        label: "Approved Returns",
         value: returnsList.filter((item) =>
           tabStatusMap.approved.includes(item.status)
         ).length,
@@ -212,7 +212,7 @@ function MyReturns() {
       },
       {
         id: "pending",
-        label: "Pending Claims",
+        label: "Pending Returns",
         value: returnsList.filter((item) =>
           tabStatusMap.pending.includes(item.status)
         ).length,
