@@ -58,7 +58,7 @@ function MyReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
 
-  const [reportsList, setReportsList] = useState(mockReports);
+  const [reportsList, setReportsList] = useState([]);
   const [liveStats, setLiveStats] = useState(null);
 
   useEffect(() => {

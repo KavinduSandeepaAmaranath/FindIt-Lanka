@@ -42,7 +42,7 @@ import {
 } from "../data/ReportFound";
 
 function BrowseItems() {
-    const [items, setItems] = useState(initialBrowseItems);
+    const [items, setItems] = useState([]);
 
   useEffect(() => {
     const fetchLiveItems = async () => {

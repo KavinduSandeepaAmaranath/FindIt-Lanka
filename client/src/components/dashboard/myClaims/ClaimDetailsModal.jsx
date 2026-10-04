@@ -32,7 +32,7 @@ function FullImageModal({ imageUrl, title, onClose }) {
   );
 }
 
-function ClaimDetailsModal({ claim, onClose, onConfirmApprove }) {
+function ClaimDetailsModal({ claim, onClose, onConfirmApprove, onContactFounder }) {
   const [selectedProofImg, setSelectedProofImg] = useState(null);
 
   if (!claim) return null;
@@ -229,9 +229,19 @@ function ClaimDetailsModal({ claim, onClose, onConfirmApprove }) {
             </div>
           </div>
 
-          {/* Bottom Actions */}
+                    {/* Bottom Actions */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-            {isPending && onConfirmApprove && (
+            {(claim.status === "Claimed" || claim.status === "approved" || claim.status === "Approved") && onContactFounder && (
+              <button
+                type="button"
+                onClick={() => onContactFounder(claim)}
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+              >
+                Contact Founder
+              </button>
+            )}
+
+            {isPending && claim.isReturnOffer && onConfirmApprove && (
               <button
                 type="button"
                 onClick={() => onConfirmApprove(claim)}

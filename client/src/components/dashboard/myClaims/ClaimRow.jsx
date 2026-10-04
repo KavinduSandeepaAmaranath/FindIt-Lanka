@@ -1,7 +1,7 @@
 import { FiCheckCircle, FiCalendar, FiEye, FiChevronRight, FiClock, FiCheck, FiX } from "react-icons/fi";
 import fallbackImage from "../../../assets/images/LpIphone1.avif";
 
-function ClaimRow({ claim, onViewDetails, onConfirmApprove }) {
+function ClaimRow({ claim, onViewDetails, onConfirmApprove, onContactFounder }) {
   const { title, status, claimedOn, image } = claim;
 
   const renderBadge = () => {
@@ -90,7 +90,7 @@ function ClaimRow({ claim, onViewDetails, onConfirmApprove }) {
                 ? "Your claim has been approved! Item successfully claimed."
                 : status === "Rejected" || status === "rejected"
                 ? "Your claim was rejected. Please review details."
-                : "Your claim has been submitted. Waiting for verification."}
+                : claim.isReturnOffer ? "Return offered by founder. Click Confirm Return to accept." : "Your claim has been submitted. Waiting for founder verification."}
             </p>
           </div>
 
@@ -109,8 +109,27 @@ function ClaimRow({ claim, onViewDetails, onConfirmApprove }) {
 
         {/* Column 3: Action Button */}
         <div className="flex items-center gap-3 lg:border-l lg:border-slate-200/80 lg:pl-8 shrink-0">
-          <div className="flex flex-col gap-2 w-full sm:w-[170px]">
-            {(status === "Pending Verification" || status === "pending") && onConfirmApprove ? (
+                    <div className="flex flex-col gap-2 w-full sm:w-[170px]">
+            <button
+              type="button"
+              onClick={() => onViewDetails(claim)}
+              className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-xs transition-colors cursor-pointer"
+            >
+              <FiEye className="w-4 h-4" />
+              View Details
+            </button>
+
+            {(status === "Claimed" || status === "Approved" || status === "approved") && onContactFounder ? (
+              <button
+                type="button"
+                onClick={() => onContactFounder(claim)}
+                className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-xs transition-colors cursor-pointer"
+              >
+                Contact Founder
+              </button>
+            ) : null}
+
+            {(status === "Pending Verification" || status === "pending") && claim.isReturnOffer && onConfirmApprove ? (
               <button
                 type="button"
                 onClick={() => onConfirmApprove(claim)}
@@ -120,14 +139,6 @@ function ClaimRow({ claim, onViewDetails, onConfirmApprove }) {
                 Confirm Return
               </button>
             ) : null}
-            <button
-              type="button"
-              onClick={() => onViewDetails(claim)}
-              className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#38bdf8] hover:bg-[#0ea5e9] text-white shadow-xs transition-colors cursor-pointer"
-            >
-              <FiEye className="w-4 h-4" />
-              View Details
-            </button>
           </div>
 
           <button

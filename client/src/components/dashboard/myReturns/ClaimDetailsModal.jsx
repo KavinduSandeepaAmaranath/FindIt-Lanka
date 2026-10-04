@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiX, FiCheck, FiEye } from "react-icons/fi";
+import { FiX, FiCheck, FiEye, FiUser } from "react-icons/fi";
 import fallbackImage from "../../../assets/images/UdbFallbackImage.avif";
 import FullImageModal from "./FullImageModal";
 

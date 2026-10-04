@@ -10,6 +10,7 @@ import MyClaimsTabs from "../components/dashboard/myClaims/MyClaimsTabs";
 import MyClaimsSearch from "../components/dashboard/myClaims/MyClaimsSearch";
 import ClaimsList from "../components/dashboard/myClaims/ClaimsList";
 import ClaimDetailsModal from "../components/dashboard/myClaims/ClaimDetailsModal";
+import ContactFounderModal from "../components/dashboard/myClaims/ContactFounderModal";
 
 /*pagination component is shared*/
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
@@ -65,6 +66,15 @@ function MyClaims() {
   const [activeStat, setActiveStat] = useState("claimed");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedClaim, setSelectedClaim] = useState(null);
+  const [contactFounderClaim, setContactFounderClaim] = useState(null);
+  const [toastMessage, setToastMessage] = useState("");
+
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => setToastMessage(""), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   useEffect(() => {
     getMyClaims()
@@ -85,7 +95,9 @@ function MyClaims() {
 
             const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
             const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
-            const isReturnOffer = c.foundItemId?.userId ? (c.foundItemId.userId.toString() !== currentUserId?.toString()) : true;
+            const claimantUser = c.claimantId || {};
+            const claimantUserId = claimantUser._id || claimantUser.id || claimantUser;
+            const isReturnOffer = claimantUserId ? (claimantUserId.toString() !== currentUserId?.toString()) : true;
 
             const founderUser = c.foundItemId?.userId || c.claimantId || {};
             const displayUser = founderUser.fullName || founderUser.name || (isReturnOffer ? "Item Founder" : "Claimant");
@@ -398,6 +410,7 @@ function MyClaims() {
             claims={visibleClaims}
             onViewDetails={setSelectedClaim}
             onConfirmApprove={handleConfirmApprove}
+            onContactFounder={setContactFounderClaim}
           />
 
           <MyReportsPagination
@@ -408,12 +421,33 @@ function MyClaims() {
         </div>
       </div>
 
+      {/* contact founder modal */}
+      {contactFounderClaim && (
+        <ContactFounderModal
+          claim={contactFounderClaim}
+          onClose={() => setContactFounderClaim(null)}
+          onMessageSent={(msg) => setToastMessage(msg)}
+        />
+      )}
+
+      {/* toast message */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl border border-slate-700 text-sm font-semibold flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-200">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          {toastMessage}
+        </div>
+      )}
+
       {/*claim details popup*/}
       {selectedClaim && (
         <ClaimDetailsModal
           claim={selectedClaim}
           onClose={() => setSelectedClaim(null)}
           onConfirmApprove={handleConfirmApprove}
+          onContactFounder={(c) => {
+            setSelectedClaim(null);
+            setContactFounderClaim(c);
+          }}
         />
       )}
 

@@ -143,7 +143,7 @@ function MyReturns() {
                 day: "2-digit",
                 year: "numeric",
               }),
-              status: isReturnOffer && uiStatus === "Pending Claim" ? "Return Offered" : uiStatus,
+              status: uiStatus,
               claimStatus: uiStatus,
               image: fullImg,
             };
