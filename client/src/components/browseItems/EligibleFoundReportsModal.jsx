@@ -3,7 +3,7 @@ import { getMyFoundItems } from "../../services/foundItemService.js";
 import { FiX, FiSearch, FiMapPin, FiCheckSquare, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import fallbackImage from "../../assets/images/LpIphone1.avif";
 
-function EligibleFoundReportsModal({ onClose, onSubmit }) {
+function EligibleFoundReportsModal({ onClose, onSubmit, initialSelectedId }) {
   const [reportsList, setReportsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

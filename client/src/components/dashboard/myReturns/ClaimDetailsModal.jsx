@@ -92,10 +92,10 @@ function ClaimDetailsModal({
                     <p className="font-bold text-slate-900">{item.title}</p>
                     <p className="text-slate-600 text-[11px]">{item.category}</p>
                     <p className="text-slate-600 text-[11px]">
-                      Found Date: {item.whenLost || "Sep 18, 2026"}
+                      Found Date: {item.whenLost || item.claimedOn || "Not specified"}
                     </p>
                     <p className="text-slate-600 text-[11px]">
-                      Found Location: {item.location || "Badulla"}
+                      Found Location: {item.location || "Not specified"}
                     </p>
                   </div>
                 </div>
@@ -111,30 +111,24 @@ function ClaimDetailsModal({
                   <div>
                     <p className="text-slate-500 font-semibold">Where did you lose this item?</p>
                     <p className="font-bold text-slate-800">
-                      {item.whereLost || "Badulla University Library"}
+                      {item.whereLost || item.location || "Location specified in report"}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-slate-500 font-semibold">When did you lose this item?</p>
                     <p className="font-bold text-slate-800">
-                      {item.whenLost || "Sep 18, 2026"}
+                      {item.whenLost || item.claimedOn || "Date specified in report"}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-slate-500 font-semibold">Describe the item</p>
                     <p className="font-bold text-slate-800">
-                      {item.itemDescription || "Dark iPhone 13 with a small scratch near the camera."}
+                      {item.itemDescription || "Report details registered in system."}
                     </p>
                   </div>
 
-                  <div>
-                    <p className="text-slate-500 font-semibold">What makes this item uniquely yours?</p>
-                    <p className="font-bold text-slate-800">
-                      {item.uniqueProof || "Blue phone case and a sticker on the back."}
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>

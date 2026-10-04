@@ -69,14 +69,7 @@ function MyClaims() {
   const [contactFounderClaim, setContactFounderClaim] = useState(null);
   const [toastMessage, setToastMessage] = useState("");
 
-  useEffect(() => {
-    if (toastMessage) {
-      const timer = setTimeout(() => setToastMessage(""), 3500);
-      return () => clearTimeout(timer);
-    }
-  }, [toastMessage]);
-
-  useEffect(() => {
+    const loadClaims = () => {
     getMyClaims()
       .then((res) => {
         if (res?.claims) {
@@ -138,11 +131,7 @@ function MyClaims() {
               itemDescription: itemDesc,
               proofImages: proofImgs,
               isReturnOffer: isReturnOffer,
-              claimedOn: new Date(c.createdAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-              }),
+              claimedOn: c.createdAt,
               status: uiStatus,
               reportType: "Claim Request",
               image: fullImg,
@@ -157,6 +146,10 @@ function MyClaims() {
         console.error("Error loading my claims:", err);
         setClaimsList([]);
       });
+  };
+
+  useEffect(() => {
+    loadClaims();
   }, []);
 
   /*tab counts*/
@@ -283,84 +276,16 @@ function MyClaims() {
     setActiveStat(matchedStat || null);
   };
 
-    const handleConfirmApprove = async (claim) => {
+      const handleConfirmApprove = async (claim) => {
     try {
       await approveClaim(claim.id || claim._id, "Return confirmed and accepted by owner.");
       setSelectedClaim(null);
-      getMyClaims()
-        .then((res) => {
-          if (res?.claims) {
-            const liveClaims = res.claims.map((c) => {
-              const lost = c.lostItemId || {};
-              const found = c.foundItemId || {};
-              const imgPath = lost.images?.[0] || found.images?.[0];
-              const fullImg = imgPath
-                ? (imgPath.startsWith("http") ? imgPath : `http://localhost:5000/${imgPath}`)
-                : fallbackImg;
-
-              let uiStatus = "Pending Verification";
-              if (c.status === "approved") uiStatus = "Claimed";
-              if (c.status === "rejected") uiStatus = "Rejected";
-              if (c.status === "cancelled") uiStatus = "Cancelled";
-
-              const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-              const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
-              const isReturnOffer = c.foundItemId?.userId ? (c.foundItemId.userId.toString() !== currentUserId?.toString()) : true;
-
-              const founderUser = c.foundItemId?.userId || c.claimantId || {};
-              const displayUser = founderUser.fullName || founderUser.name || (isReturnOffer ? "Item Founder" : "Claimant");
-              const isApproved = c.status === "approved" || c.status === "returned";
-
-              const claimantEmail = isApproved 
-                ? (founderUser.email || "Contact via system") 
-                : "Contact via system (Protected until approval)";
-              const claimantPhone = isApproved 
-                ? (founderUser.phone || founderUser.phoneNumber || "Contact via system") 
-                : "Contact via system (Protected until approval)";
-
-              const userPic = founderUser.profilePicture || founderUser.avatar || founderUser.profileImage;
-              const hasRealAvatar = Boolean(userPic);
-              const claimantAvatar = hasRealAvatar
-                ? (userPic.startsWith("http") ? userPic : `http://localhost:5000/${userPic}`)
-                : null;
-
-              const itemDesc = lost.description || found.description || c.message || "Report details registered in system.";
-              const proofImgs = (lost.images && lost.images.length > 0)
-                ? lost.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
-                : (found.images && found.images.length > 0)
-                ? found.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
-                : [fullImg];
-
-              return {
-                ...c,
-                id: c._id,
-                referenceNo: `CLM-${c._id.slice(-6).toUpperCase()}`,
-                title: lost.title || found.title || "Claimed Item",
-                category: lost.category || found.category || "General",
-                location: lost.district || found.district || lost.location || found.location || "Sri Lanka",
-                claimedBy: displayUser,
-                claimantEmail: claimantEmail,
-                claimantPhone: claimantPhone,
-                claimantAvatar: claimantAvatar,
-                hasRealAvatar: hasRealAvatar,
-                itemDescription: itemDesc,
-                proofImages: proofImgs,
-                isReturnOffer: isReturnOffer,
-                claimedOn: new Date(c.createdAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                }),
-                status: uiStatus,
-                reportType: "Claim Request",
-                image: fullImg,
-              };
-            });
-            setClaimsList(liveClaims);
-          }
-        });
+      setToastMessage(`Return accepted for "${claim.title}"! You can now contact the founder.`);
+      loadClaims();
     } catch (err) {
       console.error("Error approving claim:", err);
+      const msg = err.response?.data?.message || err.message || "Failed to accept return.";
+      setToastMessage(`Note: ${msg}`);
     }
   };
 

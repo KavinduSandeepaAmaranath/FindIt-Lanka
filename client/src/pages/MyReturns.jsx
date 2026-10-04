@@ -116,12 +116,16 @@ function MyReturns() {
               ? (userPic.startsWith("http") ? userPic : `http://localhost:5000/${userPic}`)
               : null;
 
-            const itemDesc = lost.description || found.description || r.message || "Report description";
+                        const itemDesc = lost.description || found.description || r.message || "Report description registered in system.";
             const proofImgs = (lost.images && lost.images.length > 0)
               ? lost.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
               : (found.images && found.images.length > 0)
               ? found.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
               : [fullImg];
+
+            const whereLostStr = lost.location ? `${lost.location}${lost.district ? `, ${lost.district}` : ""}` : (lost.district || found.location || found.district || "Location in report");
+            const whenLostStr = lost.lostDate ? new Date(lost.lostDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) : new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+            const uniqueProofStr = lost.description || r.message || "Ownership proof registered in report";
 
             return {
               ...r,
@@ -136,13 +140,12 @@ function MyReturns() {
               claimantAvatar: claimantAvatar,
               hasRealAvatar: hasRealAvatar,
               itemDescription: itemDesc,
+              whereLost: whereLostStr,
+              whenLost: whenLostStr,
+              uniqueProof: uniqueProofStr,
               proofImages: proofImgs,
               isReturnOffer: isReturnOffer,
-              claimedOn: new Date(r.createdAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-              }),
+              claimedOn: r.createdAt,
               status: uiStatus,
               claimStatus: uiStatus,
               image: fullImg,

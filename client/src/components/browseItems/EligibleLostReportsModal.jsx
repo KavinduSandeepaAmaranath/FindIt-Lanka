@@ -3,7 +3,7 @@ import { getMyLostItems } from "../../services/lostItemService.js";
 import { FiX, FiSearch, FiMapPin, FiCheckSquare, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import fallbackImage from "../../assets/images/LpIphone1.avif";
 
-function EligibleLostReportsModal({ onClose, onSubmit }) {
+function EligibleLostReportsModal({ onClose, onSubmit, initialSelectedId }) {
   const [reportsList, setReportsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

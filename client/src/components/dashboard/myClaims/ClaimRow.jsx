@@ -40,8 +40,8 @@ function ClaimRow({ claim, onViewDetails, onConfirmApprove, onContactFounder }) 
     }
   };
 
-  const formatClaimDate = (dateString) => {
-    if (!dateString) return "Oct 05, 2026";
+    const formatClaimDate = (dateString) => {
+    if (!dateString) return "Just now";
     const d = new Date(dateString);
     if (isNaN(d.getTime())) return dateString;
     return d.toLocaleDateString("en-US", {
@@ -50,6 +50,7 @@ function ClaimRow({ claim, onViewDetails, onConfirmApprove, onContactFounder }) 
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
     });
   };
 
