@@ -12,9 +12,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
 
   const rowsPerPage = 7;
 
-  // =================================
-  // FILTER CLAIMS
-  // =================================
+//filter claim
 
   const filteredClaims = useMemo(() => {
     const query = searchValue.trim().toLowerCase();
@@ -49,9 +47,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
     });
   }, [searchValue, activeTab]);
 
-  // =================================
-  // PAGINATION
-  // =================================
+//pagination
 
   const filterKey = `${activeTab}-${searchValue
     .trim()
@@ -62,8 +58,6 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
     page: 1,
   });
 
-  // Automatically show page 1 when
-  // search or tab filter changes
   const currentPage =
     pageState.filterKey === filterKey
       ? pageState.page
@@ -103,9 +97,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
     startIndex + rowsPerPage
   );
 
-  // =================================
-  // TABLE
-  // =================================
+//table
 
   return (
     <>
@@ -115,9 +107,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
 
           <table className="w-full min-w-[1050px]">
 
-            {/* =================================
-                TABLE HEADER
-            ================================= */}
+            {/* table head*/}
 
             <thead>
               <tr className="border-b border-gray-200">
@@ -230,7 +220,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                   Status
                 </th>
 
-                {/* Actions */}
+                {/* action*/}
 
                 <th
                   className="
@@ -249,9 +239,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
               </tr>
             </thead>
 
-            {/* =================================
-                TABLE BODY
-            ================================= */}
+            {/*table body */}
 
             <tbody>
 
@@ -267,9 +255,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                   "
                 >
 
-                  {/* =================================
-                      ITEM
-                  ================================= */}
+                  {/* item */}
 
                   <td
                     className="
@@ -306,9 +292,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                     </div>
                   </td>
 
-                  {/* =================================
-                      TYPE
-                  ================================= */}
+                  {/* type */}
 
                   <td
                     className="
@@ -321,9 +305,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                     <ClaimTypeBadge type={claim.type} />
                   </td>
 
-                  {/* =================================
-                      OWNER
-                  ================================= */}
+                  {/* owner */}
 
                   <td
                     className="
@@ -339,9 +321,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                     />
                   </td>
 
-                  {/* =================================
-                      FINDER
-                  ================================= */}
+                  {/* finder */}
 
                   <td
                     className="
@@ -357,9 +337,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                     />
                   </td>
 
-                  {/* =================================
-                      DATE
-                  ================================= */}
+                  {/* date */}
 
                   <td
                     className="
@@ -375,9 +353,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                     {claim.date}
                   </td>
 
-                  {/* =================================
-                      STATUS
-                  ================================= */}
+                  {/* status */}
 
                   <td
                     className="
@@ -392,9 +368,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
                     />
                   </td>
 
-                  {/* =================================
-                      ACTION
-                  ================================= */}
+                  {/* action */}
 
                   <td className="px-3 py-3">
 
@@ -446,9 +420,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
 
         </div>
 
-        {/* =================================
-            EMPTY STATE
-        ================================= */}
+        {/*empty badge */}
 
         {visibleClaims.length === 0 && (
           <div className="py-14 text-center">
@@ -464,9 +436,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
           </div>
         )}
 
-        {/* =================================
-            PAGINATION
-        ================================= */}
+        {/*pagination */}
 
         <Pagination
           currentPage={currentPage}
@@ -479,9 +449,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
 
       </div>
 
-      {/* =================================
-          VIEW CLAIM MODAL
-      ================================= */}
+      {/*view claim */}
 
       {selectedClaim && (
         <ViewClaimModal
@@ -493,9 +461,8 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
   );
 };
 
-// =================================
-// PERSON
-// =================================
+
+//person
 
 const Person = ({ image, name }) => {
   return (
@@ -528,9 +495,8 @@ const Person = ({ image, name }) => {
   );
 };
 
-// =================================
-// CLAIM TYPE BADGE
-// =================================
+
+//claim type
 
 const ClaimTypeBadge = ({ type }) => {
   const isLost = type === "Lost";
@@ -546,11 +512,10 @@ const ClaimTypeBadge = ({ type }) => {
         py-1
         text-xs
         font-semibold
-        text-white
         ${
           isLost
-            ? "bg-[#EF4444]"
-            : "bg-[#009B50]"
+            ? "bg-[#FDE7E9] text-[#D95C66]"
+            : "bg-[#D9F7EA] text-[#009B50]"
         }
       `}
     >
@@ -559,9 +524,8 @@ const ClaimTypeBadge = ({ type }) => {
   );
 };
 
-// =================================
-// CLAIM STATUS BADGE
-// =================================
+
+//claim status
 
 const ClaimStatusBadge = ({ status }) => {
   const statusStyles = {
@@ -631,14 +595,65 @@ const ClaimStatusBadge = ({ status }) => {
     </span>
   );
 };
-// =================================
-// VIEW CLAIM MODAL
-// =================================
 
-const ViewClaimModal = ({
-  claim,
-  onClose,
-}) => {
+
+
+// viev claim 
+
+
+const ViewClaimModal = ({ claim, onClose }) => {
+
+
+  // claim prograss
+ 
+
+  const progressSteps = [
+    {
+      title: "Claim Submitted",
+      date: claim.date,
+      completed: true,
+    },
+
+    {
+      title: "Finder Accepted",
+      date:
+        claim.acceptedDate ||
+        claim.date,
+      completed:
+        claim.status === "Accepted" ||
+        claim.status === "Handover Arranged" ||
+        claim.status === "Completed",
+    },
+
+    {
+      title: "Handover Arranged",
+      date:
+        claim.handoverDate ||
+        claim.date,
+      completed:
+        claim.status === "Handover Arranged" ||
+        claim.status === "Completed",
+    },
+
+    {
+      title: "Handed Over",
+      date:
+        claim.handedOverDate ||
+        claim.date,
+      completed:
+        claim.status === "Completed",
+    },
+
+    {
+      title: "Completed",
+      date:
+        claim.completedDate ||
+        claim.date,
+      completed:
+        claim.status === "Completed",
+    },
+  ];
+
   return (
     <div
       className="
@@ -655,13 +670,19 @@ const ViewClaimModal = ({
       onClick={onClose}
     >
 
+      {/*model*/}
+
       <div
         className="
+          relative
           w-full
-          max-w-lg
+          max-w-[520px]
+          max-h-[95vh]
+          overflow-y-auto
           rounded-2xl
+          border-[6px]
+          border-[#173F94]
           bg-white
-          p-6
           shadow-2xl
         "
         onClick={(e) =>
@@ -669,245 +690,489 @@ const ViewClaimModal = ({
         }
       >
 
-        {/* =================================
-            MODAL HEADER
-        ================================= */}
+        {/*header */}
 
-        <div className="flex items-center justify-between">
+        <div className="px-4 pt-4">
 
-          <h2
+          <div className="flex items-center gap-2">
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="
+                flex
+                h-8
+                w-8
+                items-center
+                justify-center
+                rounded-full
+                text-[#2563EB]
+                transition
+                hover:bg-blue-50
+              "
+              aria-label="Close"
+            >
+              <span className="text-2xl leading-none">
+                ←
+              </span>
+            </button>
+
+            <h2
+              className="
+                text-2xl
+                font-bold
+                text-[#2A3B63]
+              "
+            >
+              Claim Details
+            </h2>
+
+          </div>
+
+
+          {/* current status */}
+
+          <div className="mt-3">
+
+            <ClaimStatusBadge
+              status={claim.status}
+            />
+
+          </div>
+
+        </div>
+
+
+        {/*detail card*/}
+
+        <div
+          className="
+            mx-3
+            mt-4
+            overflow-hidden
+            rounded-lg
+            border
+            border-[#C9DCF8]
+          "
+        >
+
+          <div className="p-4">
+
+            <div className="flex gap-4">
+
+              {/* item img */}
+
+              <img
+                src={claim.image}
+                alt={claim.itemName}
+                className="
+                  h-28
+                  w-28
+                  shrink-0
+                  rounded-lg
+                  object-cover
+                "
+              />
+
+
+              {/* item info */}
+
+              <div className="min-w-0 flex-1">
+
+                <div className="flex flex-wrap items-center gap-3">
+
+                  <h3
+                    className="
+                      text-lg
+                      font-bold
+                      text-[#173F94]
+                    "
+                  >
+                    {claim.itemName}
+                  </h3>
+
+                  <ClaimTypeBadge
+                    type={claim.type}
+                  />
+
+                </div>
+
+
+                {/* date */}
+
+                <div className="mt-3 flex">
+
+                  <span
+                    className="
+                      w-[110px]
+                      text-sm
+                      text-[#5074B5]
+                    "
+                  >
+                    Submitted Date
+                  </span>
+
+                  <span className="mr-2 text-[#5074B5]">
+                    :
+                  </span>
+
+                  <span
+                    className="
+                      text-sm
+                      text-[#5074B5]
+                    "
+                  >
+                    {claim.date}
+                  </span>
+
+                </div>
+
+
+                {/* status*/}
+
+                <div className="mt-2 flex items-center">
+
+                  <span
+                    className="
+                      w-[110px]
+                      text-sm
+                      text-[#5074B5]
+                    "
+                  >
+                    Status
+                  </span>
+
+                  <span className="mr-2 text-[#5074B5]">
+                    :
+                  </span>
+
+                  <ClaimStatusBadge
+                    status={claim.status}
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/*owner & finder */}
+
+          <div
             className="
-              text-2xl
-              font-bold
-              text-[#2A3B63]
+              grid
+              grid-cols-2
+              border-t
+              border-[#C9DCF8]
             "
           >
-            Claim Details
-          </h2>
+
+            {/* owner */}
+
+            <div
+              className="
+                border-r
+                border-[#C9DCF8]
+                p-4
+              "
+            >
+
+              <div className="flex items-center gap-2">
+
+                <span
+                  className="
+                    h-4
+                    w-4
+                    rounded-full
+                    bg-[#8AB2E8]
+                  "
+                />
+
+                <h4
+                  className="
+                    text-xs
+                    font-bold
+                    text-[#173F94]
+                  "
+                >
+                  OWNER
+                </h4>
+
+              </div>
+
+
+              <div className="mt-3 flex items-center gap-2">
+
+                <span className="text-sm">
+                  ♟
+                </span>
+
+                <span
+                  className="
+                    text-sm
+                    font-medium
+                    text-[#173F94]
+                  "
+                >
+                  {claim.owner}
+                </span>
+
+              </div>
+
+
+              <div className="mt-2 flex items-start gap-2">
+
+                <span className="text-xs">
+                  ✉
+                </span>
+
+                <span
+                  className="
+                    break-all
+                    text-xs
+                    text-[#6386C5]
+                  "
+                >
+                  {claim.ownerEmail ||
+                    "Email not available"}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            {/* finder */}
+
+            <div className="p-4">
+
+              <div className="flex items-center gap-2">
+
+                <span
+                  className="
+                    h-4
+                    w-4
+                    rounded-full
+                    bg-[#8AB2E8]
+                  "
+                />
+
+                <h4
+                  className="
+                    text-xs
+                    font-bold
+                    text-[#173F94]
+                  "
+                >
+                  FINDER
+                </h4>
+
+              </div>
+
+
+              <div className="mt-3 flex items-center gap-2">
+
+                <span className="text-sm">
+                  ♟
+                </span>
+
+                <span
+                  className="
+                    text-sm
+                    font-medium
+                    text-[#173F94]
+                  "
+                >
+                  {claim.finder}
+                </span>
+
+              </div>
+
+
+              <div className="mt-2 flex items-start gap-2">
+
+                <span className="text-xs">
+                  ✉
+                </span>
+
+                <span
+                  className="
+                    break-all
+                    text-xs
+                    text-[#6386C5]
+                  "
+                >
+                  {claim.finderEmail ||
+                    "Email not available"}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/*claim prograss*/}
+
+        <div
+          className="
+            mx-3
+            mt-7
+            rounded-lg
+            border
+            border-[#C9DCF8]
+            p-4
+          "
+        >
+
+          <h3
+            className="
+              text-sm
+              font-bold
+              text-[#173F94]
+            "
+          >
+            CLAIM PROGRESS
+          </h3>
+
+
+          <div className="mt-5">
+
+            {progressSteps.map(
+              (step, index) => (
+
+                <div
+                  key={step.title}
+                  className="
+                    relative
+                    flex
+                    gap-4
+                  "
+                >
+
+                  {/* verticle line */}
+
+                  {index !==
+                    progressSteps.length - 1 && (
+                    <div
+                      className={`
+                        absolute
+                        left-[11px]
+                        top-[24px]
+                        h-[52px]
+                        w-[2px]
+                        ${
+                          step.completed
+                            ? "bg-[#00A968]"
+                            : "bg-gray-200"
+                        }
+                      `}
+                    />
+                  )}
+
+
+                  {/* check table  */}
+
+                  <div
+                    className={`
+                      relative
+                      z-10
+                      flex
+                      h-6
+                      w-6
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      text-sm
+                      font-bold
+                      ${
+                        step.completed
+                          ? "bg-[#00A968] text-white"
+                          : "bg-gray-200 text-gray-400"
+                      }
+                    `}
+                  >
+                    {step.completed
+                      ? "✓"
+                      : ""}
+                  </div>
+
+
+                  {/*step info*/}
+
+                  <div className="pb-6">
+
+                    <p
+                      className={`
+                        text-sm
+                        font-semibold
+                        ${
+                          step.completed
+                            ? "text-[#173F94]"
+                            : "text-gray-400"
+                        }
+                      `}
+                    >
+                      {step.title}
+                    </p>
+
+                    <p
+                      className="
+                        mt-1
+                        text-xs
+                        text-[#6386C5]
+                      "
+                    >
+                      {step.date ||
+                        "Pending"}
+                    </p>
+
+                  </div>
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
+        </div>
+
+
+        {/*close btn*/}
+
+        <div className="flex justify-center px-4 py-5">
 
           <button
             type="button"
             onClick={onClose}
             className="
-              rounded-full
-              p-2
-              text-gray-500
+              rounded-lg
+              border
+              border-[#9AAEC8]
+              bg-[#C9D5E5]
+              px-7
+              py-2
+              text-sm
+              font-semibold
+              text-[#334155]
+              shadow-sm
               transition
-              hover:bg-gray-100
-              hover:text-[#2A3B63]
+              hover:bg-[#B8C6D8]
+              active:scale-95
             "
-            aria-label="Close modal"
           >
-            <claimTableIcons.reject
-              size={20}
-            />
+            ✕ Close
           </button>
 
         </div>
-
-        {/* =================================
-            ITEM IMAGE
-        ================================= */}
-
-        <img
-          src={claim.image}
-          alt={claim.itemName}
-          className="
-            mt-5
-            h-48
-            w-full
-            rounded-xl
-            object-cover
-          "
-        />
-
-        {/* =================================
-            ITEM DETAILS
-        ================================= */}
-
-        <div className="mt-5 space-y-4">
-
-          <h3
-            className="
-              text-lg
-              font-semibold
-              text-[#2A3B63]
-            "
-          >
-            {claim.itemName}
-          </h3>
-
-          {/* TYPE */}
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-3
-            "
-          >
-            <span
-              className="
-                text-sm
-                font-medium
-                text-[#64748B]
-              "
-            >
-              Type
-            </span>
-
-            <ClaimTypeBadge
-              type={claim.type}
-            />
-          </div>
-
-          {/* STATUS */}
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-3
-            "
-          >
-            <span
-              className="
-                text-sm
-                font-medium
-                text-[#64748B]
-              "
-            >
-              Status
-            </span>
-
-            <ClaimStatusBadge
-              status={claim.status}
-            />
-          </div>
-
-          {/* OWNER */}
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-3
-            "
-          >
-            <span
-              className="
-                text-sm
-                font-medium
-                text-[#64748B]
-              "
-            >
-              Owner
-            </span>
-
-            <span
-              className="
-                text-right
-                text-sm
-                font-medium
-                text-[#29292D]
-              "
-            >
-              {claim.owner}
-            </span>
-          </div>
-
-          {/* FINDER */}
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-3
-            "
-          >
-            <span
-              className="
-                text-sm
-                font-medium
-                text-[#64748B]
-              "
-            >
-              Finder
-            </span>
-
-            <span
-              className="
-                text-right
-                text-sm
-                font-medium
-                text-[#29292D]
-              "
-            >
-              {claim.finder}
-            </span>
-          </div>
-
-          {/* DATE */}
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-3
-            "
-          >
-            <span
-              className="
-                text-sm
-                font-medium
-                text-[#64748B]
-              "
-            >
-              Submitted Date
-            </span>
-
-            <span
-              className="
-                text-right
-                text-sm
-                font-medium
-                text-[#29292D]
-              "
-            >
-              {claim.date}
-            </span>
-          </div>
-
-        </div>
-
-        {/* =================================
-            CLOSE BUTTON
-        ================================= */}
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="
-            mt-6
-            w-full
-            rounded-xl
-            bg-[#2563EB]
-            px-4
-            py-3
-            text-base
-            font-semibold
-            text-white
-            transition
-            hover:bg-[#0F3292]
-          "
-        >
-          Close
-        </button>
 
       </div>
 

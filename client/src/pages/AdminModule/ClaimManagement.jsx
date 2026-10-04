@@ -40,7 +40,7 @@ const ClaimManagement = () => {
           {/* Header */}
           <HeaderSec setIsOpen={setIsOpen} />
 
-          {/* Statistics Cards */}
+          {/*Cards */}
           <section className="mt-6">
             <ClaimCards />
           </section>

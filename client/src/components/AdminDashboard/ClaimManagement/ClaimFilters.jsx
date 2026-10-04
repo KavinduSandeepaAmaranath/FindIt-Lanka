@@ -24,7 +24,7 @@ const ClaimFilters = ({
         "
       >
 
-        {/* SEARCH AREA */}
+        {/* search area */}
         <div
           className="
             flex
@@ -87,7 +87,7 @@ const ClaimFilters = ({
 
         </div>
 
-        {/* STATUS FILTERS */}
+        {/* status filters*/}
         <div className="flex flex-wrap gap-3">
 
           {claimFilterData.tabs.map((tab) => (

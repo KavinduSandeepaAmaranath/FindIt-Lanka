@@ -18,9 +18,8 @@ import {
   MdOutlineAccessTime,
 } from "react-icons/md";
 
-// ==============================
-// HEADER
-// ==============================
+// header
+
 
 export const claimHeaderData = {
   title: "Claim Management",
@@ -38,9 +37,8 @@ export const claimHeaderIcons = {
   menu: FiMenu,
 };
 
-// ==============================
-// DASHBOARD CARDS
-// ==============================
+
+// cards
 
 export const claimCardsData = [
   {
@@ -88,9 +86,9 @@ export const claimCardsData = [
   },
 ];
 
-// ==============================
-// FILTERS
-// ==============================
+
+// filters
+
 
 export const claimFilterData = {
   searchPlaceholder: "Search Reports by item name, reporter name...",
@@ -109,9 +107,7 @@ export const claimFilterIcons = {
   search: FiSearch,
 };
 
-// ==============================
-// TABLE
-// ==============================
+// table
 
 export const claimTableData = [
   {
@@ -275,9 +271,9 @@ export const claimTableData = [
   },
 ];
 
-// ==============================
-// ICONS
-// ==============================
+
+// icons
+
 
 export const claimTableIcons = {
   view: FiEye,
@@ -292,3 +288,4 @@ export const claimTableIcons = {
   progress: MdOutlineAccessTime,
   submitted: FiCheckCircle,
 };
+

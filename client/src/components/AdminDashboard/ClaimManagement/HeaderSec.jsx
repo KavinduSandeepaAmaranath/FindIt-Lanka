@@ -12,7 +12,7 @@ const HeaderSec = ({ setIsOpen }) => {
     <header className="mb-6">
       <div className="flex items-start justify-between gap-5">
 
-        {/* LEFT SIDE */}
+        {/* left */}
         <div className="flex items-start gap-3">
 
           {/* Mobile Menu */}
@@ -50,7 +50,7 @@ const HeaderSec = ({ setIsOpen }) => {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* right */}
         <div className="hidden items-center gap-5 sm:flex">
 
           {/* Notification */}

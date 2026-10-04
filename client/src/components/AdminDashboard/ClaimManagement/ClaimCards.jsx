@@ -35,9 +35,9 @@ const ClaimCards = () => {
               hover:shadow-[0_6px_14px_rgba(37,99,235,0.18)]
             "
           >
-            {/* TOP */}
+            {/* top */}
             <div className="flex items-start gap-5">
-              {/* ICON */}
+              {/* icon */}
               <div
                 className={`
                   flex
@@ -61,7 +61,7 @@ const ClaimCards = () => {
                 />
               </div>
 
-              {/* TEXT */}
+              {/* text */}
               <div>
                 <h3
                   className="
@@ -90,7 +90,7 @@ const ClaimCards = () => {
               </div>
             </div>
 
-            {/* CHANGE */}
+            {/* change */}
             <p className="mt-5 text-[8px] text-[#173D7A]">
               {card.changeText}
             </p>
