@@ -1,110 +1,69 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { getMyFoundItems } from "../../services/foundItemService.js";
 import { FiX, FiSearch, FiMapPin, FiCheckSquare, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import fallbackImage from "../../assets/images/LpIphone1.avif";
-import iphoneImg from "../../assets/images/LpIphone1.avif";
-import laptopImg from "../../assets/images/acerLaptop.jpg";
-import bagImg from "../../assets/images/LpLeatherHandbag.avif";
-import watchImg from "../../assets/images/UdbWatch1.avif";
-import keyImg from "../../assets/images/UdbCarKey1.webp";
-
-const defaultEligibleReports = [
-  {
-    id: "rep-01",
-    title: "iPhone 13",
-    location: "Matara",
-    district: "Matara",
-    reportType: "Found Item",
-    reportedOn: "Sep 02, 2026 04:15 PM",
-    description: "Found near the ICT building.",
-    status: "Approved/Active",
-    image: iphoneImg,
-  },
-  {
-    id: "rep-02",
-    title: "iPhone 13",
-    location: "Matara",
-    district: "Matara",
-    reportType: "Found Item",
-    reportedOn: "Sep 02, 2026 04:15 PM",
-    description: "Found near the ICT building.",
-    status: "Approved/Active",
-    image: iphoneImg,
-  },
-  {
-    id: "rep-03",
-    title: "iPhone 13",
-    location: "Matara",
-    district: "Matara",
-    reportType: "Found Item",
-    reportedOn: "Sep 02, 2026 04:15 PM",
-    description: "Found near the ICT building.",
-    status: "Approved/Active",
-    image: iphoneImg,
-  },
-  {
-    id: "rep-04",
-    title: "Dell Laptop",
-    location: "Galle",
-    district: "Galle",
-    reportType: "Found Item",
-    reportedOn: "Aug 28, 2026 11:30 AM",
-    description: "Found in the computer lab second floor.",
-    status: "Approved/Active",
-    image: laptopImg,
-  },
-  {
-    id: "rep-05",
-    title: "Leather Handbag",
-    location: "Galle Fort",
-    district: "Galle",
-    reportType: "Found Item",
-    reportedOn: "Aug 20, 2026 02:45 PM",
-    description: "Brown leather handbag found on the park bench.",
-    status: "Approved/Active",
-    image: bagImg,
-  },
-  {
-    id: "rep-06",
-    title: "Luxury Wristwatch",
-    location: "Kandy",
-    district: "Kandy",
-    reportType: "Found Item",
-    reportedOn: "Aug 15, 2026 05:00 PM",
-    description: "Found near the library reference desk.",
-    status: "Approved/Active",
-    image: watchImg,
-  },
-  {
-    id: "rep-07",
-    title: "Toyota Smart Key",
-    location: "Matara",
-    district: "Matara",
-    reportType: "Found Item",
-    reportedOn: "Aug 10, 2026 09:15 AM",
-    description: "Found near the main entrance parking lot.",
-    status: "Approved/Active",
-    image: keyImg,
-  },
-];
 
 function EligibleFoundReportsModal({ onClose, onSubmit }) {
-  const [reports] = useState(defaultEligibleReports);
+  const [reportsList, setReportsList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedReportId, setSelectedReportId] = useState("rep-01");
+  const [selectedReportId, setSelectedReportId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3;
 
+  useEffect(() => {
+    setLoading(true);
+    getMyFoundItems()
+      .then((res) => {
+        if (res?.foundItems && res.foundItems.length > 0) {
+          const liveFound = res.foundItems.map((item) => ({
+            ...item,
+            id: item._id,
+            title: item.title,
+            location: item.location || item.district || "Sri Lanka",
+            district: item.district || "Galle",
+            reportType: "Found Item",
+            reportedOn: new Date(item.createdAt || item.foundDate).toLocaleString("en-US", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            description: item.description || "Found report",
+            status: item.approvalStatus === "approved" ? "Approved/Active" : item.approvalStatus,
+            image: item.images && item.images.length > 0
+              ? (item.images[0].startsWith("http") ? item.images[0] : `http://localhost:5000/${item.images[0]}`)
+              : fallbackImage,
+          }));
+          setReportsList(liveFound);
+          if (liveFound.length > 0) {
+            setSelectedReportId(liveFound[0].id);
+          }
+        } else {
+          setReportsList([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching user found items:", err);
+        setReportsList([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   const filteredReports = useMemo(() => {
-    if (!searchTerm) return reports;
+    if (!searchTerm) return reportsList;
     const q = searchTerm.toLowerCase();
-    return reports.filter(
+    return reportsList.filter(
       (r) =>
         r.title.toLowerCase().includes(q) ||
         r.location.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q)
     );
-  }, [reports, searchTerm]);
+  }, [reportsList, searchTerm]);
 
   const totalPages = Math.max(1, Math.ceil(filteredReports.length / pageSize));
   const safePage = Math.min(Math.max(1, currentPage), totalPages);
@@ -120,35 +79,30 @@ function EligibleFoundReportsModal({ onClose, onSubmit }) {
   };
 
   const handleContinue = () => {
-    const selected = reports.find((r) => r.id === selectedReportId);
-    if (onSubmit) {
+    const selected = reportsList.find((r) => r.id === selectedReportId);
+    if (onSubmit && selected) {
       onSubmit(selected);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      {/* Backdrop */}
-      <div className="fixed inset-0" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+      <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-xl w-full shadow-2xl relative border border-slate-100 max-h-[90vh] flex flex-col justify-between">
+        {/* Header */}
+        <div className="text-center mb-4 relative">
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-0 right-0 w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-md transition-transform hover:scale-105"
+            aria-label="Close modal"
+          >
+            <FiX className="w-5 h-5 stroke-[2.5]" />
+          </button>
 
-      {/* Modal Card with dark blue border */}
-      <div className="relative z-10 w-full max-w-xl bg-white border-4 border-blue-900 rounded-3xl shadow-2xl p-5 sm:p-7 my-6 text-left">
-        {/* Red Circular Close Button (top-right) */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close modal"
-          className="absolute top-4 right-4 w-6 h-6 rounded-full bg-red-600 hover:bg-red-700 active:scale-95 text-white flex items-center justify-center shadow-xs cursor-pointer transition-colors"
-        >
-          <FiX className="w-3.5 h-3.5 stroke-[3]" />
-        </button>
-
-        {/* Heading & Subtitle */}
-        <div className="text-center mb-4">
-          <h2 className="text-xl sm:text-2xl font-bold text-blue-950 inline-block border-b-2 border-blue-900 pb-0.5">
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 border-b-2 border-blue-600 inline-block pb-1">
             Your Eligible Found Reports
-          </h2>
-          <p className="text-xs text-slate-600 mt-1">
+          </h3>
+          <p className="text-xs text-slate-500 mt-1">
             Select one report to continue.
           </p>
         </div>
@@ -178,10 +132,16 @@ function EligibleFoundReportsModal({ onClose, onSubmit }) {
         </form>
 
         {/* Reports List */}
-        <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-          {visibleReports.length === 0 ? (
+        <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1 flex-1">
+          {loading ? (
             <div className="text-center py-8 text-xs text-slate-500">
-              No eligible found reports found matching "{searchTerm}".
+              Loading your found reports...
+            </div>
+          ) : visibleReports.length === 0 ? (
+            <div className="text-center py-8 text-xs text-slate-500">
+              {searchTerm
+                ? `No eligible found reports found matching "${searchTerm}".`
+                : "You don't have any eligible found reports yet."}
             </div>
           ) : (
             visibleReports.map((report) => {
@@ -319,7 +279,7 @@ function EligibleFoundReportsModal({ onClose, onSubmit }) {
             disabled={!selectedReportId}
             className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 disabled:opacity-50 text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
           >
-            Continue &amp; Submit
+            Continue & Submit
           </button>
         </div>
       </div>

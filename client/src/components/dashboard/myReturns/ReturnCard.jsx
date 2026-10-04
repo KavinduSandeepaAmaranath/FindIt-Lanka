@@ -37,11 +37,12 @@ function ReturnCard({
             Return in Progress
           </span>
         );
+      case "Return Offered":
       case "Pending Claim":
         return (
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-[#ff7a1a] text-white shadow-xs">
             <FiClock className="w-3.5 h-3.5 stroke-[2.5]" />
-            Pending Claim
+            {item.isReturnOffer ? "Return Offered" : "Pending Claim"}
           </span>
         );
       case "Returned":
@@ -68,16 +69,16 @@ function ReturnCard({
 
   // Render action buttons matching user request & UI images
   const renderActions = () => {
-    if (status === "Pending Claim") {
+    if (status === "Pending Claim" || status === "Return Offered") {
       return (
         <div className="flex flex-col gap-2 w-full sm:w-[170px]">
           <button
             type="button"
-            onClick={() => onViewClaim(item)}
+            onClick={() => (item.isReturnOffer ? onViewDetails(item) : onViewClaim(item))}
             className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl bg-[#38bdf8] hover:bg-[#0ea5e9] text-white shadow-xs transition-colors cursor-pointer"
           >
             <FiEye className="w-4 h-4" />
-            View Claim
+            {item.isReturnOffer ? "View Details" : "View Claim"}
           </button>
         </div>
       );
@@ -176,7 +177,9 @@ function ReturnCard({
               <FiUser className="w-3.5 h-3.5" />
             </div>
             <p className="truncate">
-              <span className="text-slate-500 font-medium">Claimed by : </span>
+              <span className="text-slate-500 font-medium">
+                {item.isReturnOffer ? "Returning to : " : "Claimed by : "}
+              </span>
               <span className="font-bold text-slate-800">{claimedBy}</span>
             </p>
           </div>
@@ -186,7 +189,9 @@ function ReturnCard({
               <FiCalendar className="w-3.5 h-3.5" />
             </div>
             <p className="truncate">
-              <span className="text-slate-500 font-medium">Claimed Date : </span>
+              <span className="text-slate-500 font-medium">
+                {item.isReturnOffer ? "Offered Date : " : "Claimed Date : "}
+              </span>
               <span className="font-semibold text-slate-800">
                 {formatReturnDate(claimedOn)}
               </span>

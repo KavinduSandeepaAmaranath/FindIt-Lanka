@@ -13,13 +13,13 @@ import ClaimDetailsModal from "../components/dashboard/myClaims/ClaimDetailsModa
 
 /*pagination component is shared*/
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
-
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
-import { currentUser } from "../data/dashboardData";
+import { getMyClaims } from "../services/claimService.js";
+
 import {
-  myClaims,
-  claimStats,
+  myClaims as initialClaims,
+  claimStats as initialStats,
   dateFilterOptions,
   typeFilterOptions,
   CLAIMS_PER_PAGE,
@@ -35,15 +35,17 @@ import {
   reportForm as foundForm,
 } from "../data/ReportFound";
 
+import fallbackImg from "../assets/images/LpIphone1.avif";
+
 /*statuses belong to each tab*/
 const tabStatusMap = {
   all: null,
-  pending: ["Pending Verification", "Under Review"],
-  approved: ["Claimed"],
-  rejected: ["Rejected"],
+  pending: ["Pending Verification", "Under Review", "pending"],
+  approved: ["Claimed", "approved"],
+  rejected: ["Rejected", "rejected"],
 };
 
-/*status card  mapping*/
+/*status card mapping*/
 const statToType = {
   claimed: "all",
   approved: "Claimed",
@@ -52,6 +54,7 @@ const statToType = {
 };
 
 function MyClaims() {
+  const [claimsList, setClaimsList] = useState([]);
   const [openLostReport, setOpenLostReport] = useState(false);
   const [openFoundReport, setOpenFoundReport] = useState(false);
 
@@ -63,40 +66,107 @@ function MyClaims() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedClaim, setSelectedClaim] = useState(null);
 
+  useEffect(() => {
+    getMyClaims()
+      .then((res) => {
+        if (res?.claims) {
+          const liveClaims = res.claims.map((c) => {
+            const lost = c.lostItemId || {};
+            const found = c.foundItemId || {};
+            const imgPath = lost.images?.[0] || found.images?.[0];
+            const fullImg = imgPath
+              ? (imgPath.startsWith("http") ? imgPath : `http://localhost:5000/${imgPath}`)
+              : fallbackImg;
+
+            let uiStatus = "Pending Verification";
+            if (c.status === "approved") uiStatus = "Claimed";
+            if (c.status === "rejected") uiStatus = "Rejected";
+            if (c.status === "cancelled") uiStatus = "Cancelled";
+
+            return {
+              ...c,
+              id: c._id,
+              referenceNo: `CLM-${c._id.slice(-6).toUpperCase()}`,
+              title: lost.title || found.title || "Claimed Item",
+              category: lost.category || found.category || "General",
+              location: lost.district || found.district || lost.location || found.location || "Sri Lanka",
+              claimedOn: new Date(c.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              }),
+              status: uiStatus,
+              reportType: "Claim Request",
+              image: fullImg,
+            };
+          });
+          setClaimsList(liveClaims);
+        } else {
+          setClaimsList([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error loading my claims:", err);
+        setClaimsList([]);
+      });
+  }, []);
+
   /*tab counts*/
   const tabs = useMemo(
     () => [
-      { value: "all", label: "All claims", count: myClaims.length },
+      { value: "all", label: "All claims", count: claimsList.length },
       {
         value: "pending",
         label: "Pending",
-        count: myClaims.filter((c) =>
+        count: claimsList.filter((c) =>
           tabStatusMap.pending.includes(c.status)
         ).length,
       },
       {
         value: "approved",
         label: "Approved",
-        count: myClaims.filter((c) =>
+        count: claimsList.filter((c) =>
           tabStatusMap.approved.includes(c.status)
         ).length,
       },
       {
         value: "rejected",
         label: "Rejected",
-        count: myClaims.filter((c) =>
+        count: claimsList.filter((c) =>
           tabStatusMap.rejected.includes(c.status)
         ).length,
       },
     ],
-    []
+    [claimsList]
   );
+
+  /*computed stats*/
+  const computedStats = useMemo(() => {
+    return [
+      { id: "claimed", label: "Total Claims", value: claimsList.length },
+      {
+        id: "approved",
+        label: "Approved Claims",
+        value: claimsList.filter((c) => tabStatusMap.approved.includes(c.status)).length,
+      },
+      {
+        id: "pending",
+        label: "Pending Verification",
+        value: claimsList.filter((c) => tabStatusMap.pending.includes(c.status)).length,
+      },
+      {
+        id: "rejected",
+        label: "Rejected Claims",
+        value: claimsList.filter((c) => tabStatusMap.rejected.includes(c.status)).length,
+      },
+    ];
+  }, [claimsList]);
 
   /*tab + search + date + type filters*/
   const filteredClaims = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
-    return myClaims
+    return claimsList
       .filter((claim) => {
         const allowed = tabStatusMap[activeTab];
         if (allowed && !allowed.includes(claim.status)) return false;
@@ -128,7 +198,7 @@ function MyClaims() {
         return true;
       })
       .sort((a, b) => new Date(b.claimedOn) - new Date(a.claimedOn));
-  }, [activeTab, searchTerm, dateFilter, typeFilter]);
+  }, [claimsList, activeTab, searchTerm, dateFilter, typeFilter]);
 
   const totalPages = Math.max(
     1,
@@ -191,7 +261,7 @@ function MyClaims() {
           </div>
 
           <MyClaimsStats
-            stats={claimStats}
+            stats={computedStats}
             activeStat={activeStat}
             onSelectStat={handleSelectStat}
           />
