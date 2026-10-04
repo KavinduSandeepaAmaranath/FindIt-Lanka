@@ -1,6 +1,7 @@
-import { FiSettings, FiCheckCircle, FiUser, FiTrash2 } from "react-icons/fi";
+import { FiSettings, FiCheckCircle, FiTrash2 } from "react-icons/fi";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import NotificationBell from "../common/NotificationBell";
+import UserProfileBadge from "../common/UserProfileBadge";
 
 function NotificationHeader({
   user,
@@ -30,14 +31,7 @@ function NotificationHeader({
         {/* user info */}
         <div className="flex items-center gap-3 shrink-0">
           <NotificationBell />
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-slate-900">{user.name}</p>
-            <p className="text-xs text-blue-600 font-medium">{user.membership}</p>
-          </div>
-
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0">
-            <FiUser className="w-5 h-5" />
-          </div>
+          <UserProfileBadge user={user} />
         </div>
       </div>
 

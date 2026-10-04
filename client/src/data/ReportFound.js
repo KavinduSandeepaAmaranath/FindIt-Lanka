@@ -19,7 +19,7 @@ export const reportHeader = {
     "Help return an item to its rightful owner by providing accurate details.",
 
   profile: {
-    name: "Kasun Perera",
+    name: "Saranga Hewage",
     role: "Pro Member",
   },
 

@@ -4,6 +4,7 @@ import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { FaBell } from "react-icons/fa";
 import { PiShieldCheckeredFill } from "react-icons/pi";
 import NotificationBell from "../components/common/NotificationBell";
+import UserProfileBadge from "../components/common/UserProfileBadge";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 
@@ -253,21 +254,9 @@ function Settings() {
 
             <div className="flex items-center gap-3 shrink-0">
               <NotificationBell />
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-900">
-                  {currentUser.name}
-                </p>
-                <p className="text-xs text-blue-600 font-medium">
-                  {currentUser.membership}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0 overflow-hidden border border-blue-200">
-                <img
-                  src={avatarUrl || ProfileImg}
-                  alt={currentUser.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <UserProfileBadge
+                user={{ ...currentUser, avatar: avatarUrl || ProfileImg }}
+              />
             </div>
           </div>
 

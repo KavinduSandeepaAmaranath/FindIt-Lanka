@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { FiUser } from "react-icons/fi";
 import { FaBell } from "react-icons/fa";
+import UserProfileBadge from "../common/UserProfileBadge";
 
 function HelpHeader({ user }) {
   return (
@@ -26,18 +26,7 @@ function HelpHeader({ user }) {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
         </Link>
 
-        <div className="text-right hidden sm:block">
-          <p className="text-sm font-bold text-slate-900 leading-tight">
-            {user?.name || "Kasun Perera"}
-          </p>
-          <p className="text-xs text-blue-600 font-medium">
-            {user?.membership || "Pro Member"}
-          </p>
-        </div>
-
-        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm ring-2 ring-blue-100">
-          <FiUser className="w-5 h-5" />
-        </div>
+        <UserProfileBadge user={user} />
       </div>
     </div>
   );
