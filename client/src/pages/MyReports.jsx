@@ -357,7 +357,7 @@ function MyReports() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <MyReportsHeader />
             <DashboardTopbar
-              user={currentUser}
+              user={undefined}
               hideSearch
             />
           </div>

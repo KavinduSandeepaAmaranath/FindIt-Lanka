@@ -306,7 +306,7 @@ function BrowseItems() {
 
           {/* Topbar: Search Bar + Kasun Perera User Profile */}
           <BrowseTopbar
-            user={currentUser}
+            user={undefined}
             onSearch={setSearchTerm}
             initialSearchTerm={searchTerm}
           />

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { getDashboardProfile, getDashboardStatistics } from "../../services/dashboardService.js";
 import {
   FiX,
   FiUser,
@@ -10,9 +11,30 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import sarangaProfile from "../../assets/images/saranga_profile.jpg";
 
 function MyProfileModal({ isOpen, onClose, user }) {
+  const [liveProfile, setLiveProfile] = useState(null);
+  const [liveStats, setLiveStats] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      Promise.all([
+        getDashboardProfile().catch(() => null),
+        getDashboardStatistics().catch(() => null),
+      ]).then(([profileRes, statsRes]) => {
+        if (profileRes?.profile) {
+          setLiveProfile(profileRes.profile);
+          try {
+            const current = JSON.parse(localStorage.getItem("user") || "{}");
+            localStorage.setItem("user", JSON.stringify({ ...current, ...profileRes.profile }));
+          } catch (e) {}
+        }
+        if (statsRes?.statistics) {
+          setLiveStats(statsRes.statistics);
+        }
+      });
+    }
+  }, [isOpen]);
   // Close modal on Escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -32,58 +54,56 @@ function MyProfileModal({ isOpen, onClose, user }) {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+    if (!isOpen) return null;
 
-  // Profile data with fallback matching the provided design specifications
-  const profileName =
-    !user?.name || user?.name === "Kasun Perera" || user?.name === "Kasun"
-      ? (user?.fullName && user?.fullName !== "Kasun Perera" ? user.fullName : "Saranga Hewage")
-      : user.name;
-  const profileUsername =
-    user?.username && !user.username.includes("kasun")
-      ? user.username
-      : "@sarangahewage";
-  const profileEmail =
-    user?.email && !user.email.includes("kasun")
-      ? user.email
-      : "saranga@example.com";
-  const profileLocation =
-    user?.location ||
-    (user?.district ? `${user.district}, Sri Lanka` : "Hiniduma, Sri Lanka");
-  const profileJoinedOn =
-    user?.joinedOn || user?.memberSince || "Jan 15, 2025";
-  const profileAboutMe =
-    user?.bio ||
-    user?.aboutMe ||
-    "IT and travelling guy. I love exploring new places, meeting new people and discovering amazing stories. Always excited to help others and make a positive impact in the community.";
+  let storedUser = null;
+  try {
+    storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  } catch (e) {
+    storedUser = null;
+  }
+  const activeUser = liveProfile || user || storedUser;
+
+  const profileName = activeUser?.name || activeUser?.fullName || "User";
+  const profileUsername = activeUser?.username || (activeUser?.email ? "@" + activeUser.email.split("@")[0] : "@user");
+  const profileEmail = activeUser?.email || "user@example.com";
+  const profileLocation = activeUser?.district
+    ? (activeUser.district.toLowerCase().includes("sri lanka") ? activeUser.district : `${activeUser.district}, Sri Lanka`)
+    : (activeUser?.location || "Sri Lanka");
+
+  const rawJoinedDate = activeUser?.createdAt || liveStats?.memberSince;
+  const profileJoinedOn = rawJoinedDate
+    ? new Date(rawJoinedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+    : (activeUser?.joinedOn || activeUser?.memberSince || "Oct 04, 2026");
+  const profileAboutMe = activeUser?.bio || activeUser?.aboutMe || "Welcome to FindIt-Lanka! Community member committed to reuniting lost and found items across Sri Lanka.";
 
   // Stats matching the design
   const statsData = [
     {
       id: "lost",
       label: "Lost Report",
-      value: user?.stats?.lostReports ?? user?.lostReports ?? 12,
-      subtitle: "By you as a Looser",
+      value: liveStats?.totalLostReports ?? user?.stats?.lostReports ?? user?.lostReports ?? 0,
+      subtitle: "By you as a loser",
       iconBg: "bg-blue-600 shadow-blue-200",
     },
     {
       id: "found",
       label: "Found Report",
-      value: user?.stats?.foundReports ?? user?.foundReports ?? 5,
+      value: liveStats?.totalFoundReports ?? user?.stats?.foundReports ?? user?.foundReports ?? 0,
       subtitle: "By you as a finder",
       iconBg: "bg-emerald-500 shadow-emerald-200",
     },
     {
       id: "recovered",
       label: "Items Recovered",
-      value: user?.stats?.itemsRecovered ?? user?.itemsRecovered ?? 4,
+      value: liveStats?.recoveredItems ?? user?.stats?.itemsRecovered ?? user?.itemsRecovered ?? 0,
       subtitle: "Your lost Items back",
       iconBg: "bg-purple-600 shadow-purple-200",
     },
     {
       id: "returned",
       label: "Items Returned",
-      value: user?.stats?.itemsReturned ?? user?.itemsReturned ?? 3,
+      value: liveStats?.returnedItems ?? user?.stats?.itemsReturned ?? user?.itemsReturned ?? 0,
       subtitle: "You returned to owners",
       iconBg: "bg-amber-500 shadow-amber-200",
     },
@@ -164,11 +184,17 @@ function MyProfileModal({ isOpen, onClose, user }) {
 
               {/* User Avatar */}
               <div className="mb-5">
+                {activeUser?.avatar ? (
                 <img
-                  src={user?.avatar || sarangaProfile}
+                  src={activeUser.avatar}
                   alt={profileName}
                   className="w-20 h-20 sm:w-22 sm:h-22 rounded-full object-cover border-2 border-slate-100 shadow-sm"
                 />
+              ) : (
+                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 border-2 border-slate-100 shadow-sm">
+                  <FiUser className="w-10 h-10 text-blue-700" />
+                </div>
+              )}
               </div>
 
               {/* Details List */}

@@ -226,7 +226,7 @@ function Notification() {
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6">
           <NotificationHeader
-            user={currentUser}
+            user={undefined}
             onOpenSettings={() => setOpenSettingsModal(true)}
             onOpenMarkAllRead={() => setOpenMarkAllReadModal(true)}
             onOpenDeleteAll={handleOpenDeleteAll}

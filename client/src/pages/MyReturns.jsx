@@ -283,7 +283,7 @@ function MyReturns() {
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8 space-y-7">
           {/* Top User Bar */}
-          <MyReturnsUserBar user={currentUser} />
+          <MyReturnsUserBar user={undefined} />
 
           {/* Header + Date & Type Filter Dropdowns */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">

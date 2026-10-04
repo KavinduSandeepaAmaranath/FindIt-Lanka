@@ -1,9 +1,8 @@
 import { FiUser } from "react-icons/fi";
 import { useProfileModal } from "../../context/ProfileModalContext";
-import sarangaProfile from "../../assets/images/saranga_profile.jpg";
 
 function UserProfileBadge({
-  user,
+  user: userProp,
   className = "",
   showText = true,
   avatarClassName = "w-10 h-10",
@@ -13,17 +12,23 @@ function UserProfileBadge({
 }) {
   const { openProfile } = useProfileModal();
 
+  let storedUser = null;
+  try {
+    storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  } catch (e) {
+    storedUser = null;
+  }
+
+  const user = userProp || storedUser;
+
   const handleClick = (e) => {
     if (onClick) onClick(e);
     openProfile(user);
   };
 
-  const displayName =
-    !user?.name || user?.name === "Kasun Perera" || user?.name === "Kasun"
-      ? (user?.fullName && user?.fullName !== "Kasun Perera" ? user.fullName : "Saranga Hewage")
-      : user.name;
-  const displayRole = "Pro Member";
-  const avatarSrc = user?.avatar || sarangaProfile;
+  const displayName = user?.name || user?.fullName || "User";
+  const displayRole = user?.role === "admin" ? "Admin" : "Pro Member";
+  const avatarSrc = user?.avatar;
 
   return (
     <button
