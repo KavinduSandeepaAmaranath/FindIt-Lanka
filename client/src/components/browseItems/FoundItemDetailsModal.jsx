@@ -12,12 +12,9 @@ function FoundItemDetailsModal({ item, onClose, onClaimItem }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      {/* Click outside backdrop handler */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Modal Container with dark blue border */}
       <div className="relative z-10 w-full max-w-xl bg-white border-4 border-blue-900 rounded-3xl shadow-2xl p-6 sm:p-8 my-8 text-left">
-        {/* Red Circular Close Button (top-right) */}
         <button
           type="button"
           onClick={onClose}
@@ -27,14 +24,13 @@ function FoundItemDetailsModal({ item, onClose, onClaimItem }) {
           <FiX className="w-3.5 h-3.5 stroke-[3]" />
         </button>
 
-        {/* Title with underline */}
+        {/* Title */}
         <div className="text-left mb-3">
           <h2 className="text-2xl font-bold text-blue-950 inline-block border-b-2 border-blue-900 pb-0.5">
             Report Details
           </h2>
         </div>
 
-        {/* Uploaded Photo Header Row with green Found Item badge */}
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs sm:text-sm font-semibold text-slate-800">
             Uploaded Photo

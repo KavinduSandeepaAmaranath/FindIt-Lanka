@@ -26,7 +26,6 @@ export default function AdminDashboardHeader({
   const handleSearch = () => {
     console.log("Searching:", searchText);
 
-    // TODO:
     // API call or search functionality goes here
   };
 

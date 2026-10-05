@@ -66,11 +66,11 @@ function MyReturns() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Modal states matching provided UI images
-  const [claimDetailsItem, setClaimDetailsItem] = useState(null); // Image 1
-  const [approveModalItem, setApproveModalItem] = useState(null); // Image 2
-  const [rejectModalItem, setRejectModalItem] = useState(null);   // Image 3
-  const [viewDetailsItem, setViewDetailsItem] = useState(null);   // Image 4
-  const [markDoneItem, setMarkDoneItem] = useState(null);         // Image 5
+  const [claimDetailsItem, setClaimDetailsItem] = useState(null);
+  const [approveModalItem, setApproveModalItem] = useState(null);
+  const [rejectModalItem, setRejectModalItem] = useState(null);
+  const [viewDetailsItem, setViewDetailsItem] = useState(null);
+  const [markDoneItem, setMarkDoneItem] = useState(null);
   const [contactItem, setContactItem] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -223,17 +223,17 @@ function MyReturns() {
     setActiveStat(matchedStat || null);
   };
 
-  // Button Action Handlers
+  // Button action handlers
   const handleApproveClaim = (item) => {
     setReturnsList((prev) =>
       prev.map((r) =>
         r.id === item.id
           ? {
-              ...r,
-              status: "Approved",
-              claimStatus: "Approved",
-              approvedDate: new Date().toISOString(),
-            }
+            ...r,
+            status: "Approved",
+            claimStatus: "Approved",
+            approvedDate: new Date().toISOString(),
+          }
           : r
       )
     );
@@ -245,11 +245,11 @@ function MyReturns() {
       prev.map((r) =>
         r.id === item.id
           ? {
-              ...r,
-              status: "Rejected",
-              claimStatus: "Rejected",
-              rejectionReason: reason,
-            }
+            ...r,
+            status: "Rejected",
+            claimStatus: "Rejected",
+            rejectionReason: reason,
+          }
           : r
       )
     );
@@ -261,12 +261,12 @@ function MyReturns() {
       prev.map((r) =>
         r.id === itemId
           ? {
-              ...r,
-              status: "Returned",
-              returnedOn: details.returnedOn,
-              returnMethod: details.handoverMethod,
-              returnNote: details.note,
-            }
+            ...r,
+            status: "Returned",
+            returnedOn: details.returnedOn,
+            returnMethod: details.handoverMethod,
+            returnNote: details.note,
+          }
           : r
       )
     );
@@ -348,7 +348,6 @@ function MyReturns() {
         </div>
       )}
 
-      {/* Image 1: Claim Details Modal */}
       {claimDetailsItem && (
         <ClaimDetailsModal
           item={claimDetailsItem}
@@ -364,7 +363,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 2: Approve Claim? Modal */}
       {approveModalItem && (
         <ApproveClaimModal
           item={approveModalItem}
@@ -373,7 +371,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 3: Reject Claim? Modal */}
       {rejectModalItem && (
         <RejectClaimModal
           item={rejectModalItem}
@@ -382,7 +379,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 4: View Details Modal */}
       {viewDetailsItem && (
         <ViewDetailsModal
           item={viewDetailsItem}
@@ -390,7 +386,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 5: Mark Item as Returned Modal */}
       {markDoneItem && (
         <MarkItemReturnedModal
           item={markDoneItem}

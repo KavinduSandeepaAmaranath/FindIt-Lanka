@@ -14,11 +14,11 @@ const NotificationList = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
- //item per page
+  //item per page
 
   const rowsPerPage = 10;
 
-//filter data
+  //filter data
 
   const filteredNotifications = useMemo(() => {
     const query = searchValue.trim().toLowerCase();
@@ -40,7 +40,7 @@ const NotificationList = ({
     });
   }, [notifications, searchValue, activeFilter]);
 
-//pagination
+  //pagination
 
   const totalPages = Math.ceil(
     filteredNotifications.length / rowsPerPage
@@ -60,15 +60,15 @@ const NotificationList = ({
       startIndex + rowsPerPage
     );
 
-//mark as read
+  //mark as read
   const handleNotificationClick = (notificationId) => {
     setNotifications((previous) =>
       previous.map((notification) =>
         notification.id === notificationId
           ? {
-              ...notification,
-              read: true,
-            }
+            ...notification,
+            read: true,
+          }
           : notification
       )
     );
@@ -221,15 +221,14 @@ const NotificationList = ({
                           sm:gap-4
                           sm:p-4
 
-                          ${
-                            notification.read
-                              ? `
+                          ${notification.read
+                            ? `
                                 border-gray-200
                                 bg-white
                                 hover:border-[#2563EB]/30
                                 hover:bg-blue-50/20
                               `
-                              : `
+                            : `
                                 border-blue-200
                                 bg-blue-50/40
                                 hover:border-[#2563EB]
@@ -294,10 +293,9 @@ const NotificationList = ({
                                   truncate
                                   text-sm
                                   text-[#2A3B63]
-                                  ${
-                                    notification.read
-                                      ? "font-medium"
-                                      : "font-bold"
+                                  ${notification.read
+                                    ? "font-medium"
+                                    : "font-bold"
                                   }
                                 `}
                               >

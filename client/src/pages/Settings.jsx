@@ -82,17 +82,16 @@ function Settings() {
   const [openLostReport, setOpenLostReport] = useState(false);
   const [openFoundReport, setOpenFoundReport] = useState(false);
 
-  // ---------- Event handlers ----------
   const handleProfileChange = (field, value) => {
     setProfile({ ...profile, [field]: value });
   };
 
-  // 1. Save changes button -> Changes Saved modal
+  // Save changes button -> Changes Saved modal
   const handleSaveProfile = () => {
     setOpenChangesSaved(true);
   };
 
-  // 2. Change photo button -> Change Photo modal
+  // Change photo button -> Change Photo modal
   const handleOpenChangePhoto = () => {
     setOpenChangePhoto(true);
   };
@@ -102,17 +101,17 @@ function Settings() {
     setOpenChangesSaved(true);
   };
 
-  // 3. Change password button -> Change Password modal
+  // Change password button -> Change Password modal
   const handleOpenChangePassword = () => {
     setOpenChangePassword(true);
   };
 
-  // 4. Password updated modal
+  // Password updated modal
   const handlePasswordUpdated = () => {
     setOpenPasswordUpdated(true);
   };
 
-  // 5. Two-factor authentication modal
+  // Two-factor authentication modal
   const handleOpenTwoFactor = () => {
     setOpenTwoFactor(true);
   };
@@ -127,7 +126,7 @@ function Settings() {
     }
   };
 
-  // Privacy & safety items (Profile Visibility, Show Phone Number & Location Visibility)
+  // Privacy & safety items
   const handlePrivacyItemClick = (key) => {
     if (key === "profileVisibility") {
       setOpenProfileVisibility(true);
@@ -204,7 +203,7 @@ function Settings() {
     );
   };
 
-  // 8. Logout modal
+  // Logout modal
   const handleLogOut = () => {
     setOpenLogout(true);
   };
@@ -214,12 +213,12 @@ function Settings() {
     alert("You have been logged out.");
   };
 
-  // 9. Delete account modal
+  // Delete account modal
   const handleDeleteAccount = () => {
     setOpenDeleteAccount(true);
   };
 
-  // 10. Confirm account deletion modal
+  // Confirm account deletion modal
   const handleContinueDelete = () => {
     setOpenDeleteAccount(false);
     setOpenConfirmDelete(true);
@@ -315,27 +314,14 @@ function Settings() {
         </div>
       </div>
 
-      {/* ========================================================
-          10 Modals for all requested buttons:
-          1. save changes btn -> Changes Saved Confirmation
-          2. change photo btn -> Change Profile Photo Modal
-          3. change password btn -> Change Password Modal
-          4. show phone no -> Show Phone Number Modal
-          5. location visibility -> Location Visibility Modal
-          6. logout -> Log Out Confirmation Modal
-          7. delete account -> Delete Account Warning Modal
-          8. confirm account deletion -> Confirm Deletion Modal
-          9. password updated -> Password Updated Modal
-          10. two-factor authentication -> Two-Factor Auth Modal
-         ======================================================== */}
 
-      {/* 1. Save Changes Confirmation Modal */}
+      {/* Save Changes Confirmation Modal */}
       <ChangesSavedModal
         isOpen={openChangesSaved}
         onClose={() => setOpenChangesSaved(false)}
       />
 
-      {/* 2. Change Profile Photo Modal */}
+      {/* Change Profile Photo Modal */}
       <ChangePhotoModal
         isOpen={openChangePhoto}
         onClose={() => setOpenChangePhoto(false)}
@@ -343,14 +329,14 @@ function Settings() {
         onPhotoChange={handlePhotoSaved}
       />
 
-      {/* 3. Change Password Modal */}
+      {/* Change Password Modal */}
       <ChangePasswordModal
         isOpen={openChangePassword}
         onClose={() => setOpenChangePassword(false)}
         onSuccess={handlePasswordUpdated}
       />
 
-      {/* 4. Show Phone Number Modal */}
+      {/* Show Phone Number Modal */}
       <ShowPhoneModal
         isOpen={openShowPhone}
         onClose={() => setOpenShowPhone(false)}
@@ -358,7 +344,7 @@ function Settings() {
         onSave={handleSavePhoneVisibility}
       />
 
-      {/* 5. Location Visibility Modal */}
+      {/* Location Visibility Modal */}
       <LocationVisibilityModal
         isOpen={openLocationVisibility}
         onClose={() => setOpenLocationVisibility(false)}
@@ -366,34 +352,34 @@ function Settings() {
         onSave={handleSaveLocationVisibility}
       />
 
-      {/* 6. Logout Modal */}
+      {/* Logout Modal */}
       <LogoutModal
         isOpen={openLogout}
         onClose={() => setOpenLogout(false)}
         onConfirm={handleConfirmLogout}
       />
 
-      {/* 7. Delete Account Warning Modal */}
+      {/* Delete Account Warning Modal */}
       <DeleteAccountModal
         isOpen={openDeleteAccount}
         onClose={() => setOpenDeleteAccount(false)}
         onContinue={handleContinueDelete}
       />
 
-      {/* 8. Confirm Account Deletion Modal */}
+      {/* Confirm Account Deletion Modal */}
       <ConfirmDeleteModal
         isOpen={openConfirmDelete}
         onClose={() => setOpenConfirmDelete(false)}
         onConfirm={handleConfirmDelete}
       />
 
-      {/* 9. Password Updated Modal */}
+      {/* Password Updated Modal */}
       <PasswordUpdatedModal
         isOpen={openPasswordUpdated}
         onClose={() => setOpenPasswordUpdated(false)}
       />
 
-      {/* 10. Two-Factor Authentication Modal */}
+      {/* Two-Factor Authentication Modal */}
       <TwoFactorModal
         isOpen={openTwoFactor}
         onClose={() => setOpenTwoFactor(false)}
@@ -402,13 +388,13 @@ function Settings() {
         onSave={handleSaveTwoFactor}
       />
 
-      {/* 11. Two-Factor Authentication Enabled Modal */}
+      {/* Two-Factor Authentication Enabled Modal */}
       <TwoFactorEnabledModal
         isOpen={openTwoFactorEnabled}
         onClose={() => setOpenTwoFactorEnabled(false)}
       />
 
-      {/* 12. Profile Visibility Modal */}
+      {/* Profile Visibility Modal */}
       <ProfileVisibilityModal
         isOpen={openProfileVisibility}
         onClose={() => setOpenProfileVisibility(false)}

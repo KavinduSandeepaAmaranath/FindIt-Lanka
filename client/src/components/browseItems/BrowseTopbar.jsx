@@ -46,7 +46,7 @@ function BrowseTopbar({ user, onSearch, initialSearchTerm = "" }) {
         </button>
       </form>
 
-      {/* User profile & Notification area */}
+      {/* user profile & notification area */}
       <div className="flex items-center justify-end gap-5 shrink-0 self-end md:self-auto">
         <NotificationBell />
 
