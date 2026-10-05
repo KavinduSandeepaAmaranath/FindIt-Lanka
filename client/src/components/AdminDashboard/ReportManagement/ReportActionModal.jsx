@@ -190,7 +190,7 @@ const ReportActionModal = ({
           </div>
         )}
 
-        {/* **Edit Content** */}
+        {/* Edit Content */}
         {action === "edit" && (
           <div className="mt-5 space-y-4">
 
@@ -336,7 +336,7 @@ const ReportActionModal = ({
           </div>
         )}
 
-        {/* **Action Buttons** */}
+        {/* Action Buttons */}
         <div className="mt-6 flex gap-3">
           <button
             type="button"
@@ -371,12 +371,11 @@ const ReportActionModal = ({
               font-semibold
               text-white
               transition
-              ${
-                action === "approve"
-                  ? "bg-[#009B50] hover:bg-[#007A3F]"
-                  : action === "reject"
-                    ? "bg-[#B63838] hover:bg-[#8F2C2C]"
-                    : "bg-[#2563EB] hover:bg-[#0F3292]"
+              ${action === "approve"
+                ? "bg-[#009B50] hover:bg-[#007A3F]"
+                : action === "reject"
+                  ? "bg-[#B63838] hover:bg-[#8F2C2C]"
+                  : "bg-[#2563EB] hover:bg-[#0F3292]"
               }
             `}
           >

@@ -34,7 +34,7 @@ function MyProfileModal({ isOpen, onClose, user }) {
 
   if (!isOpen) return null;
 
-  // Profile data with fallback matching the provided design specifications
+  // Profile data with fallback matching
   const profileName =
     !user?.name || user?.name === "Kasun Perera" || user?.name === "Kasun"
       ? (user?.fullName && user?.fullName !== "Kasun Perera" ? user.fullName : "Saranga Hewage")

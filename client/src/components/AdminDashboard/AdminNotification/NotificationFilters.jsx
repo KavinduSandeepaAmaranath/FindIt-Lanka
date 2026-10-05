@@ -108,15 +108,14 @@ const NotificationFilters = ({
                     transition-all
                     duration-200
 
-                    ${
-                      isActive
-                        ? `
+                    ${isActive
+                      ? `
                           border-[#2563EB]
                           bg-[#2563EB]
                           text-white
                           shadow-sm
                         `
-                        : `
+                      : `
                           border-gray-200
                           bg-white
                           text-[#2A3B63]

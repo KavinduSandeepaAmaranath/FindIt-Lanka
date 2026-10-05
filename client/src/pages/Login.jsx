@@ -77,38 +77,38 @@ const Login = () => {
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
 
-        <div className="relative z-10 flex flex-col items-center justify-end w-full pb-8 xl:pb-12">
+        <div className="relative z-10 flex flex-col items-center justify-end w-full h-full pb-3 xl:pb-4">
           <h1 className="
               font-['Poppins'] font-bold text-[#2A3B63] text-center px-6
-              text-2xl xl:text-3xl 2xl:text-4xl
+              text-xl lg:text-2xl xl:text-3xl tracking-tight text-emboss-navy
             ">
             Your Items Matter to Us
           </h1>
 
           <p className="
-              text-[#29292D] leading-6 text-center mt-3
+              text-[#334155] leading-5 xl:leading-6 text-center mt-2 xl:mt-2.5
               max-w-xs xl:max-w-sm
-              text-xs xl:text-sm
+              text-xs xl:text-sm font-normal text-emboss-title
             ">
             Connect with thousands of people helping each other find lost items.
             Sign in to your community of trusted helpers.
           </p>
 
-          <p className="font-['Poppins'] text-xl xl:text-2xl font-bold text-[#2A3B63] mt-2">
+          <p className="font-['Poppins'] text-lg xl:text-xl font-bold text-[#2A3B63] mt-1.5 xl:mt-2 tracking-wide text-emboss-navy">
             FindIt Lanka
           </p>
         </div>
       </div>
 
       {/*banner*/}
- 
+
       <div className="
           lg:hidden
           w-full
           flex flex-col
           bg-white
         ">
-        
+
         <img
           src={LoginBgImage}
           alt="Login"
@@ -131,14 +131,14 @@ const Login = () => {
           <h1 className="
               font-['Poppins'] text-2xl sm:text-3xl
               font-bold text-[#2A3B63]
-              text-center
+              text-center tracking-tight text-emboss-title
             ">
             FindIt Lanka
           </h1>
           <p className="
-              text-[#29292D] text-xs sm:text-sm
-              mt-2 sm:mt-3
-              text-center
+              text-[#475569] text-xs sm:text-sm
+              mt-1.5 sm:mt-2
+              text-center font-medium
             ">
             Welcome Back
           </p>
@@ -169,7 +169,7 @@ const Login = () => {
                 w-11 h-11 sm:w-13 sm:h-13 lg:w-12 lg:h-12
                 shrink-0
                 bg-blue-600 rounded-xl
-                flex items-center justify-center
+                flex items-center justify-center shadow-sm shadow-blue-500/25
               ">
               <VscWorkspaceTrusted className="text-white text-lg sm:text-xl lg:text-2xl" />
             </div>
@@ -179,11 +179,11 @@ const Login = () => {
           <div className="text-center mb-3">
             <h2 className="
                 font-bold text-[#2A3B63] font-['Poppins']
-                text-xl sm:text-2xl lg:text-2xl
+                text-xl sm:text-2xl lg:text-2xl tracking-tight text-emboss-title
               ">
               Welcome Back
             </h2>
-            <p className="text-[#64748B] text-xs sm:text-sm mt-1 leading-snug">
+            <p className="text-[#64748B] text-xs sm:text-sm mt-1 leading-snug font-normal">
               Sign in to your FindIt Lanka account
             </p>
           </div>
@@ -193,7 +193,7 @@ const Login = () => {
 
             {/* Email */}
             <div>
-              <label className="text-[#64748B] text-xs font-medium">Email Address</label>
+              <label className="text-[#475569] text-xs font-semibold tracking-wide">Email Address</label>
               <div className="relative mt-1">
                 <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm pointer-events-none" />
                 <input
@@ -206,6 +206,7 @@ const Login = () => {
                     w-full h-10 sm:h-11 lg:h-10
                     border border-gray-200 rounded-xl
                     text-sm text-[#29292D] bg-white
+                    placeholder:text-[#94A3B8]
                     focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]
                     transition-all duration-300 hover:shadow-md
                   "
@@ -216,10 +217,10 @@ const Login = () => {
             {/* Password */}
             <div>
               <div className="flex items-center justify-between">
-                <label className="text-[#64748B] text-xs font-medium">Password</label>
+                <label className="text-[#475569] text-xs font-semibold tracking-wide">Password</label>
                 <Link
                   to="/forgot-password"
-                  className="text-[#2563EB] text-xs font-medium hover:underline"
+                  className="text-[#2563EB] text-xs font-medium hover:underline transition-colors duration-150"
                 >
                   Forgot?
                 </Link>
@@ -236,6 +237,7 @@ const Login = () => {
                     w-full h-10 sm:h-11 lg:h-10
                     border border-gray-200 rounded-xl
                     text-sm text-[#29292D] bg-white
+                    placeholder:text-[#94A3B8]
                     focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]
                     transition-all duration-300 hover:shadow-md
                     pr-10 sm:pr-12
@@ -244,7 +246,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#2A3B63] transition-colors text-sm"
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -258,8 +260,8 @@ const Login = () => {
 
             {/* Remember me */}
             <div className="flex items-center gap-2">
-              <input type="checkbox" className="w-4 h-4 mt-0.5 shrink-0 cursor-pointer" />
-              <span className="text-[#64748B] text-xs">Remember me</span>
+              <input type="checkbox" id="remember-me" className="w-4 h-4 mt-0.5 shrink-0 cursor-pointer accent-[#2F6BFF]" />
+              <label htmlFor="remember-me" className="text-[#475569] text-xs font-medium cursor-pointer select-none">Remember me</label>
             </div>
 
             {/* Login Button */}
@@ -269,22 +271,23 @@ const Login = () => {
               className="
                 w-full h-10 sm:h-11 lg:h-10
                 bg-[#2F6BFF] text-white rounded-xl
-                text-sm font-semibold
+                text-sm font-semibold tracking-wide
                 hover:bg-[#1D4ED8]
                 transition duration-300 hover:shadow-lg
                 flex items-center justify-center gap-2
                 disabled:opacity-70
                 disabled:cursor-not-allowed
+                text-shadow-btn
               "
             >
-              {loading ? "Signing In..." : "Sign In"}
-              <FaArrowRight />
+              <span>{loading ? "Signing In..." : "Sign In"}</span>
+              <FaArrowRight className="text-xs" />
             </button>
 
             {/* Social divider */}
             <div className="flex items-center gap-3">
               <div className="flex-1 h-px bg-gray-200"></div>
-              <span className="text-[#64748B] text-[10px] sm:text-[11px] tracking-wide whitespace-nowrap">
+              <span className="text-[#94A3B8] text-[10px] sm:text-[11px] font-semibold tracking-widest whitespace-nowrap">
                 OR SIGN IN WITH
               </span>
               <div className="flex-1 h-px bg-gray-200"></div>
@@ -303,7 +306,7 @@ const Login = () => {
                 "
               >
                 <img src={googleIcon} alt="Google" className="w-5 h-5 shrink-0" />
-                <span className="text-xs sm:text-sm">Google</span>
+                <span className="text-xs sm:text-sm font-medium text-[#334155]">Google</span>
               </button>
               <button
                 type="button"
@@ -316,14 +319,14 @@ const Login = () => {
                 "
               >
                 <img src={facebookIcon} alt="Facebook" className="w-5 h-5 shrink-0" />
-                <span className="text-xs sm:text-sm">Facebook</span>
+                <span className="text-xs sm:text-sm font-medium text-[#334155]">Facebook</span>
               </button>
             </div>
 
             {/* Signup Link */}
             <p className="text-center text-[#64748B] text-xs pb-6 sm:pb-8 lg:pb-0">
               Don't have an account?{" "}
-              <Link to="/register" className="text-[#2563EB] font-medium hover:underline">
+              <Link to="/register" className="text-[#2563EB] font-semibold hover:underline transition-colors duration-150">
                 Sign Up
               </Link>
             </p>

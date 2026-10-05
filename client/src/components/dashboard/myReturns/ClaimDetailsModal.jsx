@@ -37,11 +37,8 @@ function ClaimDetailsModal({
             </h2>
           </div>
 
-          {/* Two-column layout matching Image 1 */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pt-1">
-            {/* Left Column (7 cols) */}
             <div className="md:col-span-7 space-y-4">
-              {/* Claimant Information */}
               <div>
                 <h3 className="text-xs font-bold text-slate-900 mb-2">
                   Claimant Information
@@ -130,7 +127,7 @@ function ClaimDetailsModal({
               </div>
             </div>
 
-            {/* Right Column (5 cols): Uploaded Proof */}
+            {/* Right Column: Uploaded Proof */}
             <div className="md:col-span-5 flex flex-col items-center sm:items-start space-y-3">
               <h3 className="text-xs font-bold text-slate-900">
                 Uploaded Proof
@@ -169,7 +166,7 @@ function ClaimDetailsModal({
             </div>
           </div>
 
-          {/* Bottom Right Buttons: Reject Claim and Approve Claim */}
+          {/* Bottom Right Buttons: Reject claim and approve claim */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
             <button
               type="button"

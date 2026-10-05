@@ -131,9 +131,7 @@ function EligibleLostReportsModal({ onClose, onSubmit }) {
       {/* Backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Modal Card with dark blue border */}
       <div className="relative z-10 w-full max-w-xl bg-white border-4 border-blue-900 rounded-3xl shadow-2xl p-5 sm:p-7 my-6 text-left">
-        {/* Red Circular Close Button (top-right) */}
         <button
           type="button"
           onClick={onClose}
@@ -190,13 +188,12 @@ function EligibleLostReportsModal({ onClose, onSubmit }) {
                 <div
                   key={report.id}
                   onClick={() => setSelectedReportId(report.id)}
-                  className={`border rounded-2xl p-3.5 flex items-center justify-between gap-3 bg-white transition-all cursor-pointer ${
-                    isSelected
+                  className={`border rounded-2xl p-3.5 flex items-center justify-between gap-3 bg-white transition-all cursor-pointer ${isSelected
                       ? "border-blue-600 ring-2 ring-blue-100 shadow-xs"
                       : "border-slate-200 hover:border-slate-300"
-                  }`}
+                    }`}
                 >
-                  {/* Left Column: Image, Title, Location, Lost Item Pill */}
+                  {/* Left Column Image, Title, Location, Lost Item Pill */}
                   <div className="flex items-center gap-3 min-w-0">
                     <img
                       src={report.image || fallbackImage}
@@ -222,7 +219,7 @@ function EligibleLostReportsModal({ onClose, onSubmit }) {
                     </div>
                   </div>
 
-                  {/* Middle Column: Details & Approved Status */}
+                  {/* Middle Column- Details & Approved Status */}
                   <div className="hidden sm:block min-w-0 flex-1 px-2 text-left">
                     <p className="text-xs text-slate-600">
                       <span className="text-slate-500">Report Type:</span>{" "}
@@ -242,14 +239,13 @@ function EligibleLostReportsModal({ onClose, onSubmit }) {
                     </span>
                   </div>
 
-                  {/* Right Column: Custom Radio Button */}
+                  {/* Right Column- Custom Radio Button */}
                   <div className="shrink-0 pl-1">
                     <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                        isSelected
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isSelected
                           ? "border-blue-600 bg-white"
                           : "border-slate-300 hover:border-slate-400"
-                      }`}
+                        }`}
                     >
                       {isSelected && (
                         <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />
@@ -280,11 +276,10 @@ function EligibleLostReportsModal({ onClose, onSubmit }) {
                 key={pageNum}
                 type="button"
                 onClick={() => setCurrentPage(pageNum)}
-                className={`w-7 h-7 rounded-xl text-xs font-semibold flex items-center justify-center transition-all ${
-                  pageNum === safePage
+                className={`w-7 h-7 rounded-xl text-xs font-semibold flex items-center justify-center transition-all ${pageNum === safePage
                     ? "border border-blue-600 text-blue-600 bg-blue-50/50"
                     : "border border-slate-200 text-slate-700 hover:bg-slate-50"
-                }`}
+                  }`}
               >
                 {pageNum}
               </button>
@@ -302,7 +297,7 @@ function EligibleLostReportsModal({ onClose, onSubmit }) {
           </div>
         )}
 
-        {/* Bottom Actions: Close & Continue & Submit */}
+        {/* Bottom Actions- Close & Continue & Submit */}
         <div className="flex items-center justify-center gap-3 mt-5">
           <button
             type="button"

@@ -8,10 +8,6 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 
-/* ===========================================
-   Header
-=========================================== */
-
 export const reportHeader = {
   title: "Report a Found Item",
 
@@ -28,10 +24,6 @@ export const reportHeader = {
   },
 };
 
-/* ===========================================
-   Categories
-=========================================== */
-
 export const foundItemCategories = [
   "Electronics",
   "Personal Items",
@@ -43,10 +35,6 @@ export const foundItemCategories = [
   "Jewellery",
   "Others",
 ];
-
-/* ===========================================
-   Districts
-=========================================== */
 
 export const districts = [
   "Colombo",
@@ -76,10 +64,6 @@ export const districts = [
   "Kegalle",
 ];
 
-/* ===========================================
-   Upload Settings
-=========================================== */
-
 export const uploadSettings = {
   title: "Upload Photo",
 
@@ -97,10 +81,6 @@ export const uploadSettings = {
   ],
 };
 
-/* ===========================================
-   Description
-=========================================== */
-
 export const descriptionSettings = {
   placeholder:
     "Describe unique features, condition, or anything that helps identify the owner...",
@@ -108,20 +88,12 @@ export const descriptionSettings = {
   maxLength: 1000,
 };
 
-/* ===========================================
-   Safety Reminder
-=========================================== */
-
 export const safetyReminder = {
   title: "Safety Reminder",
 
   description:
     "Meet the owner in a safe, public location during daylight when possible. Avoid sharing personal or financial information.",
 };
-
-/* ===========================================
-   Form Sections
-=========================================== */
 
 export const LostFoundFormSections = {
   itemDetails: {
@@ -154,10 +126,6 @@ export const LostFoundFormSections = {
     icon: FiAlertTriangle,
   },
 };
-
-/* ===========================================
-   Form Data
-=========================================== */
 
 export const reportForm = {
   type: "found",
