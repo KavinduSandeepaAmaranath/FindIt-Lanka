@@ -3,6 +3,7 @@ import { createNotification } from "./notificationService.js";
 import User from "../models/User.js";
 import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
+import Claim from "../models/Claim.js";
 
 /* Dashboard */
 export const getDashboardStatistics = async () => {
@@ -529,24 +530,79 @@ export const deleteFoundItemByAdmin = async (itemId) => {
 
 /* User */
 export const getAllUsers = async () => {
-    return await User.find({
+    const users = await User.find({
         role: "user",
     })
         .select("-password -refreshToken")
         .sort({
             createdAt: -1,
-        });
+        })
+        .lean();
+
+    const userIds = users.map((u) => u._id);
+
+    const [lostCounts, foundCounts, claimCounts] = await Promise.all([
+        LostItem.aggregate([
+            { $match: { userId: { $in: userIds } } },
+            { $group: { _id: "$userId", count: { $sum: 1 } } },
+        ]),
+        FoundItem.aggregate([
+            { $match: { userId: { $in: userIds } } },
+            { $group: { _id: "$userId", count: { $sum: 1 } } },
+        ]),
+        Claim.aggregate([
+            { $match: { claimantId: { $in: userIds } } },
+            { $group: { _id: "$claimantId", count: { $sum: 1 } } },
+        ]),
+    ]);
+
+    const lostMap = {};
+    lostCounts.forEach((item) => {
+        lostMap[item._id.toString()] = item.count;
+    });
+
+    const foundMap = {};
+    foundCounts.forEach((item) => {
+        foundMap[item._id.toString()] = item.count;
+    });
+
+    const claimMap = {};
+    claimCounts.forEach((item) => {
+        claimMap[item._id.toString()] = item.count;
+    });
+
+    return users.map((user) => {
+        const idStr = user._id.toString();
+        return {
+            ...user,
+            lostItemsCount: lostMap[idStr] || 0,
+            foundItemsCount: foundMap[idStr] || 0,
+            claimsCount: claimMap[idStr] || 0,
+        };
+    });
 };
 
 export const getUserById = async (userId) => {
     const user = await User.findById(userId)
-        .select("-password -refreshToken");
+        .select("-password -refreshToken")
+        .lean();
 
     if (!user) {
         throw new Error("User not found");
     }
 
-    return user;
+    const [lostItemsCount, foundItemsCount, claimsCount] = await Promise.all([
+        LostItem.countDocuments({ userId }),
+        FoundItem.countDocuments({ userId }),
+        Claim.countDocuments({ claimantId: userId }),
+    ]);
+
+    return {
+        ...user,
+        lostItemsCount,
+        foundItemsCount,
+        claimsCount,
+    };
 };
 
 export const suspendUser = async (userId) => {

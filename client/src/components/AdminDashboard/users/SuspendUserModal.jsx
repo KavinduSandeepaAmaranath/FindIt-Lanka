@@ -1,12 +1,20 @@
+﻿import { useState } from "react";
 import {
   suspendIcons,
   suspendContent,
 } from "../../../data/AllUsersData";
+import {
+  suspendUser as suspendUserApi,
+  activateUser as activateUserApi,
+} from "../../../services/adminService";
 
+const SuspendUserModal = ({ user, onClose, onSuccess }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-const SuspendUserModal = ({ user, onClose }) => {
   if (!user) return null;
 
+  const isSuspended = user.status === "Suspended" || user.status === "suspended";
 
   const {
     close: CloseIcon,
@@ -14,13 +22,25 @@ const SuspendUserModal = ({ user, onClose }) => {
     userSuspend: UserSuspendIcon,
   } = suspendIcons;
 
-
-  const handleSuspend = () => {
-    console.log("Suspending user:", user.id);
-
-    onClose();
+  const handleAction = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      if (isSuspended) {
+        await activateUserApi(user.id);
+        if (onSuccess) onSuccess(user.id, "Active");
+      } else {
+        await suspendUserApi(user.id);
+        if (onSuccess) onSuccess(user.id, "Suspended");
+      }
+      onClose();
+    } catch (err) {
+      console.error("Failed to update user status:", err);
+      setError(err.response?.data?.message || "Failed to update user status.");
+    } finally {
+      setLoading(false);
+    }
   };
-
 
   return (
     <div
@@ -38,10 +58,7 @@ const SuspendUserModal = ({ user, onClose }) => {
         overflow-y-auto
       "
     >
-
-
       {/* Modal */}
-      
       <div
         className="
           w-full
@@ -57,10 +74,7 @@ const SuspendUserModal = ({ user, onClose }) => {
           flex-col
         "
       >
-
-
         {/* Header */}
-
         <div
           className="
             flex
@@ -75,12 +89,9 @@ const SuspendUserModal = ({ user, onClose }) => {
             border-gray-200
           "
         >
-
           <div className="flex items-center gap-3 min-w-0">
-
-
             <div
-              className="
+              className={`
                 flex-shrink-0
                 w-10
                 h-10
@@ -90,9 +101,8 @@ const SuspendUserModal = ({ user, onClose }) => {
                 items-center
                 justify-center
                 rounded-full
-                bg-red-100
-                text-red-600
-              "
+                ${isSuspended ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}
+              `}
             >
               <UserSuspendIcon
                 size={20}
@@ -100,10 +110,7 @@ const SuspendUserModal = ({ user, onClose }) => {
               />
             </div>
 
-
-
             <div className="min-w-0">
-
               <h2
                 className="
                   text-base
@@ -113,9 +120,8 @@ const SuspendUserModal = ({ user, onClose }) => {
                   truncate
                 "
               >
-                {suspendContent.title}
+                {isSuspended ? "Activate User Account" : suspendContent.title}
               </h2>
-
 
               <p
                 className="
@@ -124,16 +130,10 @@ const SuspendUserModal = ({ user, onClose }) => {
                   text-gray-500
                 "
               >
-                {suspendContent.subtitle}
+                {isSuspended ? "Re-enable access for this user account" : suspendContent.subtitle}
               </p>
-
-
             </div>
-
-
           </div>
-
-
 
           <button
             onClick={onClose}
@@ -146,16 +146,9 @@ const SuspendUserModal = ({ user, onClose }) => {
           >
             <CloseIcon size={22}/>
           </button>
-
-
         </div>
 
-
-
-
-
         {/* Scrollable Body */}
-
         <div
           className="
             overflow-y-auto
@@ -165,33 +158,33 @@ const SuspendUserModal = ({ user, onClose }) => {
             sm:py-6
           "
         >
-
+          {error && (
+            <div className="mb-4 p-3 rounded-xl bg-red-100 text-red-700 text-sm font-medium">
+              {error}
+            </div>
+          )}
 
           {/* Warning Box */}
-
           <div
-            className="
+            className={`
               flex
               items-start
               gap-3
-              bg-red-50
               border
-              border-red-200
               rounded-xl
               p-3
               sm:p-4
-            "
+              ${isSuspended ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}
+            `}
           >
-
             <WarningIcon
-              className="
-                text-red-600
+              className={`
                 flex-shrink-0
                 mt-1
-              "
+                ${isSuspended ? "text-green-600" : "text-red-600"}
+              `}
               size={20}
             />
-
 
             <p
               className="
@@ -201,30 +194,25 @@ const SuspendUserModal = ({ user, onClose }) => {
                 leading-relaxed
               "
             >
-
-              Are you sure you want to suspend{" "}
-
-              <span className="font-semibold text-red-600">
-                {user.name}
-              </span>
-
-              ?
-
-              <br />
-
-              {suspendContent.warningText}
-
+              {isSuspended ? (
+                <>
+                  Are you sure you want to activate{" "}
+                  <span className="font-semibold text-green-600">{user.name}</span>?
+                  <br />
+                  This will restore full access to their account.
+                </>
+              ) : (
+                <>
+                  Are you sure you want to suspend{" "}
+                  <span className="font-semibold text-red-600">{user.name}</span>?
+                  <br />
+                  {suspendContent.warningText}
+                </>
+              )}
             </p>
-
-
           </div>
 
-
-
-
-
           {/* User Information */}
-
           <div
             className="
               mt-5
@@ -236,8 +224,6 @@ const SuspendUserModal = ({ user, onClose }) => {
               sm:text-sm
             "
           >
-
-
             <div
               className="
                 flex
@@ -245,7 +231,6 @@ const SuspendUserModal = ({ user, onClose }) => {
                 gap-4
               "
             >
-
               <span className="text-gray-500">
                 User ID
               </span>
@@ -253,10 +238,7 @@ const SuspendUserModal = ({ user, onClose }) => {
               <span className="font-medium text-right">
                 {user.id}
               </span>
-
             </div>
-
-
 
             <div
               className="
@@ -265,11 +247,9 @@ const SuspendUserModal = ({ user, onClose }) => {
                 gap-4
               "
             >
-
               <span className="text-gray-500">
                 Email
               </span>
-
 
               <span
                 className="
@@ -282,11 +262,7 @@ const SuspendUserModal = ({ user, onClose }) => {
               >
                 {user.email}
               </span>
-
             </div>
-
-
-
 
             <div
               className="
@@ -294,38 +270,23 @@ const SuspendUserModal = ({ user, onClose }) => {
                 justify-between
               "
             >
-
               <span className="text-gray-500">
                 Status
               </span>
 
-
               <span
-                className="
-                  text-green-600
+                className={`
                   font-semibold
-                "
+                  ${isSuspended ? "text-red-600" : "text-green-600"}
+                `}
               >
                 {user.status}
               </span>
-
-
             </div>
-
-
           </div>
-
-
         </div>
 
-
-
-
-
-
-
         {/* Footer */}
-
         <div
           className="
             flex
@@ -341,10 +302,9 @@ const SuspendUserModal = ({ user, onClose }) => {
             border-gray-200
           "
         >
-
-
           <button
             onClick={onClose}
+            disabled={loading}
             className="
               w-full
               sm:w-auto
@@ -357,44 +317,35 @@ const SuspendUserModal = ({ user, onClose }) => {
               text-sm
               hover:bg-gray-100
               transition
+              disabled:opacity-50
             "
           >
             {suspendContent.cancelButton}
           </button>
 
-
-
-
           <button
-            onClick={handleSuspend}
-            className="
+            onClick={handleAction}
+            disabled={loading}
+            className={`
               w-full
               sm:w-auto
               px-5
               py-2.5
               rounded-xl
-              bg-red-600
               text-white
               text-sm
-              hover:bg-red-700
               transition
               shadow-sm
-            "
+              disabled:opacity-50
+              ${isSuspended ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
+            `}
           >
-            {suspendContent.confirmButton}
+            {loading ? "Processing..." : isSuspended ? "Activate Account" : suspendContent.confirmButton}
           </button>
-
-
-
         </div>
-
-
       </div>
-
-
     </div>
   );
 };
-
 
 export default SuspendUserModal;

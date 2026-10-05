@@ -1,4 +1,5 @@
-import { useState } from "react";
+﻿import { useState } from "react";
+import { FiCheckCircle, FiXCircle, FiCircle } from "react-icons/fi";
 
 import {
   reportTableIcons,
@@ -46,7 +47,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
     });
   };
 
-      // Confirm Approve / Reject action
+  // Confirm Approve / Reject action
   const handleConfirmAction = async (payload) => {
     if (!selectedAction) {
       return;
@@ -247,17 +248,19 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
               </p>
             </div>
           )}
-        </div>
 
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={reports.length}
-          rowsPerPage={rowsPerPage}
-          onPageChange={setCurrentPage}
-          itemName="reports"
-        />
+          {/* Pagination inside Card */}
+          <div className="p-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={reports.length}
+              rowsPerPage={rowsPerPage}
+              onPageChange={setCurrentPage}
+              itemName="reports"
+            />
+          </div>
+        </div>
       </section>
 
       {/* Approve / Reject confirmation modal */}
@@ -287,7 +290,7 @@ const ReportTypeBadge = ({ type }) => {
 
   return (
     <span
-      className={`inline-flex min-w-[85px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium ${
+      className={`inline-flex min-w-[65px] items-center justify-center rounded-full px-2.5 py-1 text-xs font-medium ${
         isLost ? "bg-[#F04450] text-white" : "bg-[#08A568] text-white"
       }`}
     >
@@ -298,6 +301,13 @@ const ReportTypeBadge = ({ type }) => {
 
 /* Report Status Badge */
 const ReportStatusBadge = ({ status }) => {
+  const StatusIcon =
+    status === "Approved"
+      ? FiCheckCircle
+      : status === "Pending"
+      ? FiCircle
+      : FiXCircle;
+
   const statusStyles = {
     Approved: "bg-[#08A568] text-white",
     Pending: "bg-[#2F66E8] text-white",
@@ -306,10 +316,11 @@ const ReportStatusBadge = ({ status }) => {
 
   return (
     <span
-      className={`inline-flex min-w-[95px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium ${
+      className={`inline-flex min-w-[102px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium ${
         statusStyles[status] || "bg-gray-500 text-white"
       }`}
     >
+      <StatusIcon size={13} strokeWidth={2.5} />
       {status}
     </span>
   );
@@ -336,12 +347,14 @@ const ReportActions = ({
         onClick={() => onView(report)}
         className="
           inline-flex
+          min-w-[72px]
           items-center
-          gap-1
+          justify-center
+          gap-1.5
           rounded-full
           bg-[#2563EB]
-          px-3
-          py-1.5
+          px-4
+          py-2
           text-xs
           font-semibold
           text-white
@@ -353,7 +366,7 @@ const ReportActions = ({
           focus:outline-none
         "
       >
-        <ViewIcon size={13} />
+        <ViewIcon size={14} strokeWidth={2.5} />
         {reportTableText.actions.view}
       </button>
 
@@ -365,24 +378,26 @@ const ReportActions = ({
             onClick={() => onApprove(report)}
             className="
               inline-flex
+              min-w-[72px]
               items-center
-              gap-1
+              justify-center
+              gap-1.5
               rounded-full
-              bg-[#009B50]
-              px-3
-              py-1.5
+              bg-[#08A568]
+              px-4
+              py-2
               text-xs
               font-semibold
               text-white
               transition-all
               duration-200
-              hover:bg-[#007A3F]
+              hover:bg-[#067A4D]
               hover:shadow-md
               active:scale-95
               focus:outline-none
             "
           >
-            <ApproveIcon size={13} />
+            <ApproveIcon size={14} strokeWidth={2.5} />
             {reportTableText.actions.approve}
           </button>
 
@@ -391,24 +406,26 @@ const ReportActions = ({
             onClick={() => onReject(report)}
             className="
               inline-flex
+              min-w-[72px]
               items-center
-              gap-1
+              justify-center
+              gap-1.5
               rounded-full
-              bg-[#B63838]
-              px-3
-              py-1.5
+              bg-[#BE3B40]
+              px-4
+              py-2
               text-xs
               font-semibold
               text-white
               transition-all
               duration-200
-              hover:bg-[#8F2C2C]
+              hover:bg-[#962A2E]
               hover:shadow-md
               active:scale-95
               focus:outline-none
             "
           >
-            <RejectIcon size={13} />
+            <RejectIcon size={14} strokeWidth={2.5} />
             {reportTableText.actions.reject}
           </button>
         </>
