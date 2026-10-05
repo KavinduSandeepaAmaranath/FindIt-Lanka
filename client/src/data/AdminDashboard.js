@@ -19,7 +19,6 @@ import {
   MdNotifications,
   MdSettings,
   MdInventory,
-  MdAssignment,
   MdVerifiedUser,
   MdAssessment,
   MdClose,
@@ -280,21 +279,16 @@ export const navMenuItems = [
   },
   {
     id: 5,
-    title: "Approvals",
-    icon: MdVerifiedUser,
-    path: "/admin-approvals",
-  },
-  {
-    id: 6,
     title: "Claims",
-    icon: MdAssignment,
-    path: "/admin-claims",
+    icon: MdVerifiedUser,
+    path: "/claim-management",
   },
+  
   {
     id: 7,
     title: "Notifications",
     icon: MdNotifications,
-    path: "/admin-notifications",
+    path: "/admin-notification",
   },
   {
     id: 8,
