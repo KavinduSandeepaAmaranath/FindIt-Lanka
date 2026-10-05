@@ -240,7 +240,7 @@ function Notification() {
       return;
     }
 
-    // 2. Report Approved Modal (view Report)
+    // view Report
     if (
       title.includes("report has been approved") ||
       title.includes("report was approved") ||
@@ -250,7 +250,7 @@ function Notification() {
       return;
     }
 
-    // 3. Your Found Item Received a Claim (review Claim)
+    // review Claim
     if (
       title.includes("found item received a claim") ||
       action === "review claim" ||
@@ -261,7 +261,7 @@ function Notification() {
       return;
     }
 
-    // 4. Message from Admin (openChatBtn)
+    //open chat Btn
     if (
       action === "open chat" ||
       category === "system" ||
@@ -271,7 +271,7 @@ function Notification() {
       return;
     }
 
-    // 5. Claim Approved (claimApproved)
+    // claim Approved
     if (
       action === "view claim" ||
       category === "claims" ||
@@ -281,7 +281,7 @@ function Notification() {
       return;
     }
 
-    // 6. Possible Match Found (viewItemBtn)
+    // view item Btn
     if (
       action === "view item" ||
       category === "matches" ||
@@ -320,7 +320,6 @@ function Notification() {
           />
 
           <div className="flex flex-col lg:flex-row gap-5 items-start">
-            {/* left: categories */}
             <div className="w-full lg:w-auto">
               <NotificationCategories
                 categories={notificationCategories}
@@ -330,7 +329,6 @@ function Notification() {
               />
             </div>
 
-            {/* right: notification list */}
             <section className="w-full flex-1 min-w-0 bg-white rounded-2xl shadow-md border border-slate-100 p-4 sm:p-6">
               {pageItems.length === 0 && (
                 <p className="text-center text-sm text-slate-500 py-10">
@@ -380,40 +378,23 @@ function Notification() {
         </div>
       </div>
 
-      {/* ========================================================
-          Modals matching attached UI designs:
-          1. Notification Settings Modal
-          2. Mark All as Read Modal
-          3. Claim Approved Modal
-          4. Possible Match Found Modal (viewItemBtn)
-          5. Message from Admin Modal (openChatBtn)
-          6. Report Approved Modal (view Report)
-          7. Found Item Received a Claim Modal (review Claim)
-          8. Delete Notification Modal (with trash bin trigger)
-          9. Report Rejected Modal (reject notifi----view report btn)
-         ======================================================== */}
-
-      {/* 1. Notification Settings */}
       <NotificationSettingsModal
         isOpen={openSettingsModal}
         onClose={() => setOpenSettingsModal(false)}
       />
 
-      {/* 2. Mark All as Read */}
       <MarkAllAsReadModal
         isOpen={openMarkAllReadModal}
         onClose={() => setOpenMarkAllReadModal(false)}
         onConfirm={handleConfirmMarkAllAsRead}
       />
 
-      {/* 3. Claim Approved */}
       <ClaimApprovedModal
         isOpen={openClaimApprovedModal}
         onClose={() => setOpenClaimApprovedModal(false)}
         notification={selectedNotification}
       />
 
-      {/* 4. Possible Match Found */}
       <PossibleMatchModal
         isOpen={openPossibleMatchModal}
         onClose={() => setOpenPossibleMatchModal(false)}
@@ -422,28 +403,24 @@ function Notification() {
         onClaimItem={handleClaimItemFromMatch}
       />
 
-      {/* 5. Message from Admin */}
       <MessageAdminModal
         isOpen={openMessageAdminModal}
         onClose={() => setOpenMessageAdminModal(false)}
         notification={selectedNotification}
       />
 
-      {/* 6. Report Approved Modal (view Report) */}
       <ReportApprovedModal
         isOpen={openReportApprovedModal}
         onClose={() => setOpenReportApprovedModal(false)}
         notification={selectedNotification}
       />
 
-      {/* 7. Found Item Received a Claim Modal (review Claim) */}
       <FoundItemClaimModal
         isOpen={openFoundItemClaimModal}
         onClose={() => setOpenFoundItemClaimModal(false)}
         notification={selectedNotification}
       />
 
-      {/* 8. Delete Notification Modal */}
       <DeleteNotificationModal
         isOpen={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
@@ -451,7 +428,6 @@ function Notification() {
         isBulk={isBulkDelete}
       />
 
-      {/* 9. Report Rejected Modal (reject notifi----view report btn) */}
       <ReportRejectedModal
         isOpen={openReportRejectedModal}
         onClose={() => setOpenReportRejectedModal(false)}

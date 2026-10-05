@@ -348,12 +348,12 @@ function MyReturns() {
       prev.map((r) =>
         r.id === itemId
           ? {
-              ...r,
-              status: "Returned",
-              returnedOn: details.returnedOn,
-              returnMethod: details.handoverMethod,
-              returnNote: details.note,
-            }
+            ...r,
+            status: "Returned",
+            returnedOn: details.returnedOn,
+            returnMethod: details.handoverMethod,
+            returnNote: details.note,
+          }
           : r
       )
     );
@@ -435,7 +435,6 @@ function MyReturns() {
         </div>
       )}
 
-      {/* Image 1: Claim Details Modal */}
       {claimDetailsItem && (
         <ClaimDetailsModal
           item={claimDetailsItem}
@@ -451,7 +450,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 2: Approve Claim? Modal */}
       {approveModalItem && (
         <ApproveClaimModal
           item={approveModalItem}
@@ -460,7 +458,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 3: Reject Claim? Modal */}
       {rejectModalItem && (
         <RejectClaimModal
           item={rejectModalItem}
@@ -469,7 +466,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 4: View Details Modal */}
       {viewDetailsItem && (
         <ViewDetailsModal
           item={viewDetailsItem}
@@ -477,7 +473,6 @@ function MyReturns() {
         />
       )}
 
-      {/* Image 5: Mark Item as Returned Modal */}
       {markDoneItem && (
         <MarkItemReturnedModal
           item={markDoneItem}

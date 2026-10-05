@@ -15,7 +15,7 @@ const AllItemsTable = ({ items = [], loading, error }) => {
 
   const rowsPerPage = 5;
 
-    if (loading) {
+  if (loading) {
     return (
       <div className="mt-8 flex justify-center py-10">
         <p className="text-gray-500 font-medium">Loading items from database...</p>
@@ -57,15 +57,13 @@ const AllItemsTable = ({ items = [], loading, error }) => {
                   {allItemsTableColumns.map((column, index) => (
                     <th
                       key={column.key}
-                      className={`${tableHeaderClass} ${
-                        column.align === "center"
+                      className={`${tableHeaderClass} ${column.align === "center"
                           ? "text-center"
                           : "text-left"
-                      } ${
-                        index !== allItemsTableColumns.length - 1
+                        } ${index !== allItemsTableColumns.length - 1
                           ? "border-r border-gray-300"
                           : ""
-                      }`}
+                        }`}
                     >
                       {column.label}
                     </th>
@@ -241,10 +239,9 @@ const TypeBadge = ({ type }) => {
         py-1
         text-xs
         font-medium
-        ${
-          isLost
-            ? "bg-[#F04450] text-white"
-            : "bg-[#08A568] text-white"
+        ${isLost
+          ? "bg-[#F04450] text-white"
+          : "bg-[#08A568] text-white"
         }
       `}
     >
@@ -361,7 +358,6 @@ const ViewButton = ({ onClick }) => {
 };
 
 //view item model displaying popup sec when click view btn
-
 const ViewItemModal = ({ item, onClose }) => {
   return (
     <div
@@ -395,7 +391,6 @@ const ViewItemModal = ({ item, onClose }) => {
         onClick={(event) => event.stopPropagation()}
       >
         {/*title*/}
-
         <h2
           className="
             mb-2
@@ -408,7 +403,6 @@ const ViewItemModal = ({ item, onClose }) => {
         </h2>
 
         {/*item summery*/}
-
         <div
           className="
             flex
@@ -422,7 +416,6 @@ const ViewItemModal = ({ item, onClose }) => {
           "
         >
           {/* item image */}
-
           <div
             className="
               h-[90px]
@@ -443,7 +436,6 @@ const ViewItemModal = ({ item, onClose }) => {
           </div>
 
           {/* summery details */}
-
           <div className="space-y-1 text-sm">
             <p className="font-medium text-[#173B80]">
               {item.itemName}
@@ -494,7 +486,6 @@ const ViewItemModal = ({ item, onClose }) => {
         </div>
 
         {/* item info */}
-
         <div
           className="
             mt-1
@@ -543,7 +534,6 @@ const ViewItemModal = ({ item, onClose }) => {
         </div>
 
         {/*report info */}
-
         <div
           className="
             mt-2
@@ -582,7 +572,6 @@ const ViewItemModal = ({ item, onClose }) => {
         </div>
 
         {/*done btn */}
-
         <button
           type="button"
           onClick={onClose}
@@ -613,7 +602,6 @@ const ViewItemModal = ({ item, onClose }) => {
 };
 
 //table styles
-
 const tableHeaderClass = `
   px-4
   py-4

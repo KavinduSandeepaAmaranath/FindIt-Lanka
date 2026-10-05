@@ -23,12 +23,9 @@ function LostItemDetailsModal({ item, onClose, onReturnItem }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      {/* Click outside backdrop handler */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Modal Container with dark blue border */}
       <div className="relative z-10 w-full max-w-xl bg-white border-4 border-blue-900 rounded-3xl shadow-2xl p-6 sm:p-8 my-8 text-left">
-        {/* Red Circular Close Button (top-right) */}
         <button
           type="button"
           onClick={onClose}

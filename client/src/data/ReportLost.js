@@ -8,10 +8,6 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 
-/* ===========================================
-   Header
-=========================================== */
-
 export const reportHeader = {
   title: "Report a Lost Item",
 
@@ -28,10 +24,6 @@ export const reportHeader = {
   },
 };
 
-/* ===========================================
-   Categories
-=========================================== */
-
 export const lostItemCategories = [
   "Electronics",
   "Personal Items",
@@ -43,10 +35,6 @@ export const lostItemCategories = [
   "Jewellery",
   "Others",
 ];
-
-/* ===========================================
-   Districts
-=========================================== */
 
 export const districts = [
   "Colombo",
@@ -76,10 +64,6 @@ export const districts = [
   "Kegalle",
 ];
 
-/* ===========================================
-   Upload Settings
-=========================================== */
-
 export const uploadSettings = {
   title: "Upload Photo",
 
@@ -97,10 +81,6 @@ export const uploadSettings = {
   ],
 };
 
-/* ===========================================
-   Description
-=========================================== */
-
 export const descriptionSettings = {
   placeholder:
     "Describe unique features, brand names, contents, or serial numbers...",
@@ -108,20 +88,12 @@ export const descriptionSettings = {
   maxLength: 1000,
 };
 
-/* ===========================================
-   Safety Reminder
-=========================================== */
-
 export const safetyReminder = {
   title: "Safety Reminder",
 
   description:
     "For your safety, always meet in a well-lit public place like a police station or shopping mall to return the item. Never share sensitive personal information.",
 };
-
-/* ===========================================
-   Section Titles
-=========================================== */
 
 export const LostFoundFormSections = {
   itemDetails: {
@@ -155,14 +127,9 @@ export const LostFoundFormSections = {
   },
 };
 
-/* ===========================================
-   Form Data
-=========================================== */
-
 export const reportForm = {
   type: "lost",
   /* Item Details */
-
   itemTitlePlaceholder:
     "e.g., iPhone 13 - Midnight Blue",
 
@@ -173,7 +140,6 @@ export const reportForm = {
   sections: LostFoundFormSections,
 
   /* Location */
-
   locationLabel: "Lost Location",
 
   locationPlaceholder:
@@ -186,20 +152,16 @@ export const reportForm = {
   districts,
 
   /* Date & Time */
-
   dateLabel: "Lost Date",
 
   timeLabel: "Lost Time",
 
   /* Upload */
-
   upload: uploadSettings,
 
   /* Description */
-
   description: descriptionSettings,
 
   /* Safety Reminder */
-
   safetyReminder,
 };

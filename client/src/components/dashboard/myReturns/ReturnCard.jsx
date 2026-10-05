@@ -129,7 +129,7 @@ function ReturnCard({
       );
     }
 
-    // Default / "Returned"
+    // Default "Returned"
     return (
       <div className="flex flex-col gap-2 w-full sm:w-[170px]">
         <button

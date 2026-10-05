@@ -19,6 +19,13 @@ export default function AdminDashboardHeader({
     localStorage.getItem("user")
   );
 
+
+  const handleSearch = () => {
+    console.log("Searching:", searchText);
+
+    // API call or search functionality goes here
+  };
+
   return (
     <>
       {/* Top Bar */}

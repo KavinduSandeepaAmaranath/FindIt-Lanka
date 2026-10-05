@@ -99,35 +99,21 @@ function Help() {
         </div>
       </div>
 
-      {/* ========================================================
-          Modals matching attached UI designs:
-          1. getting_start_card -> GettingStartedModal
-          2. finding__claiming_card -> FindingClaimingModal
-          3. safty__account_card -> SafetyAccountModal
-          4. contact_support_card -> ContactSupportModal (3 options)
-          5. contact_support_form -> ContactSupportFormModal (Subject, Message, Attachment)
-          6. faq_dropdown_modal -> FaqDropdownModal
-         ======================================================== */}
-
-      {/* 1. Getting Started Modal */}
       <GettingStartedModal
         isOpen={openGettingStarted}
         onClose={() => setOpenGettingStarted(false)}
       />
 
-      {/* 2. Finding & Claiming Items Modal */}
       <FindingClaimingModal
         isOpen={openFindingClaiming}
         onClose={() => setOpenFindingClaiming(false)}
       />
 
-      {/* 3. Safety & Account Modal */}
       <SafetyAccountModal
         isOpen={openSafetyAccount}
         onClose={() => setOpenSafetyAccount(false)}
       />
 
-      {/* 4. Contact Support Modal (Options: Email, Support Request, Emergency) */}
       <ContactSupportModal
         isOpen={openContactSupport}
         onClose={() => setOpenContactSupport(false)}
@@ -137,20 +123,17 @@ function Help() {
         }}
       />
 
-      {/* 5. Contact Support Form Modal (Subject dropdown, Message, Attachment, Send/Cancel) */}
       <ContactSupportFormModal
         isOpen={openContactForm}
         onClose={() => setOpenContactForm(false)}
       />
 
-      {/* 6. FAQ Dropdown Modal */}
       <FaqDropdownModal
         faq={selectedFaq}
         isOpen={Boolean(selectedFaq)}
         onClose={() => setSelectedFaq(null)}
       />
 
-      {/* Sidebar Lost Report Modal */}
       {openLostReport && (
         <ReportModal
           header={lostHeader}
@@ -159,7 +142,6 @@ function Help() {
         />
       )}
 
-      {/* Sidebar Found Report Modal */}
       {openFoundReport && (
         <ReportModal
           header={foundHeader}
