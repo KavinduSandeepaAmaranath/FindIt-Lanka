@@ -294,7 +294,7 @@ export const navMenuItems = [
     id: 8,
     title: "Settings",
     icon: MdSettings,
-    path: "/admin-settings",
+    path: "/admin-setting",
   },
 ];
 
