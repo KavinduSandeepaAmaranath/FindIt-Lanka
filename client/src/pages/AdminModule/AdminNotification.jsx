@@ -26,9 +26,7 @@ const AdminNotification = () => {
   const [notifications, setNotifications] =
     useState(notificationListData);
 
-  /* =====================================================
-     MARK ALL NOTIFICATIONS AS READ
-  ===================================================== */
+  /* mark all as */
 
   const handleMarkAllRead = () => {
     setNotifications((previous) =>
@@ -51,24 +49,18 @@ const AdminNotification = () => {
       "
     >
 
-      {/* =================================================
-          MAIN AREA
-      ================================================= */}
+      {/*main area*/}
 
       <div className="flex flex-1">
 
-        {/* =================================================
-            ADMIN NAVBAR
-        ================================================= */}
+        {/*nav*/}
 
         <AdminNavBar
           isOpen={isOpen}
           setIsOpen={setIsOpen}
         />
 
-        {/* =================================================
-            CONTENT
-        ================================================= */}
+        {/*content*/}
 
         <main
           className="
@@ -129,9 +121,7 @@ const AdminNotification = () => {
 
       </div>
 
-      {/* =================================================
-          FOOTER
-      ================================================= */}
+      {/*footer*/}
 
       <Footer />
 

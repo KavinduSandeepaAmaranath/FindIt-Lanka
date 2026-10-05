@@ -288,7 +288,7 @@ export const navMenuItems = [
     id: 7,
     title: "Notifications",
     icon: MdNotifications,
-    path: "/admin-notifications",
+    path: "/admin-notification",
   },
   {
     id: 8,

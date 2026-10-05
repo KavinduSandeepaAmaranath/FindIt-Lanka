@@ -14,15 +14,11 @@ const NotificationList = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  // =====================================================
-  // ITEMS PER PAGE
-  // =====================================================
+ //item per page
 
   const rowsPerPage = 10;
 
-  // =====================================================
-  // FILTER DATA
-  // =====================================================
+//filter data
 
   const filteredNotifications = useMemo(() => {
     const query = searchValue.trim().toLowerCase();
@@ -44,18 +40,12 @@ const NotificationList = ({
     });
   }, [notifications, searchValue, activeFilter]);
 
-  // =====================================================
-  // PAGINATION
-  // =====================================================
+//pagination
 
   const totalPages = Math.ceil(
     filteredNotifications.length / rowsPerPage
   );
 
-  /*
-   * If search/filter changes and the current page
-   * is no longer available, automatically use page 1.
-   */
   const safeCurrentPage =
     totalPages === 0
       ? 1
@@ -70,10 +60,7 @@ const NotificationList = ({
       startIndex + rowsPerPage
     );
 
-  // =====================================================
-  // MARK AS READ
-  // =====================================================
-
+//mark as read
   const handleNotificationClick = (notificationId) => {
     setNotifications((previous) =>
       previous.map((notification) =>
@@ -87,9 +74,6 @@ const NotificationList = ({
     );
   };
 
-  // =====================================================
-  // GROUP CURRENT PAGE NOTIFICATIONS
-  // =====================================================
 
   const groupedNotifications =
     currentNotifications.reduce(
@@ -116,9 +100,7 @@ const NotificationList = ({
   return (
     <section className="w-full">
 
-      {/* =================================================
-          EMPTY STATE
-      ================================================= */}
+      {/*empty state*/}
 
       {currentNotifications.length === 0 ? (
         <div
@@ -155,9 +137,7 @@ const NotificationList = ({
         </div>
       ) : (
         <>
-          {/* =================================================
-              NOTIFICATION GROUPS
-          ================================================= */}
+          {/*notification group */}
 
           {sectionOrder.map((sectionName) => {
             const sectionItems =
@@ -176,7 +156,7 @@ const NotificationList = ({
                 className="mb-7 last:mb-0"
               >
 
-                {/* SECTION HEADER */}
+                {/* Sheader select */}
 
                 <div
                   className="
@@ -210,7 +190,7 @@ const NotificationList = ({
                   </span>
                 </div>
 
-                {/* NOTIFICATIONS */}
+                {/* notifi*/}
 
                 <div className="space-y-2">
                   {sectionItems.map((notification) => {
@@ -259,7 +239,7 @@ const NotificationList = ({
                         `}
                       >
 
-                        {/* ICON */}
+                        {/* icon */}
 
                         <div
                           className={`
@@ -279,7 +259,7 @@ const NotificationList = ({
                           <NotificationIcon size={21} />
                         </div>
 
-                        {/* CONTENT */}
+                        {/* content */}
 
                         <div className="min-w-0 flex-1">
                           <div
@@ -290,7 +270,7 @@ const NotificationList = ({
                             "
                           >
 
-                            {/* UNREAD DOT */}
+                            {/* unread dot */}
 
                             {!notification.read && (
                               <span
@@ -307,7 +287,7 @@ const NotificationList = ({
 
                             <div className="min-w-0">
 
-                              {/* TITLE */}
+                              {/* titlE */}
 
                               <h3
                                 className={`
@@ -324,7 +304,7 @@ const NotificationList = ({
                                 {notification.title}
                               </h3>
 
-                              {/* DESCRIPTION */}
+                              {/* descrip */}
 
                               <p
                                 className="
@@ -338,7 +318,7 @@ const NotificationList = ({
                                 {notification.description}
                               </p>
 
-                              {/* DETAILS */}
+                              {/* Detail */}
 
                               <p
                                 className="
@@ -356,7 +336,7 @@ const NotificationList = ({
                           </div>
                         </div>
 
-                        {/* CATEGORY */}
+                        {/* Category*/}
 
                         <span
                           className={`
@@ -375,7 +355,7 @@ const NotificationList = ({
                           {notification.category}
                         </span>
 
-                        {/* TIME */}
+                        {/* time */}
 
                         <span
                           className="
@@ -390,7 +370,7 @@ const NotificationList = ({
                           {notification.time}
                         </span>
 
-                        {/* ARROW */}
+                        {/* arrow */}
 
                         <ArrowIcon
                           size={17}
@@ -414,9 +394,7 @@ const NotificationList = ({
         </>
       )}
 
-      {/* =================================================
-          PAGINATION
-      ================================================= */}
+      {/*pagination*/}
 
       <div className="mt-6">
         <Pagination

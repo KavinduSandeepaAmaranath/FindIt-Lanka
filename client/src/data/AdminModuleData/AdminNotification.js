@@ -9,9 +9,7 @@ import {
   FiCheckCircle,
 } from "react-icons/fi";
 
-/* =========================================================
-   HEADER DATA
-========================================================= */
+
 
 export const notificationHeaderData = {
   title: "Notifications",
@@ -24,9 +22,7 @@ export const notificationHeaderData = {
   },
 };
 
-/* =========================================================
-   HEADER ICONS
-========================================================= */
+
 
 export const notificationHeaderIcons = {
   notification: FiBell,
@@ -34,9 +30,7 @@ export const notificationHeaderIcons = {
   menu: FiUsers,
 };
 
-/* =========================================================
-   NOTIFICATION CARDS
-========================================================= */
+
 
 export const notificationCardsData = [
   {
@@ -84,9 +78,7 @@ export const notificationCardsData = [
   },
 ];
 
-/* =========================================================
-   FILTER DATA
-========================================================= */
+
 
 export const notificationFilterData = {
   searchPlaceholder: "Search notifications...",
@@ -101,25 +93,18 @@ export const notificationFilterData = {
   ],
 };
 
-/* =========================================================
-   FILTER ICONS
-========================================================= */
+
 
 export const notificationFilterIcons = {
   search: FiSearch,
 };
 
-/* =========================================================
-   NOTIFICATION LIST ICONS
-========================================================= */
+
 
 export const notificationListIcons = {
   arrow: FiChevronRight,
 };
 
-/* =========================================================
-   NOTIFICATION LIST DATA
-========================================================= */
 
 export const notificationListData = [
   {
