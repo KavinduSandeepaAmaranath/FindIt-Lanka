@@ -1,3 +1,4 @@
+import matchingRoutes from "./routes/matchingRoutes.js";
 import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
@@ -18,8 +19,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/lost", lostItemRoutes);
 app.use("/api/found", foundItemRoutes);
 app.use("/api/claim", claimRoutes);
+app.use("/api/claims", claimRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/dashboard", userDashboardRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/matches", matchingRoutes);
 
 export default app;

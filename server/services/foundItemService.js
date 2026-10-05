@@ -1,3 +1,5 @@
+import LostItem from "../models/LostItem.js";
+import { createAutoMatchNotifications } from "./notificationService.js";
 import FoundItem from "../models/FoundItem.js";
 
 export const createFoundItem = async ({
@@ -10,7 +12,7 @@ export const createFoundItem = async ({
     images,
     userId,
 }) => {
-    return await FoundItem.create({
+    const foundItem = await FoundItem.create({
         title,
         category,
         description,
@@ -20,10 +22,14 @@ export const createFoundItem = async ({
         images,
         userId,
     });
+
+    // Matching is triggered upon Admin approval
+
+    return foundItem;
 };
 
 export const getAllFoundItems = async () => {
-    return await FoundItem.find();
+    return await FoundItem.find({ approvalStatus: "approved" }).populate("userId", "name email phoneNumber district").sort({ createdAt: -1 });
 };
 
 export const getMyFoundItems = async (userId) => {

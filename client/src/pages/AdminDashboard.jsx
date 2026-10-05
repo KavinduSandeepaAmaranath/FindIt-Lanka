@@ -5,21 +5,12 @@ import {
   FaBoxOpen,
   FaClipboardCheck,
 } from "react-icons/fa";
-import {
-  getDashboardStatistics,
-  getPendingLostItems,
-  getPendingFoundItems,
-  approveLostItem,
-  rejectLostItem,
-  approveFoundItem,
-  rejectFoundItem,
-} from "../services/adminService";
+import { getDashboardStatistics } from "../services/adminService";
 import "react-day-picker/dist/style.css";
 
 import AdminNavBar from "../components/AdminDashboard/AdminNavBar";
 import AdminDashboardHeader from "../components/AdminDashboard/AdminDashboardHeader";
 import DashboardCards from "../components/AdminDashboard/AdminDashboardCards";
-import ApprovalTable from "../components/AdminDashboard/AdminDashboardApproval";
 import TopLocations from "../components/AdminDashboard/TopLocations";
 import RecentActivities from "../components/AdminDashboard/RecentActivities";
 import ReportsByCategory from "../components/AdminDashboard/ReportsByCategory";
@@ -35,7 +26,7 @@ export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [pendingApprovals, setPendingApprovals] = useState([]);
+
   const dashboardStats = statistics
     ? [
       {
@@ -74,60 +65,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const [
-          dashboardResponse,
-          lostResponse,
-          foundResponse,
-        ] = await Promise.all([
-          getDashboardStatistics(),
-          getPendingLostItems(),
-          getPendingFoundItems(),
-        ]);
-
+        const dashboardResponse = await getDashboardStatistics();
         setStatistics(dashboardResponse.statistics);
-
-        const lostItems = lostResponse.lostItems.map((item) => {
-          const imageUrl = item.images?.length
-            ? `http://localhost:5000/${item.images[0]}`
-            : "";
-
-          console.log("Lost Item Image URL:", imageUrl);
-
-          return {
-            id: item._id,
-            image: imageUrl,
-            title: item.title,
-            type: "Lost",
-            category: item.category,
-            user: item.userId?.name || "Unknown",
-            date: new Date(item.lostDate).toLocaleDateString(),
-            status: item.approvalStatus,
-          };
-        });
-
-        const foundItems = foundResponse.foundItems.map((item) => {
-          const imageUrl = item.images?.length
-            ? `http://localhost:5000/${item.images[0]}`
-            : "";
-
-          console.log("Found Item Image URL:", imageUrl);
-
-          return {
-            id: item._id,
-            image: imageUrl,
-            title: item.title,
-            type: "Found",
-            category: item.category,
-            user: item.userId?.name || "Unknown",
-            date: new Date(item.foundDate).toLocaleDateString(),
-            status: item.approvalStatus,
-          };
-        });
-        setPendingApprovals([
-          ...lostItems,
-          ...foundItems,
-        ]);
-
       } catch (error) {
         console.error(error);
       } finally {
@@ -137,38 +76,6 @@ export default function AdminDashboard() {
 
     loadDashboard();
   }, []);
-
-  const handleApprove = async (item) => {
-    try {
-      if (item.type === "Lost") {
-        await approveLostItem(item.id);
-      } else {
-        await approveFoundItem(item.id);
-      }
-
-      setPendingApprovals((prev) =>
-        prev.filter((report) => report.id !== item.id)
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleReject = async (item) => {
-    try {
-      if (item.type === "Lost") {
-        await rejectLostItem(item.id);
-      } else {
-        await rejectFoundItem(item.id);
-      }
-
-      setPendingApprovals((prev) =>
-        prev.filter((report) => report.id !== item.id)
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   console.log(statistics);
 
@@ -212,19 +119,8 @@ export default function AdminDashboard() {
 
           {/* Dashboard Cards */}
 
-          <section className="mt-6">
+          <section className="mt-4">
             <DashboardCards stats={dashboardStats} />
-          </section>
-
-          {/* Approval Table */}
-
-          <section className="mt-8">
-            <ApprovalTable
-              approvals={pendingApprovals}
-              onApprove={handleApprove}
-              onReject={handleReject}
-            />
-
           </section>
 
           {/* Top Locations & Recent Activities */}

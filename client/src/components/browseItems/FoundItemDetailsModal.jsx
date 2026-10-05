@@ -4,6 +4,17 @@ import fallbackImage from "../../assets/images/acerLaptop.jpg";
 function FoundItemDetailsModal({ item, onClose, onClaimItem }) {
   if (!item) return null;
 
+  let storedUser = null;
+  try {
+    storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  } catch (e) {
+    storedUser = null;
+  }
+
+  const currentUserId = storedUser?._id || storedUser?.id;
+  const itemUserId = item?.userId?._id || item?.userId?.id || item?.userId;
+  const isOwnItem = Boolean(currentUserId && itemUserId && String(currentUserId) === String(itemUserId));
+
   // Use item images or thumbnail preview
   const photos =
     item.images && item.images.length > 0
@@ -118,14 +129,20 @@ function FoundItemDetailsModal({ item, onClose, onClaimItem }) {
             <span>Close</span>
           </button>
 
-          <button
-            type="button"
-            onClick={onClaimItem}
-            className="flex items-center gap-2 px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
-          >
-            <FiRefreshCw className="w-3.5 h-3.5" />
-            <span>Claim Item</span>
-          </button>
+          {isOwnItem ? (
+            <span className="px-5 py-2 rounded-xl bg-slate-100 text-slate-500 text-xs sm:text-sm font-semibold border border-slate-200">
+              Your Report
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={onClaimItem}
+              className="flex items-center gap-2 px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer"
+            >
+              <FiRefreshCw className="w-3.5 h-3.5" />
+              <span>Claim Item</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

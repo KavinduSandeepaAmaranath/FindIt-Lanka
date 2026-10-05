@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import NotificationHeader from "../components/notifications/NotificationHeader";
@@ -11,6 +12,8 @@ import NotificationSettingsModal from "../components/notifications/modals/Notifi
 import MarkAllAsReadModal from "../components/notifications/modals/MarkAllAsReadModal";
 import ClaimApprovedModal from "../components/notifications/modals/ClaimApprovedModal";
 import PossibleMatchModal from "../components/notifications/modals/PossibleMatchModal";
+import EligibleFoundReportsModal from "../components/browseItems/EligibleFoundReportsModal";
+import EligibleLostReportsModal from "../components/browseItems/EligibleLostReportsModal";
 import MessageAdminModal from "../components/notifications/modals/MessageAdminModal";
 import ReportApprovedModal from "../components/notifications/modals/ReportApprovedModal";
 import FoundItemClaimModal from "../components/notifications/modals/FoundItemClaimModal";
@@ -22,6 +25,7 @@ import ReportModal from "../components/LostFoundForm/ReportModal";
 import { currentUser } from "../data/dashboardData";
 import { notificationCategories } from "../data/notificationData";
 import { useNotifications } from "../context/NotificationContext";
+import { createClaim } from "../services/claimService.js";
 
 import {
   reportHeader as lostHeader,
@@ -37,6 +41,7 @@ const ITEMS_PER_PAGE = 7;
 const GROUPS = ["Today", "Yesterday", "Earlier"];
 
 function Notification() {
+  const navigate = useNavigate();
   // Shared notification context state
   const {
     notifications,
@@ -50,6 +55,74 @@ function Notification() {
   const [page, setPage] = useState(1);
 
   // Modals state
+    const [toastMessage, setToastMessage] = useState("");
+
+    const handleOfferReturnFromMatch = (notification) => {
+    setMatchNotificationToProcess(notification);
+    setOpenPossibleMatchModal(false);
+    setOpenEligibleFoundModal(true);
+  };
+
+  const handleConfirmFoundReportSubmit = async (selectedFoundReportId) => {
+    try {
+      const lostItemId = matchNotificationToProcess?.lostItemId?._id || matchNotificationToProcess?.lostItemId;
+      const foundItemId = selectedFoundReportId || matchNotificationToProcess?.foundItemId?._id || matchNotificationToProcess?.foundItemId;
+
+      if (!lostItemId || !foundItemId) {
+        alert("Missing report details for this return offer.");
+        return;
+      }
+
+      await createClaim({
+        lostItemId,
+        foundItemId,
+        message: `I have found an item matching your lost report "${matchNotificationToProcess?.title || "Item"}" and would like to return it.`,
+      });
+
+      setOpenEligibleFoundModal(false);
+      setMatchNotificationToProcess(null);
+      setSelectedNotification(null);
+      setToastMessage(`Successfully submitted return offer for "${matchNotificationToProcess?.title || "Item"}"!`);
+    } catch (err) {
+      console.error("Error submitting return offer:", err);
+      const msg = err.response?.data?.message || err.message || "Failed to submit return offer.";
+      alert(`Note: ${msg}`);
+    }
+  };
+
+  const handleClaimItemFromMatch = (notification) => {
+    setMatchNotificationToProcess(notification);
+    setOpenPossibleMatchModal(false);
+    setOpenEligibleLostModal(true);
+  };
+
+  const handleConfirmLostReportSubmit = async (selectedLostReportId) => {
+    try {
+      const foundItemId = matchNotificationToProcess?.foundItemId?._id || matchNotificationToProcess?.foundItemId;
+      const lostItemId = selectedLostReportId || matchNotificationToProcess?.lostItemId?._id || matchNotificationToProcess?.lostItemId;
+
+      if (!lostItemId || !foundItemId) {
+        alert("Missing report details for this claim.");
+        return;
+      }
+
+      await createClaim({
+        foundItemId,
+        lostItemId,
+        message: `I am claiming ownership for "${matchNotificationToProcess?.title || "Item"}" via my lost item report.`,
+      });
+
+      setOpenEligibleLostModal(false);
+      setMatchNotificationToProcess(null);
+      setSelectedNotification(null);
+      setToastMessage(`Successfully submitted claim request for "${matchNotificationToProcess?.title || "Item"}"!`);
+    } catch (err) {
+      console.error("Error submitting claim request:", err);
+      const msg = err.response?.data?.message || err.message || "Failed to submit claim request.";
+      alert(`Note: ${msg}`);
+    }
+  };
+
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const [openMarkAllReadModal, setOpenMarkAllReadModal] = useState(false);
   const [openClaimApprovedModal, setOpenClaimApprovedModal] = useState(false);
@@ -61,6 +134,9 @@ function Notification() {
   const [openReportRejectedModal, setOpenReportRejectedModal] = useState(false);
 
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [openEligibleFoundModal, setOpenEligibleFoundModal] = useState(false);
+  const [openEligibleLostModal, setOpenEligibleLostModal] = useState(false);
+  const [matchNotificationToProcess, setMatchNotificationToProcess] = useState(null);
   const [notificationToDelete, setNotificationToDelete] = useState(null);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
 
@@ -147,7 +223,18 @@ function Notification() {
     const category = notification.category?.toLowerCase() || "";
     const icon = notification.icon || "";
 
-    // Rejected Report Modal 
+        // Claim / Return Offer Navigation
+    if (title.includes("return offer received") || title.includes("item return offer")) {
+      navigate("/dashboard/my-claims");
+      return;
+    }
+
+    if (title.includes("ownership claim received") || title.includes("found item received a claim")) {
+      navigate("/dashboard/my-returns");
+      return;
+    }
+
+    // 1. Rejected Report Modal (reject notifi----view report btn)
     if (icon === "reject" || title.includes("rejected")) {
       setOpenReportRejectedModal(true);
       return;
@@ -226,7 +313,7 @@ function Notification() {
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6">
           <NotificationHeader
-            user={currentUser}
+            user={undefined}
             onOpenSettings={() => setOpenSettingsModal(true)}
             onOpenMarkAllRead={() => setOpenMarkAllReadModal(true)}
             onOpenDeleteAll={handleOpenDeleteAll}
@@ -312,6 +399,8 @@ function Notification() {
         isOpen={openPossibleMatchModal}
         onClose={() => setOpenPossibleMatchModal(false)}
         notification={selectedNotification}
+        onOfferReturn={handleOfferReturnFromMatch}
+        onClaimItem={handleClaimItemFromMatch}
       />
 
       <MessageAdminModal
@@ -360,6 +449,31 @@ function Notification() {
           formData={foundForm}
           onClose={() => setOpenFoundReport(false)}
         />
+      )}
+    {/* Eligible Found Reports Modal for Return Offer */}
+      {openEligibleFoundModal && (
+        <EligibleFoundReportsModal
+          initialSelectedId={matchNotificationToProcess?.foundItemId?._id || matchNotificationToProcess?.foundItemId}
+          onClose={() => setOpenEligibleFoundModal(false)}
+          onSubmit={(selectedId) => handleConfirmFoundReportSubmit(selectedId)}
+        />
+      )}
+
+      {/* Eligible Lost Reports Modal for Claim Request */}
+      {openEligibleLostModal && (
+        <EligibleLostReportsModal
+          initialSelectedId={matchNotificationToProcess?.lostItemId?._id || matchNotificationToProcess?.lostItemId}
+          onClose={() => setOpenEligibleLostModal(false)}
+          onSubmit={(selectedId) => handleConfirmLostReportSubmit(selectedId)}
+        />
+      )}
+
+      {/* Toast Alert */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl border border-slate-700 text-sm font-semibold flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-200">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          {toastMessage}
+        </div>
       )}
     </div>
   );

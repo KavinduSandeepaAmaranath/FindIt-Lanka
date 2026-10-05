@@ -50,9 +50,10 @@ export const approveLostItem = async  (itemId) => {
     return response.data;
 };
 
-export const rejectLostItem = async (itemId) => {
+export const rejectLostItem = async (itemId, rejectionReason) => {
     const response = await api.patch(
-        `/admin/lost-items/${itemId}/reject`
+        `/admin/lost-items/${itemId}/reject`,
+        { rejectionReason }
     );
 
     return response.data;
@@ -93,9 +94,10 @@ export const approveFoundItem = async (itemId) => {
     return response.data;
 };
 
-export const rejectFoundItem = async (itemId) => {
+export const rejectFoundItem = async (itemId, rejectionReason) => {
     const response = await api.patch(
-        `/admin/found-items/${itemId}/reject`
+        `/admin/found-items/${itemId}/reject`,
+        { rejectionReason }
     );
 
     return response.data;

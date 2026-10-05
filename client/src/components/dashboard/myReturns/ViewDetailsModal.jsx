@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiX, FiEye } from "react-icons/fi";
+import { FiX, FiEye, FiUser } from "react-icons/fi";
 import fallbackImage from "../../../assets/images/UdbFallbackImage.avif";
 import FullImageModal from "./FullImageModal";
 import { formatReturnDate } from "./returnHelpers";
@@ -41,15 +41,24 @@ function ViewDetailsModal({ item, onClose }) {
                 Claimant Information
               </h3>
               <div className="flex items-center gap-3">
-                <img
-                  src={item.claimantAvatar}
-                  alt={item.claimedBy}
-                  className="w-11 h-11 rounded-full object-cover border border-slate-200 shrink-0"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = fallbackImage;
-                  }}
-                />
+                {item.hasRealAvatar && item.claimantAvatar ? (
+                  <img
+                    src={item.claimantAvatar}
+                    alt={item.claimedBy}
+                    className="w-11 h-11 rounded-full object-cover border border-slate-200 shrink-0"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 ${
+                    item.hasRealAvatar && item.claimantAvatar ? "hidden" : "flex"
+                  }`}
+                >
+                  <FiUser className="w-5 h-5 stroke-[2]" />
+                </div>
                 <div className="text-xs leading-snug">
                   <p className="font-bold text-slate-900">{item.claimedBy}</p>
                   <p className="text-slate-600 text-[11px]">{item.claimantEmail}</p>

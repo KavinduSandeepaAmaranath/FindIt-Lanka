@@ -19,6 +19,9 @@ import ReportLostMethodModal from "../components/browseItems/ReportLostMethodMod
 import EligibleLostReportsModal from "../components/browseItems/EligibleLostReportsModal";
 
 import { currentUser } from "../data/dashboardData";
+import { getAllApprovedLostItems } from "../services/lostItemService.js";
+import { getAllApprovedFoundItems } from "../services/foundItemService.js";
+import { createClaim } from "../services/claimService.js";
 import {
   initialBrowseItems,
   categoryFilterOptions,
@@ -39,7 +42,49 @@ import {
 } from "../data/ReportFound";
 
 function BrowseItems() {
-  const [items] = useState(initialBrowseItems);
+    const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchLiveItems = async () => {
+      try {
+        const [lostRes, foundRes] = await Promise.all([
+          getAllApprovedLostItems().catch(() => null),
+          getAllApprovedFoundItems().catch(() => null),
+        ]);
+
+        const lostItems = (lostRes?.lostItems || []).map((item) => ({
+          ...item,
+          id: item._id,
+          status: "Lost",
+          reportType: "Lost Item",
+          date: new Date(item.lostDate || item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          rawDate: (item.lostDate || item.createdAt || "").split("T")[0],
+          image: item.images && item.images.length > 0 ? `http://localhost:5000/${item.images[0]}` : null,
+          images: item.images ? item.images.map(img => `http://localhost:5000/${img}`) : [],
+        }));
+
+        const foundItems = (foundRes?.foundItems || []).map((item) => ({
+          ...item,
+          id: item._id,
+          status: "Found",
+          reportType: "Found Item",
+          date: new Date(item.foundDate || item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          rawDate: (item.foundDate || item.createdAt || "").split("T")[0],
+          image: item.images && item.images.length > 0 ? `http://localhost:5000/${item.images[0]}` : null,
+          images: item.images ? item.images.map(img => `http://localhost:5000/${img}`) : [],
+        }));
+
+        const liveCombined = [...lostItems, ...foundItems];
+        if (liveCombined.length > 0) {
+          setItems(liveCombined);
+        }
+      } catch (err) {
+        console.error("Error fetching live approved items:", err);
+      }
+    };
+
+    fetchLiveItems();
+  }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
@@ -220,7 +265,6 @@ function BrowseItems() {
   };
 
   const handleReturnItem = () => {
-    setSelectedLostItem(null);
     setIsReportMethodOpen(true);
   };
 
@@ -234,18 +278,39 @@ function BrowseItems() {
     setOpenFoundReport(true);
   };
 
-  const handleSubmitEligibleReport = (report) => {
-    setIsEligibleReportsOpen(false);
-    setSubmissionToast(
-      `Successfully linked found report "${report?.title || "Found Item"}" for return!`
-    );
+  const handleSubmitEligibleReport = async (report) => {
+    try {
+      const lostItemId = selectedLostItem?._id || selectedLostItem?.id;
+      const foundItemId = report?._id || report?.id;
+
+      if (!lostItemId || !foundItemId) {
+        throw new Error("Missing lost item or found report details.");
+      }
+
+      await createClaim({
+        lostItemId,
+        foundItemId,
+        message: `I have found an item matching your lost report "${selectedLostItem?.title || "Lost Item"}" and would like to return it.`,
+      });
+
+      setIsEligibleReportsOpen(false);
+      setSelectedLostItem(null);
+      setSubmissionToast(
+        `Successfully submitted return request for "${selectedLostItem?.title || "Lost Item"}"!`
+      );
+    } catch (err) {
+      console.error("Error creating return claim:", err);
+      const errMsg = err.response?.data?.message || err.message || "Failed to submit return request.";
+      setIsEligibleReportsOpen(false);
+      setSelectedLostItem(null);
+      setSubmissionToast(`Note: ${errMsg}`);
+    }
     setTimeout(() => {
       setSubmissionToast("");
     }, 4500);
   };
 
   const handleClaimItem = () => {
-    setSelectedFoundItem(null);
     setIsLostMethodOpen(true);
   };
 
@@ -259,11 +324,33 @@ function BrowseItems() {
     setOpenLostReport(true);
   };
 
-  const handleSubmitEligibleLostReport = (report) => {
-    setIsEligibleLostReportsOpen(false);
-    setSubmissionToast(
-      `Successfully linked your lost report "${report?.title || "Lost Item"}" for claiming!`
-    );
+  const handleSubmitEligibleLostReport = async (report) => {
+    try {
+      const foundItemId = selectedFoundItem?._id || selectedFoundItem?.id;
+      const lostItemId = report?._id || report?.id;
+
+      if (!foundItemId || !lostItemId) {
+        throw new Error("Missing found item or lost report details.");
+      }
+
+      await createClaim({
+        foundItemId,
+        lostItemId,
+        message: `I am claiming ownership for "${selectedFoundItem?.title || "Found Item"}" via my lost item report.`,
+      });
+
+      setIsEligibleLostReportsOpen(false);
+      setSelectedFoundItem(null);
+      setSubmissionToast(
+        `Successfully submitted claim for "${selectedFoundItem?.title || "Found Item"}"!`
+      );
+    } catch (err) {
+      console.error("Error creating claim:", err);
+      const errMsg = err.response?.data?.message || err.message || "Failed to submit claim.";
+      setIsEligibleLostReportsOpen(false);
+      setSelectedFoundItem(null);
+      setSubmissionToast(`Note: ${errMsg}`);
+    }
     setTimeout(() => {
       setSubmissionToast("");
     }, 4500);
@@ -296,7 +383,7 @@ function BrowseItems() {
 
           {/* Search Bar + Kasun Perera User Profile */}
           <BrowseTopbar
-            user={currentUser}
+            user={undefined}
             onSearch={setSearchTerm}
             initialSearchTerm={searchTerm}
           />

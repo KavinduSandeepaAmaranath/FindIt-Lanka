@@ -10,6 +10,8 @@ const ReportActionModal = ({
   onClose,
   onConfirm,
 }) => {
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editedReport, setEditedReport] = useState({
     itemName: report?.itemName || "",
     location: report?.location || "",
@@ -168,7 +170,7 @@ const ReportActionModal = ({
 
         {/* Approve / Reject Content */}
         {(action === "approve" || action === "reject") && (
-          <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
             <div className="flex items-center gap-3">
               <img
                 src={report.itemImage}
@@ -187,6 +189,21 @@ const ReportActionModal = ({
                 </p>
               </div>
             </div>
+
+            {action === "reject" && (
+              <div className="pt-2 border-t border-gray-200">
+                <label className="block text-xs font-medium text-[#2A3B63] mb-1">
+                  Reason for Rejection (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="Provide reason for rejecting this report..."
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 focus:outline-none focus:border-red-500 bg-white"
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -379,7 +396,7 @@ const ReportActionModal = ({
               }
             `}
           >
-            {getConfirmText()}
+            {isSubmitting ? "Processing..." : getConfirmText()}
           </button>
         </div>
       </div>

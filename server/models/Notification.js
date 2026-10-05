@@ -20,7 +20,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["match", "claim", "system", "approval"],
+      enum: ["match", "claim", "system", "approval", "rejection", "found"],
       default: "match",
     },
     lostItemId: {
@@ -37,6 +37,10 @@ const notificationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Claim",
       default: null,
+    },
+    matchScore: {
+      type: Number,
+      default: 0,
     },
     isRead: {
       type: Boolean,

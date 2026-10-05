@@ -19,7 +19,9 @@ import ContactClaimantModal from "../components/dashboard/myReturns/ContactClaim
 
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
 import ReportModal from "../components/LostFoundForm/ReportModal";
-import { currentUser } from "../data/dashboardData";
+
+import { getMyReturns, approveClaim, rejectClaim } from "../services/claimService.js";
+
 import {
   myReturns as initialReturns,
   returnStats as initialStats,
@@ -38,121 +40,214 @@ import {
   reportForm as foundForm,
 } from "../data/ReportFound";
 
+import fallbackImg from "../assets/images/LpIphone1.avif";
+
 const tabStatusMap = {
   all: null,
-  pending: ["Pending Claim"],
-  approved: ["Approved"],
+  pending: ["Pending Claim", "pending"],
+  approved: ["Approved", "approved"],
   in_progress: ["Return In Progress"],
-  completed: ["Returned"],
+  completed: ["Returned", "returned"],
 };
 
 const statToType = {
   approved: "Approved",
-  in_progress: "Return In Progress",
   pending: "Pending Claim",
+  in_progress: "Return In Progress",
   completed: "Returned",
 };
 
 function MyReturns() {
+  const [returnsList, setReturnsList] = useState([]);
   const [openLostReport, setOpenLostReport] = useState(false);
   const [openFoundReport, setOpenFoundReport] = useState(false);
 
-  const [returnsList, setReturnsList] = useState(initialReturns);
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [activeStat, setActiveStat] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [toastMessage, setToastMessage] = useState("");
 
-  // Modal states matching provided UI images
+  // Modals state
   const [claimDetailsItem, setClaimDetailsItem] = useState(null);
   const [approveModalItem, setApproveModalItem] = useState(null);
   const [rejectModalItem, setRejectModalItem] = useState(null);
   const [viewDetailsItem, setViewDetailsItem] = useState(null);
   const [markDoneItem, setMarkDoneItem] = useState(null);
   const [contactItem, setContactItem] = useState(null);
-  const [toastMessage, setToastMessage] = useState(null);
 
-  // Auto-dismiss toast
+  const loadReturns = () => {
+    getMyReturns()
+      .then((res) => {
+        if (res?.returns) {
+          const liveReturns = res.returns.map((r) => {
+            const lost = r.lostItemId || {};
+            const found = r.foundItemId || {};
+            const imgPath = lost.images?.[0] || found.images?.[0];
+            const fullImg = imgPath
+              ? (imgPath.startsWith("http") ? imgPath : `http://localhost:5000/${imgPath}`)
+              : fallbackImg;
+
+            let uiStatus = "Pending Claim";
+            if (r.status === "approved") uiStatus = "Approved";
+            if (r.status === "rejected") uiStatus = "Rejected";
+            if (r.status === "returned") uiStatus = "Returned";
+
+            const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+            const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
+            const isReturnOffer = r.claimantId?._id ? (r.claimantId._id.toString() === currentUserId?.toString()) : true;
+            
+            const targetUserObj = isReturnOffer ? (lost.userId || {}) : (r.claimantId || {});
+            const displayUser = targetUserObj.fullName || targetUserObj.name || (isReturnOffer ? "Lost Item Owner" : "Verified User");
+            const isApproved = r.status === "approved" || r.status === "returned";
+            
+            const claimantEmail = isApproved 
+              ? (targetUserObj.email || "Contact via system") 
+              : "Contact via system (Protected until approval)";
+            const claimantPhone = isApproved 
+              ? (targetUserObj.phone || targetUserObj.phoneNumber || "Contact via system") 
+              : "Contact via system (Protected until approval)";
+
+            const userPic = targetUserObj.profilePicture || targetUserObj.avatar || targetUserObj.profileImage;
+            const hasRealAvatar = Boolean(userPic);
+            const claimantAvatar = hasRealAvatar
+              ? (userPic.startsWith("http") ? userPic : `http://localhost:5000/${userPic}`)
+              : null;
+
+                        const itemDesc = lost.description || found.description || r.message || "Report description registered in system.";
+            const proofImgs = (lost.images && lost.images.length > 0)
+              ? lost.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+              : (found.images && found.images.length > 0)
+              ? found.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+              : [fullImg];
+
+            const whereLostStr = lost.location ? `${lost.location}${lost.district ? `, ${lost.district}` : ""}` : (lost.district || found.location || found.district || "Location in report");
+            const whenLostStr = lost.lostDate ? new Date(lost.lostDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) : new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+            const uniqueProofStr = lost.description || r.message || "Ownership proof registered in report";
+
+            return {
+              ...r,
+              id: r._id,
+              referenceNo: `RET-${r._id.slice(-6).toUpperCase()}`,
+              title: lost.title || found.title || "Returned Item",
+              category: lost.category || found.category || "General",
+              location: lost.district || found.district || lost.location || found.location || "Sri Lanka",
+              claimedBy: displayUser,
+              claimantEmail: claimantEmail,
+              claimantPhone: claimantPhone,
+              claimantAvatar: claimantAvatar,
+              hasRealAvatar: hasRealAvatar,
+              itemDescription: itemDesc,
+              whereLost: whereLostStr,
+              whenLost: whenLostStr,
+              uniqueProof: uniqueProofStr,
+              proofImages: proofImgs,
+              isReturnOffer: isReturnOffer,
+              claimedOn: r.createdAt,
+              status: uiStatus,
+              claimStatus: uiStatus,
+              image: fullImg,
+            };
+          });
+          setReturnsList(liveReturns);
+        } else {
+          setReturnsList([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching my returns:", err);
+        setReturnsList([]);
+      });
+  };
+
   useEffect(() => {
-    if (toastMessage) {
-      const timer = setTimeout(() => setToastMessage(null), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [toastMessage]);
+    loadReturns();
+  }, []);
 
-  // Tab definitions matching UI sketch counts & labels
+  // Compute tabs count dynamically
   const tabs = useMemo(
     () => [
-      {
-        value: "all",
-        label: "All",
-        count: returnsList.length,
-      },
+      { value: "all", label: "All Returns", count: returnsList.length },
       {
         value: "pending",
         label: "Pending",
-        count: returnsList.filter((r) => r.status === "Pending Claim").length,
+        count: returnsList.filter((item) =>
+          tabStatusMap.pending.includes(item.status)
+        ).length,
       },
       {
         value: "approved",
         label: "Approved",
-        count: returnsList.filter((r) => r.status === "Approved").length,
+        count: returnsList.filter((item) =>
+          tabStatusMap.approved.includes(item.status)
+        ).length,
       },
       {
         value: "in_progress",
-        label: "In progress",
-        count: returnsList.filter((r) => r.status === "Return In Progress").length,
+        label: "In Progress",
+        count: returnsList.filter((item) =>
+          tabStatusMap.in_progress.includes(item.status)
+        ).length,
       },
       {
         value: "completed",
         label: "Completed",
-        count: returnsList.filter((r) => r.status === "Returned").length,
+        count: returnsList.filter((item) =>
+          tabStatusMap.completed.includes(item.status)
+        ).length,
       },
     ],
     [returnsList]
   );
 
-  // Dynamic stats calculation
+  // Compute 4 Stat cards counts dynamically
   const computedStats = useMemo(() => {
-    return initialStats.map((st) => {
-      if (st.id === "approved") {
-        return {
-          ...st,
-          value: String(returnsList.filter((r) => r.status === "Approved").length).padStart(2, "0"),
-        };
-      }
-      if (st.id === "in_progress") {
-        return {
-          ...st,
-          value: String(returnsList.filter((r) => r.status === "Return In Progress").length).padStart(2, "0"),
-        };
-      }
-      if (st.id === "pending") {
-        return {
-          ...st,
-          value: String(returnsList.filter((r) => r.status === "Pending Claim").length).padStart(2, "0"),
-        };
-      }
-      if (st.id === "completed") {
-        return {
-          ...st,
-          value: String(returnsList.filter((r) => r.status === "Returned").length).padStart(2, "0"),
-        };
-      }
-      return st;
-    });
+    return [
+      {
+        id: "approved",
+        label: "Approved Returns",
+        value: returnsList.filter((item) =>
+          tabStatusMap.approved.includes(item.status)
+        ).length,
+        growth: "Ready for Handover",
+      },
+      {
+        id: "pending",
+        label: "Pending Returns",
+        value: returnsList.filter((item) =>
+          tabStatusMap.pending.includes(item.status)
+        ).length,
+        growth: "Requires Action",
+      },
+      {
+        id: "in_progress",
+        label: "In Progress",
+        value: returnsList.filter((item) =>
+          tabStatusMap.in_progress.includes(item.status)
+        ).length,
+        growth: "Meeting Arranged",
+      },
+      {
+        id: "completed",
+        label: "Completed Returns",
+        value: returnsList.filter((item) =>
+          tabStatusMap.completed.includes(item.status)
+        ).length,
+        growth: "Successfully Handed Over",
+      },
+    ];
   }, [returnsList]);
 
-  // Filter returns based on tab, type, date, search
+  // Tab + Search + Date + Type Filter Logic
   const filteredReturns = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
     return returnsList
       .filter((item) => {
-        const allowedStatuses = tabStatusMap[activeTab];
-        if (allowedStatuses && !allowedStatuses.includes(item.status)) return false;
+        const allowed = tabStatusMap[activeTab];
+        if (allowed && !allowed.includes(item.status)) return false;
 
         if (typeFilter !== "all" && item.status !== typeFilter) return false;
 
@@ -223,37 +318,29 @@ function MyReturns() {
     setActiveStat(matchedStat || null);
   };
 
-  // Button action handlers
-  const handleApproveClaim = (item) => {
-    setReturnsList((prev) =>
-      prev.map((r) =>
-        r.id === item.id
-          ? {
-            ...r,
-            status: "Approved",
-            claimStatus: "Approved",
-            approvedDate: new Date().toISOString(),
-          }
-          : r
-      )
-    );
-    setToastMessage(`Claim for "${item.title}" approved! You can now contact the claimant.`);
+  // Button Action Handlers with API integration
+  const handleApproveClaim = async (item) => {
+    try {
+      await approveClaim(item.id || item._id, "Claim approved by founder");
+      setToastMessage(`Claim for "${item.title}" approved! You can now contact the claimant.`);
+      loadReturns();
+    } catch (err) {
+      console.error("Error approving claim:", err);
+      const msg = err.response?.data?.message || err.message || "Failed to approve claim.";
+      setToastMessage(`Note: ${msg}`);
+    }
   };
 
-  const handleRejectClaim = (item, reason) => {
-    setReturnsList((prev) =>
-      prev.map((r) =>
-        r.id === item.id
-          ? {
-            ...r,
-            status: "Rejected",
-            claimStatus: "Rejected",
-            rejectionReason: reason,
-          }
-          : r
-      )
-    );
-    setToastMessage(`Claim for "${item.title}" has been rejected.`);
+  const handleRejectClaim = async (item, reason) => {
+    try {
+      await rejectClaim(item.id || item._id, reason || "Rejected by founder");
+      setToastMessage(`Claim for "${item.title}" has been rejected.`);
+      loadReturns();
+    } catch (err) {
+      console.error("Error rejecting claim:", err);
+      const msg = err.response?.data?.message || err.message || "Failed to reject claim.";
+      setToastMessage(`Note: ${msg}`);
+    }
   };
 
   const handleConfirmReturned = (itemId, details) => {
@@ -283,7 +370,7 @@ function MyReturns() {
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8 space-y-7">
           {/* Top User Bar */}
-          <MyReturnsUserBar user={currentUser} />
+          <MyReturnsUserBar user={undefined} />
 
           {/* Header + Date & Type Filter Dropdowns */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">

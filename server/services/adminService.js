@@ -1,6 +1,9 @@
+import { findAndTriggerMatchesForLostItem, findAndTriggerMatchesForFoundItem } from "./matchingService.js";
+import { createNotification } from "./notificationService.js";
 import User from "../models/User.js";
 import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
+import Claim from "../models/Claim.js";
 
 /* Dashboard */
 export const getDashboardStatistics = async () => {
@@ -319,22 +322,62 @@ export const approveLostItem = async (itemId) => {
 
     await lostItem.save();
 
+    // 1. Send approval notification in isolated try-catch
+    try {
+        if (lostItem.userId) {
+            await createNotification({
+                userId: lostItem.userId,
+                title: "Your lost item report has been approved",
+                message: `Your report (${lostItem.title}) has been approved and is now visible to other users.`,
+                type: "approval",
+                category: "reports",
+                tone: "blue",
+                icon: "report",
+                actionLabel: "View Report",
+                lostItemId: lostItem._id,
+            });
+        }
+    } catch (notifErr) {
+        console.error("Error creating approval notification:", notifErr);
+    }
+
+    // 2. Trigger matching mechanism in isolated try-catch
+    try {
+        await findAndTriggerMatchesForLostItem(lostItem._id);
+    } catch (matchErr) {
+        console.error("Error running matching mechanism:", matchErr);
+    }
+
     return lostItem;
 };
 
-export const rejectLostItem = async (itemId) => {
+export const rejectLostItem = async (itemId, rejectionReason) => {
     const lostItem = await LostItem.findById(itemId);
 
-    if(!lostItem) {
-        throw new Error("Lost item not Found");
-    }
-    if (lostItem.approvalStatus !== "pending") {
-        throw new Error("Only pending lost items can be rejected");
+    if (!lostItem) {
+        throw new Error("Lost item not found");
     }
 
     lostItem.approvalStatus = "rejected";
+    if (rejectionReason) {
+        lostItem.rejectionReason = rejectionReason;
+    }
 
     await lostItem.save();
+
+    if (lostItem.userId) {
+        await createNotification({
+            userId: lostItem.userId,
+            title: "Your lost item report was rejected",
+            message: rejectionReason || `Your lost item report (${lostItem.title}) was rejected by admin.`,
+            type: "rejection",
+            category: "reports",
+            tone: "red",
+            icon: "reject",
+            actionLabel: "View Report",
+            lostItemId: lostItem._id,
+        });
+    }
 
     return lostItem;
 };
@@ -396,22 +439,62 @@ export const approveFoundItem = async (itemId) => {
 
     await foundItem.save();
 
+    // 1. Send approval notification in isolated try-catch
+    try {
+        if (foundItem.userId) {
+            await createNotification({
+                userId: foundItem.userId,
+                title: "Your Found item report has been approved",
+                message: `Your found item report (${foundItem.title}) has been approved.`,
+                type: "approval",
+                category: "found",
+                tone: "green",
+                icon: "box",
+                actionLabel: "View Report",
+                foundItemId: foundItem._id,
+            });
+        }
+    } catch (notifErr) {
+        console.error("Error creating approval notification:", notifErr);
+    }
+
+    // 2. Trigger matching mechanism in isolated try-catch
+    try {
+        await findAndTriggerMatchesForFoundItem(foundItem._id);
+    } catch (matchErr) {
+        console.error("Error running matching mechanism:", matchErr);
+    }
+
     return foundItem;
 };
 
-export const rejectFoundItem = async (itemId) => {
+export const rejectFoundItem = async (itemId, rejectionReason) => {
     const foundItem = await FoundItem.findById(itemId);
 
-    if(!foundItem) {
-        throw new Error("Found item not Found");
-    }
-    if (foundItem.approvalStatus !== "pending") {
-        throw new Error("Only pending found items can be rejected");
+    if (!foundItem) {
+        throw new Error("Found item not found");
     }
 
     foundItem.approvalStatus = "rejected";
+    if (rejectionReason) {
+        foundItem.rejectionReason = rejectionReason;
+    }
 
     await foundItem.save();
+
+    if (foundItem.userId) {
+        await createNotification({
+            userId: foundItem.userId,
+            title: "Your found item report was rejected",
+            message: rejectionReason || `Your found item report (${foundItem.title}) was rejected by admin.`,
+            type: "rejection",
+            category: "reports",
+            tone: "red",
+            icon: "reject",
+            actionLabel: "View Report",
+            foundItemId: foundItem._id,
+        });
+    }
 
     return foundItem;
 };
@@ -447,24 +530,79 @@ export const deleteFoundItemByAdmin = async (itemId) => {
 
 /* User */
 export const getAllUsers = async () => {
-    return await User.find({
+    const users = await User.find({
         role: "user",
     })
         .select("-password -refreshToken")
         .sort({
             createdAt: -1,
-        });
+        })
+        .lean();
+
+    const userIds = users.map((u) => u._id);
+
+    const [lostCounts, foundCounts, claimCounts] = await Promise.all([
+        LostItem.aggregate([
+            { $match: { userId: { $in: userIds } } },
+            { $group: { _id: "$userId", count: { $sum: 1 } } },
+        ]),
+        FoundItem.aggregate([
+            { $match: { userId: { $in: userIds } } },
+            { $group: { _id: "$userId", count: { $sum: 1 } } },
+        ]),
+        Claim.aggregate([
+            { $match: { claimantId: { $in: userIds } } },
+            { $group: { _id: "$claimantId", count: { $sum: 1 } } },
+        ]),
+    ]);
+
+    const lostMap = {};
+    lostCounts.forEach((item) => {
+        lostMap[item._id.toString()] = item.count;
+    });
+
+    const foundMap = {};
+    foundCounts.forEach((item) => {
+        foundMap[item._id.toString()] = item.count;
+    });
+
+    const claimMap = {};
+    claimCounts.forEach((item) => {
+        claimMap[item._id.toString()] = item.count;
+    });
+
+    return users.map((user) => {
+        const idStr = user._id.toString();
+        return {
+            ...user,
+            lostItemsCount: lostMap[idStr] || 0,
+            foundItemsCount: foundMap[idStr] || 0,
+            claimsCount: claimMap[idStr] || 0,
+        };
+    });
 };
 
 export const getUserById = async (userId) => {
     const user = await User.findById(userId)
-        .select("-password -refreshToken");
+        .select("-password -refreshToken")
+        .lean();
 
     if (!user) {
         throw new Error("User not found");
     }
 
-    return user;
+    const [lostItemsCount, foundItemsCount, claimsCount] = await Promise.all([
+        LostItem.countDocuments({ userId }),
+        FoundItem.countDocuments({ userId }),
+        Claim.countDocuments({ claimantId: userId }),
+    ]);
+
+    return {
+        ...user,
+        lostItemsCount,
+        foundItemsCount,
+        claimsCount,
+    };
 };
 
 export const suspendUser = async (userId) => {

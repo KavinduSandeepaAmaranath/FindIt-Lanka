@@ -1,13 +1,42 @@
 import { FiShield, FiInfo, FiX, FiEye } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import fallbackImg from "../../../assets/images/UdbFallbackImage.avif";
+import handbagImg from "../../../assets/images/LpLeatherHandbag.avif";
 import iphoneImg from "../../../assets/images/LpIphone1.avif";
+import watchImg from "../../../assets/images/LpWristWatch1.avif";
+import petImg from "../../../assets/images/LpRetrieverDog.avif";
+import keyImg from "../../../assets/images/LpCarKey.webp";
+
+const getCategoryFallback = (category) => {
+  const cat = (category || "").toLowerCase();
+  if (cat.includes("bag") || cat.includes("wallet")) return handbagImg;
+  if (cat.includes("electronic") || cat.includes("phone")) return iphoneImg;
+  if (cat.includes("jewel") || cat.includes("watch")) return watchImg;
+  if (cat.includes("pet") || cat.includes("animal")) return petImg;
+  if (cat.includes("vehicle") || cat.includes("key")) return keyImg;
+  return fallbackImg;
+};
 
 function ClaimApprovedModal({ isOpen, onClose, notification }) {
   if (!isOpen) return null;
 
+  const item = notification?.foundItemId || notification?.lostItemId || notification?.claimId?.foundItemId;
+  const itemTitle = item?.title || notification?.title || "Claim Approved";
+  const itemCategory = item?.category || "General";
+
+  const getItemImage = () => {
+    if (item?.images && item.images.length > 0 && item.images[0]) {
+      const img = item.images[0];
+      if (img.startsWith("http")) return img;
+      const cleanPath = img.startsWith("/") ? img.substring(1) : img;
+      return `http://localhost:5000/${cleanPath}`;
+    }
+    return getCategoryFallback(itemCategory);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white rounded-2xl border-[3.5px] border-blue-700 shadow-2xl w-full max-w-[480px] p-6 space-y-4 animate-scaleIn">
+      <div className="bg-white rounded-2xl border-[3.5px] border-blue-700 shadow-2xl w-full max-w-[480px] p-6 space-y-4 animate-scaleIn max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-start gap-3.5">
           <div className="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
@@ -26,47 +55,44 @@ function ClaimApprovedModal({ isOpen, onClose, notification }) {
         {/* Item Preview Box */}
         <div className="border border-slate-200 rounded-xl p-3 flex items-center gap-4 bg-slate-50/40">
           <img
-            src={iphoneImg}
-            alt="iPhone 13"
+            src={getItemImage()}
+            alt={itemTitle}
             className="w-16 h-16 object-cover rounded-lg border border-slate-200 shrink-0"
+            onError={(e) => {
+              e.target.src = getCategoryFallback(itemCategory);
+            }}
           />
-          <div className="space-y-0.5">
-            <h4 className="text-sm font-bold text-slate-900 leading-tight">
-              iPhone 13
+          <div className="space-y-0.5 min-w-0">
+            <h4 className="text-sm font-bold text-slate-900 leading-tight truncate">
+              {itemTitle}
             </h4>
-            <p className="text-xs text-slate-500">Electronics</p>
-            <p className="text-xs font-semibold text-emerald-600">Approved</p>
+            <p className="text-xs text-slate-500">{itemCategory}</p>
+            <p className="text-xs font-semibold text-emerald-600">Claim Verified</p>
           </div>
         </div>
 
         {/* Claim Information */}
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-slate-900 underline underline-offset-4">
-            Claim Information
+            Claim Status
           </h4>
-          <div className="space-y-1.5 text-xs">
+          <div className="space-y-1 text-xs">
             <div className="flex items-center justify-between text-slate-600">
-              <span>Approved Date</span>
-              <span className="font-semibold text-slate-900">21 Sep 2026</span>
+              <span>Category</span>
+              <span className="font-semibold text-slate-900">{itemCategory}</span>
             </div>
             <div className="flex items-center justify-between text-slate-600">
-              <span>Verified By</span>
-              <span className="font-semibold text-slate-900">Admin</span>
-            </div>
-            <div className="flex items-center justify-between text-slate-600">
-              <span>Next Step</span>
-              <span className="font-semibold text-emerald-600">
-                Arrange Handover
-              </span>
+              <span>Verification</span>
+              <span className="font-semibold text-emerald-600">Approved</span>
             </div>
           </div>
         </div>
 
-        {/* Instruction Info Callout */}
-        <div className="bg-blue-50/70 border border-blue-200 rounded-xl p-3 flex items-start gap-2.5 text-xs text-blue-900">
+        {/* Info Callout */}
+        <div className="bg-blue-50/70 border border-blue-200 rounded-xl p-2.5 flex items-start gap-2.5 text-xs text-blue-900">
           <FiInfo className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            Your claim is approved. Follow the platform&apos;s handover instructions to recover your item safely.
+            Your claim has been verified. You may now arrange item collection or contact the holder.
           </p>
         </div>
 
@@ -82,12 +108,12 @@ function ClaimApprovedModal({ isOpen, onClose, notification }) {
           </button>
 
           <Link
-            to="/dashboard/my-claims"
+            to="/dashboard/browse-found"
             onClick={onClose}
             className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors shadow-sm"
           >
             <FiEye className="w-4 h-4" />
-            <span>View Claims details</span>
+            <span>View Claimed Item</span>
           </Link>
         </div>
       </div>

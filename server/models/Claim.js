@@ -18,10 +18,8 @@ const claimSchema = new mongoose.Schema({
     },
     message: {
         type: String,
-        required: true,
         trim: true,
-        minLength: 10,
-        maxLength: 500,
+        default: "Item return/claim request",
     },
     reviewNote: {
         type: String,
