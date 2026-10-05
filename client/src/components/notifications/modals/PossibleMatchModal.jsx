@@ -1,4 +1,4 @@
-import { FiShield, FiInfo, FiX, FiEye } from "react-icons/fi";
+import { FiShield, FiInfo, FiX, FiEye, FiCheck } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import fallbackImg from "../../../assets/images/UdbFallbackImage.avif";
 import handbagImg from "../../../assets/images/LpLeatherHandbag.avif";
@@ -17,7 +17,7 @@ const getCategoryFallback = (category) => {
   return fallbackImg;
 };
 
-function PossibleMatchModal({ isOpen, onClose, notification }) {
+function PossibleMatchModal({ isOpen, onClose, notification, onOfferReturn, onClaimItem }) {
   if (!isOpen) return null;
 
   const item = notification?.foundItemId || notification?.lostItemId;
@@ -51,6 +51,21 @@ function PossibleMatchModal({ isOpen, onClose, notification }) {
     }
     return getCategoryFallback(itemCategory);
   };
+
+    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
+
+  const foundItemUser = notification?.foundItemId?.userId;
+  const lostItemUser = notification?.lostItemId?.userId;
+  const foundUserId = typeof foundItemUser === "object" ? (foundItemUser?._id || foundItemUser?.id) : foundItemUser;
+  const lostUserId = typeof lostItemUser === "object" ? (lostItemUser?._id || lostItemUser?.id) : lostItemUser;
+
+  const notifTitle = (notification?.title || "").toLowerCase();
+  const isFounderByTitle = notifTitle.includes("matching lost item found") || notifTitle.includes("founder");
+  const isOwnerByTitle = notifTitle.includes("potential match found") || notifTitle.includes("owner");
+
+  const isFounder = (foundUserId ? foundUserId.toString() === currentUserId?.toString() : false) || isFounderByTitle;
+  const isOwner = (lostUserId ? lostUserId.toString() === currentUserId?.toString() : false) || (isOwnerByTitle && !isFounderByTitle);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
@@ -133,20 +148,40 @@ function PossibleMatchModal({ isOpen, onClose, notification }) {
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-slate-300 hover:bg-slate-400 text-slate-700 font-medium text-xs transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium text-xs transition-colors cursor-pointer"
           >
             <FiX className="w-4 h-4" />
             <span>Close</span>
           </button>
 
-          <Link
-            to="/dashboard/browse-found"
-            onClick={onClose}
-            className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors shadow-sm"
-          >
-            <FiEye className="w-4 h-4" />
-            <span>View Full Item</span>
-          </Link>
+          {isFounder ? (
+            <button
+              type="button"
+              onClick={() => onOfferReturn?.(notification)}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-[#059669] hover:bg-emerald-700 text-white font-semibold text-xs transition-colors shadow-sm cursor-pointer"
+            >
+              <FiCheck className="w-4 h-4 stroke-[3]" />
+              <span>Offer Return</span>
+            </button>
+          ) : isOwner ? (
+            <button
+              type="button"
+              onClick={() => onClaimItem?.(notification)}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold text-xs transition-colors shadow-sm cursor-pointer"
+            >
+              <FiCheck className="w-4 h-4 stroke-[3]" />
+              <span>Claim Item</span>
+            </button>
+          ) : (
+            <Link
+              to="/dashboard/browse-found"
+              onClick={onClose}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition-colors shadow-sm"
+            >
+              <FiEye className="w-4 h-4" />
+              <span>View Full Item</span>
+            </Link>
+          )}
         </div>
       </div>
     </div>

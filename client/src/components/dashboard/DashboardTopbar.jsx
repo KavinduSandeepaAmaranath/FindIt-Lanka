@@ -1,7 +1,20 @@
-import { FiSearch, FiUser, FiShield } from "react-icons/fi";
+import { FiSearch, FiShield } from "react-icons/fi";
 import NotificationBell from "../common/NotificationBell";
+import UserProfileBadge from "../common/UserProfileBadge";
 
 function DashboardTopbar({ user, hideSearch = false }) {
+  let storedUser = null;
+  try {
+    storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  } catch (e) {
+    storedUser = null;
+  }
+
+  const activeUser = (user?.name && user.name !== "Kasun Perera" && user.name !== "Kasun") ? user : storedUser;
+
+  const trustScore = activeUser?.trustScore ?? 95;
+  const trustLabel = activeUser?.trustLabel ?? "Verified Member";
+
   return (
     <div
       className={`flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-8 ${
@@ -33,17 +46,7 @@ function DashboardTopbar({ user, hideSearch = false }) {
       <div className="flex items-center gap-5">
         <NotificationBell />
 
-        <div className="flex items-center gap-3">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-slate-900">{user?.name}</p>
-            <p className="text-xs text-blue-600 font-medium">
-              {user?.membership}
-            </p>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shrink-0">
-            <FiUser className="w-5 h-5" />
-          </div>
-        </div>
+        <UserProfileBadge user={activeUser} />
 
         <div className="flex items-center gap-3 bg-gradient-to-r from-blue-700 to-blue-900 text-white rounded-2xl px-5 py-3 shadow-sm shrink-0">
           <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center">
@@ -54,9 +57,9 @@ function DashboardTopbar({ user, hideSearch = false }) {
               Trust Score
             </p>
             <p className="text-lg font-extrabold leading-tight">
-              {user?.trustScore}/100
+              {trustScore}/100
             </p>
-            <p className="text-[11px] text-blue-200">{user?.trustLabel}</p>
+            <p className="text-[11px] text-blue-200">{trustLabel}</p>
           </div>
         </div>
       </div>

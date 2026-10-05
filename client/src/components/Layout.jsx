@@ -8,7 +8,9 @@ function Layout() {
   const location = useLocation();
 
   const isAuthRoute = AUTH_ROUTES.includes(location.pathname);
-  const isDashboardRoute = location.pathname.startsWith("/dashboard");
+  const isDashboardRoute =
+    location.pathname.startsWith("/dashboard") ||
+    location.pathname === "/browse";
 
   const hideNavbar = isAuthRoute || isDashboardRoute;
   const hideFooter = isAuthRoute;

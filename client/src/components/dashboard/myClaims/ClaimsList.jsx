@@ -1,7 +1,7 @@
 import { FiInbox } from "react-icons/fi";
 import ClaimRow from "./ClaimRow";
 
-function ClaimsList({ claims, onViewDetails }) {
+function ClaimsList({ claims, onViewDetails, onConfirmApprove, onContactFounder }) {
   if (claims.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-dashed border-slate-200 shadow-sm py-16 flex flex-col items-center gap-3 text-center px-6">
@@ -20,7 +20,7 @@ function ClaimsList({ claims, onViewDetails }) {
   return (
     <div className="space-y-5">
       {claims.map((claim) => (
-        <ClaimRow key={claim.id} claim={claim} onViewDetails={onViewDetails} />
+        <ClaimRow key={claim.id} claim={claim} onViewDetails={onViewDetails} onConfirmApprove={onConfirmApprove} onContactFounder={onContactFounder} />
       ))}
     </div>
   );

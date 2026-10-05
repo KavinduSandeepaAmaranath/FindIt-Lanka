@@ -45,8 +45,8 @@ const formatTime = (date) => {
 export const getUserNotifications = async (userId) => {
   const rawNotifications = await Notification.find({ userId })
     .sort({ createdAt: -1 })
-    .populate("lostItemId", "title category district location lostDate description images status approvalStatus rejectionReason createdAt")
-    .populate("foundItemId", "title category district location foundDate description images status approvalStatus rejectionReason createdAt")
+    .populate("lostItemId", "title category district location lostDate description images status approvalStatus rejectionReason userId createdAt")
+    .populate("foundItemId", "title category district location foundDate description images status approvalStatus rejectionReason userId createdAt")
     .populate("claimId", "status createdAt");
 
   return rawNotifications.map((doc) => {

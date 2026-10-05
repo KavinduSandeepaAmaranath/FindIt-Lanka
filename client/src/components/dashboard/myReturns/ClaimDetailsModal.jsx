@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiX, FiCheck, FiEye } from "react-icons/fi";
+import { FiX, FiCheck, FiEye, FiUser } from "react-icons/fi";
 import fallbackImage from "../../../assets/images/UdbFallbackImage.avif";
 import FullImageModal from "./FullImageModal";
 
@@ -47,15 +47,24 @@ function ClaimDetailsModal({
                   Claimant Information
                 </h3>
                 <div className="flex items-center gap-3">
-                  <img
-                    src={item.claimantAvatar}
-                    alt={item.claimedBy}
-                    className="w-11 h-11 rounded-full object-cover border border-slate-200 shrink-0"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = fallbackImage;
-                    }}
-                  />
+                  {item.hasRealAvatar && item.claimantAvatar ? (
+                    <img
+                      src={item.claimantAvatar}
+                      alt={item.claimedBy}
+                      className="w-11 h-11 rounded-full object-cover border border-slate-200 shrink-0"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = "flex";
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    className={`w-11 h-11 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 ${
+                      item.hasRealAvatar && item.claimantAvatar ? "hidden" : "flex"
+                    }`}
+                  >
+                    <FiUser className="w-5 h-5 stroke-[2]" />
+                  </div>
                   <div className="text-xs leading-snug">
                     <p className="font-bold text-slate-900">{item.claimedBy}</p>
                     <p className="text-slate-600 text-[11px]">{item.claimantEmail}</p>
@@ -83,10 +92,10 @@ function ClaimDetailsModal({
                     <p className="font-bold text-slate-900">{item.title}</p>
                     <p className="text-slate-600 text-[11px]">{item.category}</p>
                     <p className="text-slate-600 text-[11px]">
-                      Found Date: {item.whenLost || "Sep 18, 2026"}
+                      Found Date: {item.whenLost || item.claimedOn || "Not specified"}
                     </p>
                     <p className="text-slate-600 text-[11px]">
-                      Found Location: {item.location || "Badulla"}
+                      Found Location: {item.location || "Not specified"}
                     </p>
                   </div>
                 </div>
@@ -102,30 +111,24 @@ function ClaimDetailsModal({
                   <div>
                     <p className="text-slate-500 font-semibold">Where did you lose this item?</p>
                     <p className="font-bold text-slate-800">
-                      {item.whereLost || "Badulla University Library"}
+                      {item.whereLost || item.location || "Location specified in report"}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-slate-500 font-semibold">When did you lose this item?</p>
                     <p className="font-bold text-slate-800">
-                      {item.whenLost || "Sep 18, 2026"}
+                      {item.whenLost || item.claimedOn || "Date specified in report"}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-slate-500 font-semibold">Describe the item</p>
                     <p className="font-bold text-slate-800">
-                      {item.itemDescription || "Dark iPhone 13 with a small scratch near the camera."}
+                      {item.itemDescription || "Report details registered in system."}
                     </p>
                   </div>
 
-                  <div>
-                    <p className="text-slate-500 font-semibold">What makes this item uniquely yours?</p>
-                    <p className="font-bold text-slate-800">
-                      {item.uniqueProof || "Blue phone case and a sticker on the back."}
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>

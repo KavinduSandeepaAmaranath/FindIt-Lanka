@@ -3,6 +3,7 @@ import {
     createClaimController,
     getAllClaimsController,
     getMyClaimsController,
+    getMyReturnsController,
     getClaimsForFoundItemController, 
     approveClaimController,
     rejectClaimController,
@@ -15,6 +16,7 @@ const router = express.Router();
 router.post("/create", protect, createClaimController);
 router.get("/All", getAllClaimsController);
 router.get("/my", protect, getMyClaimsController);
+router.get("/returns", protect, getMyReturnsController);
 router.get("/:id/claims-item", getClaimsForFoundItemController);
 router.patch("/:id/approve", protect, approveClaimController);
 router.patch("/:id/reject", protect, rejectClaimController);

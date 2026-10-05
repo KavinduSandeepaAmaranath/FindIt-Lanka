@@ -29,7 +29,7 @@ export const createFoundItem = async ({
 };
 
 export const getAllFoundItems = async () => {
-    return await FoundItem.find();
+    return await FoundItem.find({ approvalStatus: "approved" }).populate("userId", "name email phoneNumber district").sort({ createdAt: -1 });
 };
 
 export const getMyFoundItems = async (userId) => {

@@ -10,16 +10,17 @@ import MyClaimsTabs from "../components/dashboard/myClaims/MyClaimsTabs";
 import MyClaimsSearch from "../components/dashboard/myClaims/MyClaimsSearch";
 import ClaimsList from "../components/dashboard/myClaims/ClaimsList";
 import ClaimDetailsModal from "../components/dashboard/myClaims/ClaimDetailsModal";
+import ContactFounderModal from "../components/dashboard/myClaims/ContactFounderModal";
 
 /*pagination component is shared*/
 import MyReportsPagination from "../components/dashboard/myReports/MyReportsPagination";
-
 import ReportModal from "../components/LostFoundForm/ReportModal";
 
-import { currentUser } from "../data/dashboardData";
+import { getMyClaims, approveClaim } from "../services/claimService.js";
+
 import {
-  myClaims,
-  claimStats,
+  myClaims as initialClaims,
+  claimStats as initialStats,
   dateFilterOptions,
   typeFilterOptions,
   CLAIMS_PER_PAGE,
@@ -35,15 +36,17 @@ import {
   reportForm as foundForm,
 } from "../data/ReportFound";
 
+import fallbackImg from "../assets/images/LpIphone1.avif";
+
 /*statuses belong to each tab*/
 const tabStatusMap = {
   all: null,
-  pending: ["Pending Verification", "Under Review"],
-  approved: ["Claimed"],
-  rejected: ["Rejected"],
+  pending: ["Pending Verification", "Under Review", "pending"],
+  approved: ["Claimed", "approved"],
+  rejected: ["Rejected", "rejected"],
 };
 
-/*status card  mapping*/
+/*status card mapping*/
 const statToType = {
   claimed: "all",
   approved: "Claimed",
@@ -52,6 +55,7 @@ const statToType = {
 };
 
 function MyClaims() {
+  const [claimsList, setClaimsList] = useState([]);
   const [openLostReport, setOpenLostReport] = useState(false);
   const [openFoundReport, setOpenFoundReport] = useState(false);
 
@@ -62,41 +66,148 @@ function MyClaims() {
   const [activeStat, setActiveStat] = useState("claimed");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedClaim, setSelectedClaim] = useState(null);
+  const [contactFounderClaim, setContactFounderClaim] = useState(null);
+  const [toastMessage, setToastMessage] = useState("");
+
+    const loadClaims = () => {
+    getMyClaims()
+      .then((res) => {
+        if (res?.claims) {
+          const liveClaims = res.claims.map((c) => {
+            const lost = c.lostItemId || {};
+            const found = c.foundItemId || {};
+            const imgPath = lost.images?.[0] || found.images?.[0];
+            const fullImg = imgPath
+              ? (imgPath.startsWith("http") ? imgPath : `http://localhost:5000/${imgPath}`)
+              : fallbackImg;
+
+            let uiStatus = "Pending Verification";
+            if (c.status === "approved") uiStatus = "Claimed";
+            if (c.status === "rejected") uiStatus = "Rejected";
+            if (c.status === "cancelled") uiStatus = "Cancelled";
+
+            const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+            const currentUserId = savedUser.id || savedUser._id || localStorage.getItem("userId");
+            const claimantUser = c.claimantId || {};
+            const claimantUserId = claimantUser._id || claimantUser.id || claimantUser;
+            const isReturnOffer = claimantUserId ? (claimantUserId.toString() !== currentUserId?.toString()) : true;
+
+            const founderUser = c.foundItemId?.userId || c.claimantId || {};
+            const displayUser = founderUser.fullName || founderUser.name || (isReturnOffer ? "Item Founder" : "Claimant");
+            const isApproved = c.status === "approved" || c.status === "returned";
+
+            const claimantEmail = isApproved 
+              ? (founderUser.email || "Contact via system") 
+              : "Contact via system (Protected until approval)";
+            const claimantPhone = isApproved 
+              ? (founderUser.phone || founderUser.phoneNumber || "Contact via system") 
+              : "Contact via system (Protected until approval)";
+
+            const userPic = founderUser.profilePicture || founderUser.avatar || founderUser.profileImage;
+            const hasRealAvatar = Boolean(userPic);
+            const claimantAvatar = hasRealAvatar
+              ? (userPic.startsWith("http") ? userPic : `http://localhost:5000/${userPic}`)
+              : null;
+
+            const itemDesc = lost.description || found.description || c.message || "Report details registered in system.";
+            const proofImgs = (lost.images && lost.images.length > 0)
+              ? lost.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+              : (found.images && found.images.length > 0)
+              ? found.images.map(img => img.startsWith("http") ? img : `http://localhost:5000/${img}`)
+              : [fullImg];
+
+            return {
+              ...c,
+              id: c._id,
+              referenceNo: `CLM-${c._id.slice(-6).toUpperCase()}`,
+              title: lost.title || found.title || "Claimed Item",
+              category: lost.category || found.category || "General",
+              location: lost.district || found.district || lost.location || found.location || "Sri Lanka",
+              claimedBy: displayUser,
+              claimantEmail: claimantEmail,
+              claimantPhone: claimantPhone,
+              claimantAvatar: claimantAvatar,
+              hasRealAvatar: hasRealAvatar,
+              itemDescription: itemDesc,
+              proofImages: proofImgs,
+              isReturnOffer: isReturnOffer,
+              claimedOn: c.createdAt,
+              status: uiStatus,
+              reportType: "Claim Request",
+              image: fullImg,
+            };
+          });
+          setClaimsList(liveClaims);
+        } else {
+          setClaimsList([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error loading my claims:", err);
+        setClaimsList([]);
+      });
+  };
+
+  useEffect(() => {
+    loadClaims();
+  }, []);
 
   /*tab counts*/
   const tabs = useMemo(
     () => [
-      { value: "all", label: "All claims", count: myClaims.length },
+      { value: "all", label: "All claims", count: claimsList.length },
       {
         value: "pending",
         label: "Pending",
-        count: myClaims.filter((c) =>
+        count: claimsList.filter((c) =>
           tabStatusMap.pending.includes(c.status)
         ).length,
       },
       {
         value: "approved",
         label: "Approved",
-        count: myClaims.filter((c) =>
+        count: claimsList.filter((c) =>
           tabStatusMap.approved.includes(c.status)
         ).length,
       },
       {
         value: "rejected",
         label: "Rejected",
-        count: myClaims.filter((c) =>
+        count: claimsList.filter((c) =>
           tabStatusMap.rejected.includes(c.status)
         ).length,
       },
     ],
-    []
+    [claimsList]
   );
+
+  /*computed stats*/
+  const computedStats = useMemo(() => {
+    return [
+      { id: "claimed", label: "Total Claims", value: claimsList.length },
+      {
+        id: "approved",
+        label: "Approved Claims",
+        value: claimsList.filter((c) => tabStatusMap.approved.includes(c.status)).length,
+      },
+      {
+        id: "pending",
+        label: "Pending Verification",
+        value: claimsList.filter((c) => tabStatusMap.pending.includes(c.status)).length,
+      },
+      {
+        id: "rejected",
+        label: "Rejected Claims",
+        value: claimsList.filter((c) => tabStatusMap.rejected.includes(c.status)).length,
+      },
+    ];
+  }, [claimsList]);
 
   /*tab + search + date + type filters*/
   const filteredClaims = useMemo(() => {
     const words = searchTerm.trim().toLowerCase();
 
-    return myClaims
+    return claimsList
       .filter((claim) => {
         const allowed = tabStatusMap[activeTab];
         if (allowed && !allowed.includes(claim.status)) return false;
@@ -128,7 +239,7 @@ function MyClaims() {
         return true;
       })
       .sort((a, b) => new Date(b.claimedOn) - new Date(a.claimedOn));
-  }, [activeTab, searchTerm, dateFilter, typeFilter]);
+  }, [claimsList, activeTab, searchTerm, dateFilter, typeFilter]);
 
   const totalPages = Math.max(
     1,
@@ -165,8 +276,21 @@ function MyClaims() {
     setActiveStat(matchedStat || null);
   };
 
+      const handleConfirmApprove = async (claim) => {
+    try {
+      await approveClaim(claim.id || claim._id, "Return confirmed and accepted by owner.");
+      setSelectedClaim(null);
+      setToastMessage(`Return accepted for "${claim.title}"! You can now contact the founder.`);
+      loadClaims();
+    } catch (err) {
+      console.error("Error approving claim:", err);
+      const msg = err.response?.data?.message || err.message || "Failed to accept return.";
+      setToastMessage(`Note: ${msg}`);
+    }
+  };
+
   return (
-    <div className="flex bg-slate-50">
+    <div className="flex bg-[#f8faff] min-h-screen">
       <DashboardSidebar
         onOpenLostReport={() => setOpenLostReport(true)}
         onOpenFoundReport={() => setOpenFoundReport(true)}
@@ -174,7 +298,7 @@ function MyClaims() {
 
       <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
-          <MyClaimsUserBar user={currentUser} />
+          <MyClaimsUserBar user={undefined} />
 
           {/*title + date / type filters*/}
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -191,7 +315,7 @@ function MyClaims() {
           </div>
 
           <MyClaimsStats
-            stats={claimStats}
+            stats={computedStats}
             activeStat={activeStat}
             onSelectStat={handleSelectStat}
           />
@@ -210,6 +334,8 @@ function MyClaims() {
           <ClaimsList
             claims={visibleClaims}
             onViewDetails={setSelectedClaim}
+            onConfirmApprove={handleConfirmApprove}
+            onContactFounder={setContactFounderClaim}
           />
 
           <MyReportsPagination
@@ -220,11 +346,33 @@ function MyClaims() {
         </div>
       </div>
 
+      {/* contact founder modal */}
+      {contactFounderClaim && (
+        <ContactFounderModal
+          claim={contactFounderClaim}
+          onClose={() => setContactFounderClaim(null)}
+          onMessageSent={(msg) => setToastMessage(msg)}
+        />
+      )}
+
+      {/* toast message */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl border border-slate-700 text-sm font-semibold flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-200">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          {toastMessage}
+        </div>
+      )}
+
       {/*claim details popup*/}
       {selectedClaim && (
         <ClaimDetailsModal
           claim={selectedClaim}
           onClose={() => setSelectedClaim(null)}
+          onConfirmApprove={handleConfirmApprove}
+          onContactFounder={(c) => {
+            setSelectedClaim(null);
+            setContactFounderClaim(c);
+          }}
         />
       )}
 

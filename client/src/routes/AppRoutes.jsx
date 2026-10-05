@@ -19,6 +19,7 @@ import Settings from "../pages/Settings";
 import MyReturns from "../pages/MyReturns";
 import Notification from "../pages/Notification";
 import Help from "../pages/Help";
+import BrowseItems from "../pages/BrowseItems";
 
 import AdminDashboard from "../pages/AdminDashboard";
 import AllUsers from "../pages/AllUsers";
@@ -42,6 +43,8 @@ function AppRoutes() {
         <Route path="/dashboard/notifications" element={<Notification />} />
         <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/dashboard/my-returns" element={<MyReturns />} />
+        <Route path="/dashboard/browse" element={<BrowseItems />} />
+        <Route path="/browse" element={<BrowseItems />} />
         <Route path="/dashboard/help" element={<Help />} />
         <Route path="/help" element={<Help />} />
 

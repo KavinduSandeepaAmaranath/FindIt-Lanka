@@ -58,7 +58,7 @@ function MyReports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
 
-  const [reportsList, setReportsList] = useState(mockReports);
+  const [reportsList, setReportsList] = useState([]);
   const [liveStats, setLiveStats] = useState(null);
 
   useEffect(() => {
@@ -357,7 +357,7 @@ function MyReports() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <MyReportsHeader />
             <DashboardTopbar
-              user={currentUser}
+              user={undefined}
               hideSearch
             />
           </div>

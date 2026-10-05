@@ -2,6 +2,7 @@ import Claim from "../models/Claim.js";
 import { 
     createClaim, 
     getMyClaims,
+    getMyReturns,
     getAllClaims,
     getClaimsForFoundItem,
     approveClaim,
@@ -20,7 +21,7 @@ export const createClaimController = async (req, res) => {
             success: true,
             message: "Claim created successfully",
             claim,
-        })
+        });
     } catch (error) {
         res.status(400).json({
             message: error.message,
@@ -40,7 +41,7 @@ export const getAllClaimsController = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: error.message,
-        })
+        });
     }
 };
 
@@ -52,6 +53,22 @@ export const getMyClaimsController = async (req, res) => {
             success: true,
             count: claims.length,
             claims,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
+export const getMyReturnsController = async (req, res) => {
+    try {
+        const returns = await getMyReturns(req.user.userId);
+
+        res.status(200).json({
+            success: true,
+            count: returns.length,
+            returns,
         });
     } catch (error) {
         res.status(500).json({

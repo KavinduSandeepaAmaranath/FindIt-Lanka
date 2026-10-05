@@ -8,10 +8,10 @@ import umbrella1 from "../assets/images/UdbUmbrella1.avif";
 import watch1 from "../assets/images/UdbWatch1.avif";
 
 export const currentUser = {
-    name: "Kasun Perera",
+    name: "Saranga Hewage",
     membership: "Pro Member",
     trustScore: 98,
-    memberSince: "Feb 2026",
+    memberSince: "Jan 2025",
     pendingNotifications: 2,
 };
 
