@@ -23,8 +23,6 @@ export const createFoundItem = async ({
         userId,
     });
 
-    // Matching is triggered upon Admin approval
-
     return foundItem;
 };
 

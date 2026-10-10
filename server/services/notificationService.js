@@ -1,6 +1,5 @@
 import Notification from "../models/Notification.js";
 
-// Helper function to calculate date group ("Today", "Yesterday", "Earlier")
 const getDateGroup = (date) => {
   const now = new Date();
   const target = new Date(date);
@@ -24,7 +23,6 @@ const getDateGroup = (date) => {
   return "Earlier";
 };
 
-// Helper function to format date string ("Sep 20, 2026")
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
@@ -33,7 +31,6 @@ const formatDate = (date) => {
   });
 };
 
-// Helper function to format time string ("10:15 AM")
 const formatTime = (date) => {
   return new Date(date).toLocaleTimeString("en-US", {
     hour: "2-digit",
