@@ -18,7 +18,7 @@ const ClaimFilters = ({
   const filters = [
     {
       id: "status",
-      label: "STATUS",
+      label: "Status",
       value: activeTab,
       options: [
         "All",
@@ -32,7 +32,7 @@ const ClaimFilters = ({
     },
     {
       id: "type",
-      label: "CLAIM TYPE",
+      label: "Claim Type",
       value: claimType,
       options: ["All", "Lost", "Found"],
       onChange: (val) => setClaimType(val),

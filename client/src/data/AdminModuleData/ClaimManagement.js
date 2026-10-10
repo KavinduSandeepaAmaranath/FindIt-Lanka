@@ -101,7 +101,7 @@ export const claimFilterData = {
   filters: [
     {
       id: "status",
-      label: "STATUS",
+      label: "Status",
       options: [
         "All",
         "Submitted",
@@ -113,7 +113,7 @@ export const claimFilterData = {
     },
     {
       id: "type",
-      label: "CLAIM TYPE",
+      label: "Claim Type",
       options: ["All", "Lost", "Found"],
     },
   ],
