@@ -3,12 +3,32 @@ import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { usersHeader } from "../../../data/AllUsersData";
 
 
-const UsersHeader = ({ setIsOpen }) => {
-
+const UsersHeader = ({
+  setIsOpen,
+  selectedFilter,
+  onFilterChange,
+  searchTerm = "",
+  onSearchChange,
+}) => {
   const SearchIcon = usersHeader.icons.search;
 
-  const [filter, setFilter] = useState(usersHeader.filterOptions[0]);
+  const [internalFilter, setInternalFilter] = useState(usersHeader.filterOptions[0]);
+  const [internalSearch, setInternalSearch] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const activeFilter = selectedFilter !== undefined ? selectedFilter : internalFilter;
+  const activeSearch = onSearchChange !== undefined ? searchTerm : internalSearch;
+
+  const handleSelectFilter = (option) => {
+    setInternalFilter(option);
+    if (onFilterChange) onFilterChange(option);
+    setIsDropdownOpen(false);
+  };
+
+  const handleSearchChange = (val) => {
+    setInternalSearch(val);
+    if (onSearchChange) onSearchChange(val);
+  };
 
   return (
     <section className="mb-6 sm:mb-8">
@@ -111,6 +131,8 @@ const UsersHeader = ({ setIsOpen }) => {
 
             <input
               type="text"
+              value={activeSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder={usersHeader.searchPlaceholder}
               className="
                 w-full
@@ -134,6 +156,7 @@ const UsersHeader = ({ setIsOpen }) => {
             />
 
             <button
+              type="button"
               className="
                 absolute
                 right-2
@@ -187,7 +210,7 @@ const UsersHeader = ({ setIsOpen }) => {
                 focus:ring-blue-500/10
               "
             >
-              <span>{filter}</span>
+              <span>{activeFilter}</span>
               <FiChevronDown
                 className={`text-gray-400 text-lg transition-transform duration-200 ${isDropdownOpen ? "rotate-180 text-blue-600" : ""
                   }`}
@@ -206,10 +229,7 @@ const UsersHeader = ({ setIsOpen }) => {
                     <button
                       key={option}
                       type="button"
-                      onClick={() => {
-                        setFilter(option);
-                        setIsDropdownOpen(false);
-                      }}
+                      onClick={() => handleSelectFilter(option)}
                       className={`
                         w-full
                         text-left
@@ -219,7 +239,7 @@ const UsersHeader = ({ setIsOpen }) => {
                         text-sm
                         font-medium
                         transition-colors
-                        ${filter === option
+                        ${activeFilter === option
                           ? "bg-blue-50 text-blue-600 font-semibold"
                           : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                         }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { FiUsers, FiUserCheck, FiUserX, FiUserPlus } from "react-icons/fi";
 
@@ -17,6 +17,9 @@ const AllUsers = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [selectedFilter, setSelectedFilter] = useState("All Users");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchUsers = async () => {
     try {
@@ -104,6 +107,56 @@ const AllUsers = () => {
     },
   ];
 
+  const handleCardClick = (cardTitle) => {
+    if (cardTitle === "Active Users") {
+      setSelectedFilter("Active Users");
+    } else if (cardTitle === "Suspended Users") {
+      setSelectedFilter("Suspend Users");
+    } else if (cardTitle === "New Users This Month") {
+      setSelectedFilter("New Users");
+    } else {
+      setSelectedFilter("All Users");
+    }
+  };
+
+  // Filtered users list
+  const filteredUsers = useMemo(() => {
+    return usersList.filter((user) => {
+      // 1. Dropdown Filter
+      if (selectedFilter === "Active Users") {
+        const isActive = user.status?.toLowerCase() === "active";
+        if (!isActive) return false;
+      } else if (
+        selectedFilter === "Suspend Users" ||
+        selectedFilter === "Suspended Users"
+      ) {
+        const isSuspended = user.status?.toLowerCase() === "suspended";
+        if (!isSuspended) return false;
+      } else if (selectedFilter === "New Users") {
+        if (!user.createdAt) return false;
+        const regDate = new Date(user.createdAt);
+        const isThisMonth =
+          regDate.getMonth() === now.getMonth() &&
+          regDate.getFullYear() === now.getFullYear();
+        if (!isThisMonth) return false;
+      }
+
+      // 2. Search Text
+      if (searchTerm.trim()) {
+        const query = searchTerm.toLowerCase().trim();
+        const nameMatch = user.name?.toLowerCase().includes(query);
+        const emailMatch = user.email?.toLowerCase().includes(query);
+        const phoneMatch = user.phone?.toLowerCase().includes(query);
+        const districtMatch = user.district?.toLowerCase().includes(query);
+        if (!nameMatch && !emailMatch && !phoneMatch && !districtMatch) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [usersList, selectedFilter, searchTerm]);
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Main Area */}
@@ -125,12 +178,17 @@ const AllUsers = () => {
           <UsersHeader
             header={usersHeader}
             setIsOpen={setIsSidebarOpen}
+            selectedFilter={selectedFilter}
+            onFilterChange={setSelectedFilter}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
           />
 
           {/* Cards */}
           <section className="mt-6">
             <AllUsersCard
               stats={dynamicUsersCard}
+              onCardClick={handleCardClick}
             />
           </section>
 
@@ -142,7 +200,7 @@ const AllUsers = () => {
               </div>
             ) : (
               <UsersTable
-                users={usersList}
+                users={filteredUsers}
                 onUserStatusChange={handleUserStatusChange}
               />
             )}
