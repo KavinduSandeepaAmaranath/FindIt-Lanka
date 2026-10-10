@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   FaUsers,
   FaSearch,
@@ -104,7 +105,12 @@ export default function AdminDashboard() {
 
         {/* Main Content */}
 
-        <main className="flex-1 w-full min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8">
+        <motion.main
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="flex-1 w-full min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8"
+        >
 
           {/* Header */}
 
@@ -137,7 +143,7 @@ export default function AdminDashboard() {
             <ReportOverview />
           </section>
 
-        </main>
+        </motion.main>
 
       </div>
 

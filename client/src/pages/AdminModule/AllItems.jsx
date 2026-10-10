@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
 
 import AdminNavBar from "../../components/AdminDashboard/AdminNavBar";
 import HeaderSec from "../../components/AdminDashboard/AllItems/HeaderSec";
@@ -200,7 +201,12 @@ const AllItems = () => {
         <AdminNavBar isOpen={isOpen} setIsOpen={setIsOpen} />
 
         {/* Content of Page */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+        <motion.main
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
+        >
           {/* Header */}
           <HeaderSec setIsOpen={setIsOpen} />
 
@@ -225,7 +231,7 @@ const AllItems = () => {
           <section className="mt-8">
             <AllItemsTable items={filteredItems} loading={loading} error={error} />
           </section>
-        </main>
+        </motion.main>
       </div>
 
       {/* Footer */}

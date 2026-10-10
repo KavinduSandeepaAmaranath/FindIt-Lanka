@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 import LogoImg from "../../assets/images/LogoImg.jpg";
 import { navMenuItems, navbarIcons } from "../../data/AdminDashboard";
 
@@ -79,18 +80,36 @@ export default function AdminNavBar({ isOpen, setIsOpen }) {
                 to={item.path}
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-4 rounded-xl px-5 py-3 mb-2 transition-all duration-300 ${
+                  `relative flex items-center gap-4 rounded-xl px-5 py-3 mb-2 transition-colors duration-200 ${
                     isActive
-                      ? "bg-white text-blue-700 shadow-lg"
-                      : "hover:bg-blue-500/40 hover:text-white"
+                      ? "text-blue-700 font-semibold"
+                      : "text-white/90 hover:bg-blue-500/40 hover:text-white"
                   }`
                 }
               >
-                <Icon className="text-xl" />
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeAdminTab"
+                        className="absolute inset-0 rounded-xl bg-white shadow-lg"
+                        transition={{
+                          type: "spring",
+                          stiffness: 420,
+                          damping: 32,
+                        }}
+                      />
+                    )}
 
-                <span className="font-medium">
-                  {item.title}
-                </span>
+                    <span className="relative z-10 flex items-center gap-4">
+                      <Icon className="text-xl" />
+
+                      <span className="font-medium">
+                        {item.title}
+                      </span>
+                    </span>
+                  </>
+                )}
               </NavLink>
             );
           })}
