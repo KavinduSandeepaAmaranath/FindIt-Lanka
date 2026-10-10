@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FiUsers, FiUserCheck, FiUserX, FiUserPlus } from "react-icons/fi";
 
 import AdminNavBar from "../components/AdminDashboard/AdminNavBar";
@@ -77,7 +77,6 @@ const AllUsers = () => {
       title: "Total Users",
       value: usersList.length.toLocaleString(),
       description: "All registered users",
-      change: "Live data",
       icon: FiUsers,
     },
     {
@@ -86,7 +85,6 @@ const AllUsers = () => {
         .filter((u) => u.status === "Active" || u.status === "active")
         .length.toLocaleString(),
       description: "Currently active users",
-      change: "Live data",
       icon: FiUserCheck,
     },
     {
@@ -95,14 +93,12 @@ const AllUsers = () => {
         .filter((u) => u.status === "Suspended" || u.status === "suspended")
         .length.toLocaleString(),
       description: "Suspended accounts",
-      change: "Live data",
       icon: FiUserX,
     },
     {
       title: "New Users This Month",
       value: newUsersThisMonth.toLocaleString(),
       description: "New registrations this month",
-      change: "Live data",
       icon: FiUserPlus,
     },
   ];

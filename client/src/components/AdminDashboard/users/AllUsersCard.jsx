@@ -88,20 +88,19 @@ const UsersCard = ({ stats }) => {
             </div>
 
             {/* Footer */}
-
-            <div className="mt-4">
-
-              <span
-                className="
-                  text-xs
-                  text-blue-500
-                  font-medium
-                "
-              >
-                {item.change}
-              </span>
-
-            </div>
+            {item.change && (
+              <div className="mt-4">
+                <span
+                  className="
+                    text-xs
+                    text-blue-500
+                    font-medium
+                  "
+                >
+                  {item.change}
+                </span>
+              </div>
+            )}
 
           </div>
         );
