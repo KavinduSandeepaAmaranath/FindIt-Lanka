@@ -27,19 +27,30 @@ export default function AdminDashboardHeader({
   };
 
   return (
-    <>
-      {/* Top Bar */}
-      <div className="flex items-center justify-between lg:justify-end w-full gap-3 sm:gap-4 mb-3 sm:mb-4">
-        {/* Mobile Menu */}
-        <button
-          onClick={() => setIsOpen(true)}
-          className="lg:hidden flex-shrink-0 p-2 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-100 transition"
-        >
-          <MenuIcon className="text-xl sm:text-2xl text-gray-700" />
-        </button>
+    <div className="mb-4 sm:mb-6">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="lg:hidden flex-shrink-0 mb-3 p-2 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-100 transition"
+      >
+        <MenuIcon className="text-xl sm:text-2xl text-gray-700" />
+      </button>
 
-        {/* Top Right Actions */}
-        <div className="flex items-center justify-end gap-3 sm:gap-5 ml-auto">
+      {/* Main Header Row: Title on Left, Actions on Right */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6">
+        {/* Left: Title & Subtitle */}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 leading-tight">
+            {header.title}
+          </h1>
+
+          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-500 max-w-2xl">
+            {header.subtitle}
+          </p>
+        </div>
+
+        {/* Right: Actions (Calendar, Notification, Profile) */}
+        <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0">
           {/* Calendar */}
           <div className="relative w-fit">
             <button
@@ -71,7 +82,7 @@ export default function AdminDashboardHeader({
           {/* Notification */}
           <NavLink
             to="/admin-notifications"
-            className="hover:scale-110 transition"
+            className="hover:scale-110 transition flex items-center justify-center p-1"
           >
             <BellIcon className="text-xl sm:text-2xl text-orange-400" />
           </NavLink>
@@ -82,7 +93,7 @@ export default function AdminDashboardHeader({
             className="flex items-center gap-3 hover:opacity-80 transition"
           >
             <div className="text-right hidden sm:block">
-              <h3 className="font-semibold text-sm sm:text-base">
+              <h3 className="font-semibold text-sm sm:text-base text-slate-800">
                 {user?.name || "Administrator"}
               </h3>
 
@@ -101,17 +112,6 @@ export default function AdminDashboardHeader({
           </NavLink>
         </div>
       </div>
-
-      {/* Title */}
-      <div className="mb-4">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-700">
-          {header.title}
-        </h1>
-
-        <p className="text-sm sm:text-base text-gray-500 mt-1">
-          {header.subtitle}
-        </p>
-      </div>
-    </>
+    </div>
   );
 }
