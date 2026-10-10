@@ -150,28 +150,6 @@ const AllItemsTable = ({ items = [], loading, error }) => {
                       </div>
                     </td>
 
-                    {/* claim status column */}
-                    <td className="border-r border-gray-200 px-4 py-2.5">
-                      <div
-                        className="
-                          flex
-                          min-h-[38px]
-                          items-center
-                          justify-center
-                        "
-                      >
-                        {item.claimStatus ? (
-                          <ClaimStatusBadge
-                            status={item.claimStatus}
-                          />
-                        ) : (
-                          <span className="text-lg font-medium text-[#64748B]">
-                            —
-                          </span>
-                        )}
-                      </div>
-                    </td>
-
                     {/* action column */}
                     <td className="px-4 py-2.5">
                       <div className="flex justify-center">
