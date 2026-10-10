@@ -76,34 +76,56 @@ const AllUsers = () => {
     );
   }).length;
 
+  const totalUsersCount = usersList.length;
+  const activeCount = usersList.filter(
+    (u) => u.status === "Active" || u.status === "active"
+  ).length;
+  const suspendedCount = usersList.filter(
+    (u) => u.status === "Suspended" || u.status === "suspended"
+  ).length;
+
   const dynamicUsersCard = [
     {
       title: "Total Users",
-      value: usersList.length.toLocaleString(),
+      value: totalUsersCount.toLocaleString(),
       description: "All registered users",
+      sub: `${totalUsersCount} total registered users`,
       icon: FiUsers,
+      iconBg: "bg-blue-50",
+      iconColor: "text-blue-600",
     },
     {
       title: "Active Users",
-      value: usersList
-        .filter((u) => u.status === "Active" || u.status === "active")
-        .length.toLocaleString(),
-      description: "Currently active users",
+      value: activeCount.toLocaleString(),
+      description: "Currently active accounts",
+      sub:
+        totalUsersCount > 0
+          ? `${((activeCount / totalUsersCount) * 100).toFixed(1)}% of total users`
+          : "0.0% of total users",
       icon: FiUserCheck,
+      iconBg: "bg-emerald-50",
+      iconColor: "text-emerald-600",
     },
     {
       title: "Suspended Users",
-      value: usersList
-        .filter((u) => u.status === "Suspended" || u.status === "suspended")
-        .length.toLocaleString(),
+      value: suspendedCount.toLocaleString(),
       description: "Suspended accounts",
+      sub:
+        totalUsersCount > 0
+          ? `${((suspendedCount / totalUsersCount) * 100).toFixed(1)}% of total users`
+          : "0.0% of total users",
       icon: FiUserX,
+      iconBg: "bg-red-50",
+      iconColor: "text-red-600",
     },
     {
-      title: "New Users This Month",
+      title: "New Users",
       value: newUsersThisMonth.toLocaleString(),
-      description: "New registrations this month",
+      description: "Registered this month",
+      sub: `${newUsersThisMonth} registered this month`,
       icon: FiUserPlus,
+      iconBg: "bg-purple-50",
+      iconColor: "text-purple-600",
     },
   ];
 
@@ -112,7 +134,7 @@ const AllUsers = () => {
       setSelectedFilter("Active Users");
     } else if (cardTitle === "Suspended Users") {
       setSelectedFilter("Suspend Users");
-    } else if (cardTitle === "New Users This Month") {
+    } else if (cardTitle.includes("New")) {
       setSelectedFilter("New Users");
     } else {
       setSelectedFilter("All Users");
@@ -188,6 +210,7 @@ const AllUsers = () => {
           <section className="mt-6">
             <AllUsersCard
               stats={dynamicUsersCard}
+              selectedFilter={selectedFilter}
               onCardClick={handleCardClick}
             />
           </section>

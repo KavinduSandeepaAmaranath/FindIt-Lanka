@@ -34,22 +34,28 @@ export default function AdminDashboard() {
         title: "Users",
         value: statistics.totalUsers,
         sub: "Registered users",
+        description: "Active platform users",
         icon: FaUsers,
-        path: "/admin/users",
+        iconBg: "bg-blue-50",
+        iconColor: "text-blue-600",
       },
       {
         title: "Lost Reports",
         value: statistics.totalLostItems,
         sub: `${statistics.pendingLostItems} pending approval`,
+        description: "Reported lost items",
         icon: FaSearch,
-        path: "/admin/lost-items",
+        iconBg: "bg-amber-50",
+        iconColor: "text-amber-600",
       },
       {
         title: "Found Reports",
         value: statistics.totalFoundItems,
         sub: `${statistics.pendingFoundItems} pending approval`,
+        description: "Reported found items",
         icon: FaBoxOpen,
-        path: "/admin/found-items",
+        iconBg: "bg-emerald-50",
+        iconColor: "text-emerald-600",
       },
       {
         title: "Recovered / Returned",
@@ -57,8 +63,10 @@ export default function AdminDashboard() {
           statistics.recoveredItems +
           statistics.returnedItems,
         sub: "Completed cases",
+        description: "Resolved lost & found",
         icon: FaClipboardCheck,
-        path: "/admin/dashboard",
+        iconBg: "bg-purple-50",
+        iconColor: "text-purple-600",
       },
     ]
     : [];
