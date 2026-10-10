@@ -6,6 +6,7 @@ import {
   FiCheck,
   FiX,
   FiSearch,
+  FiChevronDown,
   FiEye,
   FiChevronLeft,
   FiChevronRight,
@@ -84,8 +85,11 @@ export const claimCardsData = [
 
 
 export const claimFilterData = {
-  searchPlaceholder: "Search Reports by item name, reporter name...",
-
+  search: {
+    placeholder: "Search claims by item name, owner or finder...",
+    buttonText: "Search",
+  },
+  searchPlaceholder: "Search claims by item name, owner or finder...",
   tabs: [
     "All",
     "Submitted",
@@ -94,10 +98,30 @@ export const claimFilterData = {
     "Completed",
     "Rejected",
   ],
+  filters: [
+    {
+      id: "status",
+      label: "STATUS",
+      options: [
+        "All",
+        "Submitted",
+        "Accepted",
+        "Handover",
+        "Completed",
+        "Rejected",
+      ],
+    },
+    {
+      id: "type",
+      label: "CLAIM TYPE",
+      options: ["All", "Lost", "Found"],
+    },
+  ],
 };
 
 export const claimFilterIcons = {
   search: FiSearch,
+  dropdown: FiChevronDown,
 };
 
 // table

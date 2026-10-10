@@ -7,7 +7,7 @@ import {
 
 import Pagination from "../Pagination";
 
-const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
+const ClaimsTable = ({ searchValue = "", activeTab = "All", claimType = "All" }) => {
   const [selectedClaim, setSelectedClaim] = useState(null);
 
   const rowsPerPage = 7;
@@ -43,9 +43,14 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All" }) => {
         matchesStatus = claim.status === activeTab;
       }
 
-      return matchesSearch && matchesStatus;
+      let matchesType = true;
+      if (claimType !== "All") {
+        matchesType = claim.type?.toLowerCase() === claimType.toLowerCase();
+      }
+
+      return matchesSearch && matchesStatus && matchesType;
     });
-  }, [searchValue, activeTab]);
+  }, [searchValue, activeTab, claimType]);
 
 //pagination
 

@@ -15,6 +15,7 @@ const ClaimManagement = () => {
 
   const [searchValue, setSearchValue] = useState("");
   const [activeTab, setActiveTab] = useState("All");
+  const [claimType, setClaimType] = useState("All");
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -59,6 +60,8 @@ const ClaimManagement = () => {
               setSearchValue={setSearchValue}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              claimType={claimType}
+              setClaimType={setClaimType}
             />
           </section>
 
@@ -67,6 +70,7 @@ const ClaimManagement = () => {
             <ClaimsTable
               searchValue={searchValue}
               activeTab={activeTab}
+              claimType={claimType}
             />
           </section>
         </motion.main>
