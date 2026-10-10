@@ -46,7 +46,10 @@ const ClaimManagement = () => {
 
           {/*Cards */}
           <section className="mt-6">
-            <ClaimCards />
+            <ClaimCards
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
           </section>
 
           {/* Search + Filters */}
