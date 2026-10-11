@@ -2,7 +2,6 @@ import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
 import { calculateMatchScore } from "../services/matchingService.js";
 
-// GET /api/matches/lost/:id
 export const getMatchesForLostItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,7 +37,6 @@ export const getMatchesForLostItem = async (req, res) => {
   }
 };
 
-// GET /api/matches/found/:id
 export const getMatchesForFoundItem = async (req, res) => {
   try {
     const { id } = req.params;

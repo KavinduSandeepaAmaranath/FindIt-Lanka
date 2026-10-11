@@ -31,7 +31,7 @@ const CreateNewPassword = () => {
     }
   }, [email, navigate]);
 
-  // VALIDATION RULES
+  //validation rules
   const rules = {
     minLength: newPassword.length >= 8,
     hasUppercase: /[A-Z]/.test(newPassword),
@@ -43,7 +43,7 @@ const CreateNewPassword = () => {
   const passwordsMatch =
     confirmPassword.length > 0 && newPassword === confirmPassword;
 
-  // VALIDATION LOGIC
+  //validatin logic
   const validate = () => {
     if (!newPassword || !confirmPassword) {
       return "Please fill in both password fields.";
@@ -57,16 +57,16 @@ const CreateNewPassword = () => {
     return "";
   };
 
-  //  SUBMIT HANDLER 
+  //submit handler 
   const handleSubmit = async () => {
-    if(isSubmitting) {
+    if (isSubmitting) {
       return;
     }
 
     setError("");
 
     const validationError = validate();
-  
+
     if (validationError) {
       setError(validationError);
       return;
@@ -90,7 +90,7 @@ const CreateNewPassword = () => {
         navigate("/login");
       }, 1500);
     } catch (err) {
-      setError(err.response?.data?.message || 
+      setError(err.response?.data?.message ||
         "Failed to reset password"
       );
     } finally {
@@ -103,18 +103,16 @@ const CreateNewPassword = () => {
     handleSubmit();
   };
 
-  //  CHECKLIST ITEM 
+  //checklist item
   const ChecklistItem = ({ met, label }) => (
     <div className="flex items-center gap-1.5">
       <FiCheck
-        className={`text-sm shrink-0 ${
-          met ? "text-green-500" : "text-gray-300"
-        }`}
+        className={`text-sm shrink-0 ${met ? "text-green-500" : "text-gray-300"
+          }`}
       />
       <span
-        className={`font-inter text-[13px] ${
-          met ? "text-[#111113]" : "text-gray-400"
-        }`}
+        className={`font-inter text-[13px] ${met ? "text-[#111113]" : "text-gray-400"
+          }`}
       >
         {label}
       </span>
@@ -127,7 +125,7 @@ const CreateNewPassword = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-2xl px-6 pt-0 pb-6 sm:px-8 sm:pt-0 sm:pb-7">
-        {/* TOP ICON */}
+        {/*top icon*/}
         <div className="flex justify-center mb-0">
           <img
             src={createnewpasswordIcon}
@@ -136,7 +134,7 @@ const CreateNewPassword = () => {
           />
         </div>
 
-        {/* HEADING */}
+        {/*heading*/}
         <h1 className="font-poppins font-bold text-[22px] sm:text-[30px] leading-[1.2] text-center text-[#2A3B63] mb-1.5 px-2 sm:px-4">
           Create New Password
         </h1>
@@ -146,12 +144,12 @@ const CreateNewPassword = () => {
           <br className="hidden sm:block" /> from your previous password.
         </p>
 
-        {/*  FORM */}
-        <form 
+        {/*form*/}
+        <form
           onSubmit={handleFormSubmit}
           className="space-y-3.5"
         >
-          {/* New Password */}
+          {/*new Password */}
           <div>
             <label
               htmlFor="newPassword"
@@ -160,9 +158,8 @@ const CreateNewPassword = () => {
               New Password
             </label>
             <div
-              className={`flex items-center gap-3 w-full rounded-xl border ${
-                error ? "border-red-400" : "border-gray-300"
-              } px-4 py-2.5 focus-within:border-[#2F6BFF] focus-within:ring-2 focus-within:ring-[#2F6BFF]/20 transition-colors bg-white`}
+              className={`flex items-center gap-3 w-full rounded-xl border ${error ? "border-red-400" : "border-gray-300"
+                } px-4 py-2.5 focus-within:border-[#2F6BFF] focus-within:ring-2 focus-within:ring-[#2F6BFF]/20 transition-colors bg-white`}
             >
               <FiLock className="text-gray-400 text-lg shrink-0" />
               <input
@@ -201,9 +198,8 @@ const CreateNewPassword = () => {
               Confirm Password
             </label>
             <div
-              className={`flex items-center gap-3 w-full rounded-xl border ${
-                error ? "border-red-400" : "border-gray-300"
-              } px-4 py-2.5 focus-within:border-[#2F6BFF] focus-within:ring-2 focus-within:ring-[#2F6BFF]/20 transition-colors bg-white`}
+              className={`flex items-center gap-3 w-full rounded-xl border ${error ? "border-red-400" : "border-gray-300"
+                } px-4 py-2.5 focus-within:border-[#2F6BFF] focus-within:ring-2 focus-within:ring-[#2F6BFF]/20 transition-colors bg-white`}
             >
               <HiOutlineShieldCheck className="text-gray-400 text-lg shrink-0" />
               <input

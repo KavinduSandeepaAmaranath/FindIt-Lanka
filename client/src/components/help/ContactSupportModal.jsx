@@ -23,7 +23,7 @@ function ContactSupportModal({ isOpen, onClose, onOpenForm }) {
 
         {/* 3 Contact Options matching UI */}
         <div className="space-y-3 pt-1">
-          {/* 1. Email Support */}
+          {/* 1.Email Support */}
           <a
             href="mailto:support@finditlanka.lk"
             className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/20 transition-all cursor-pointer group"
@@ -37,7 +37,7 @@ function ContactSupportModal({ isOpen, onClose, onOpenForm }) {
             </div>
           </a>
 
-          {/* 2. Send a Support Request (Opens Form Modal) */}
+          {/* 2.Send a Support Request (Opens Form Modal) */}
           <div
             onClick={() => {
               if (onOpenForm) {
@@ -57,7 +57,7 @@ function ContactSupportModal({ isOpen, onClose, onOpenForm }) {
             </div>
           </div>
 
-          {/* 3. Emergency Contact */}
+          {/* 3.Emergency Contact */}
           <a
             href="tel:+94771234567"
             className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/20 transition-all cursor-pointer group"

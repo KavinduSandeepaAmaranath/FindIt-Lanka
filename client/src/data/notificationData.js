@@ -10,7 +10,6 @@ export const notificationCategories = [
 
 
 export const notificationsData = [
-  // ---------- Today ----------
   {
     id: 1,
     group: "Today",
@@ -22,7 +21,7 @@ export const notificationsData = [
     description: "An item similar to your lost iPhone 13 has been reported as found.",
     time: "10:15 AM",
     actionLabel: "View Item",
-    isRead: false, //(shows the blue dot)
+    isRead: false,
   },
   {
     id: 2,
@@ -52,7 +51,6 @@ export const notificationsData = [
     isRead: true,
   },
 
-  // ---------- Yesterday ----------
   {
     id: 4,
     group: "Yesterday",
@@ -82,7 +80,6 @@ export const notificationsData = [
     isRead: true,
   },
 
-  // ---------- Earlier ----------
   {
     id: 6,
     group: "Earlier",

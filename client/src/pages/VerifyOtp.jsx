@@ -22,16 +22,16 @@ const VerifyOTP = () => {
     const expiry = sessionStorage.getItem(
       RESEND_STORAGE_KEY
     );
-      if (!expiry) {
-        return 0;
-      }
+    if (!expiry) {
+      return 0;
+    }
 
-      const remaining = Math.ceil(
-        (Number(expiry) - Date.now()) / 1000
-      );
+    const remaining = Math.ceil(
+      (Number(expiry) - Date.now()) / 1000
+    );
 
-      return remaining > 0 ? remaining : 0;
-    });
+    return remaining > 0 ? remaining : 0;
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,16 +42,16 @@ const VerifyOTP = () => {
     ""
   ).trim();
 
-    useEffect(() => {
+  useEffect(() => {
 
-      if (!registeredEmail) {
-        navigate("/forgot-password", { replace: true });
-      }
-    }, [registeredEmail, navigate]);
+    if (!registeredEmail) {
+      navigate("/forgot-password", { replace: true });
+    }
+  }, [registeredEmail, navigate]);
 
   const inputRefs = useRef([]);
 
-  //  RESEND COUNTDOWN
+  //resent countdown
   useEffect(() => {
     if (resendTimer <= 0) {
       sessionStorage.removeItem(RESEND_STORAGE_KEY);
@@ -59,7 +59,7 @@ const VerifyOTP = () => {
     }
 
     const interval = setInterval(() => {
-      setResendTimer((prev) => 
+      setResendTimer((prev) =>
         prev > 0 ? prev - 1 : 0
       );
     }, 1000);
@@ -75,7 +75,7 @@ const VerifyOTP = () => {
     return `${m}:${s}`;
   };
 
-  // OTP INPUT HANDLERS
+  //OTP input handler
   const handleChange = (index, value) => {
     const digit = value.replace(/[^0-9]/g, "").slice(-1);
 
@@ -128,7 +128,7 @@ const VerifyOTP = () => {
     inputRefs.current[nextIndex]?.focus();
   };
 
-  // VALIDATION LOGIC
+  //validation logic
   const validateOtp = () => {
     if (otp.some((digit) => digit === "")) {
       return "Please enter the complete 6-digit code.";
@@ -136,7 +136,7 @@ const VerifyOTP = () => {
     return "";
   };
 
-  // SUBMIT HANDLERS 
+  //submit handlers
   const handleVerify = async () => {
     const validationError = validateOtp();
 
@@ -171,8 +171,8 @@ const VerifyOTP = () => {
   };
 
   const handleSubmit = (e) => {
-      e.preventDefault();
-      handleVerify();
+    e.preventDefault();
+    handleVerify();
   };
 
   const handleResend = async () => {
@@ -184,7 +184,7 @@ const VerifyOTP = () => {
 
       await resendResetOTP(registeredEmail);
 
-      const expiry = Date.now() + RESEND_SECONDS *1000;
+      const expiry = Date.now() + RESEND_SECONDS * 1000;
 
       sessionStorage.setItem(
         RESEND_STORAGE_KEY,
@@ -196,7 +196,7 @@ const VerifyOTP = () => {
 
       inputRefs.current[0]?.focus();
     } catch (err) {
-      setError(err.response?.data?.message || 
+      setError(err.response?.data?.message ||
         "Could not resend OTP. Please try again."
       );
     } finally {
@@ -211,7 +211,7 @@ const VerifyOTP = () => {
     >
       <div className="w-full max-w-[410px] bg-white rounded-2xl shadow-2xl px-6 pt-2 pb-6 sm:px-8 sm:pt-2 sm:pb-7">
 
-        {/* TOP ICON */}
+        {/*top icon*/}
         <div className="flex justify-center mb-1">
           <img
             src={verifyOtpIcon}
@@ -220,7 +220,7 @@ const VerifyOTP = () => {
           />
         </div>
 
-        {/* HEADING  */}
+        {/* heading*/}
         <h1 className="font-poppins font-bold text-[22px] sm:text-[26px] leading-[1.2] text-center text-[#2A3B63] mb-2 px-4 sm:px-6">
           Verify OTP
         </h1>
@@ -236,7 +236,7 @@ const VerifyOTP = () => {
         </p>
 
         <form onSubmit={handleSubmit}>
-          {/* OTP INPUTS */}
+          {/* OTP inputs */}
           <div className="flex justify-center gap-2 sm:gap-2.5 mb-4" onPaste={handlePaste}>
             {otp.map((digit, index) => (
               <input
@@ -249,9 +249,8 @@ const VerifyOTP = () => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 disabled={isVerifying}
-                className={`w-11 h-12 sm:w-12 sm:h-13 text-center text-lg font-poppins font-semibold text-[#2A3B63] rounded-xl border ${
-                  error ? "border-red-400" : "border-gray-300"
-                } focus:border-[#2F6BFF] focus:ring-2 focus:ring-[#2F6BFF]/20 outline-none transition-colors disabled:opacity-60`}
+                className={`w-11 h-12 sm:w-12 sm:h-13 text-center text-lg font-poppins font-semibold text-[#2A3B63] rounded-xl border ${error ? "border-red-400" : "border-gray-300"
+                  } focus:border-[#2F6BFF] focus:ring-2 focus:ring-[#2F6BFF]/20 outline-none transition-colors disabled:opacity-60`}
               />
             ))}
           </div>
@@ -262,7 +261,7 @@ const VerifyOTP = () => {
             </p>
           )}
 
-          {/* RESEND */}
+          {/* resend */}
           <div className="text-center mb-6">
             <p className="font-inter text-[14px] text-[#29292D]">
               Didn&apos;t receive the code?{" "}
@@ -270,11 +269,10 @@ const VerifyOTP = () => {
                 type="button"
                 onClick={handleResend}
                 disabled={resendTimer > 0 || isResending}
-                className={`font-medium underline ${
-                  resendTimer > 0 || isResending
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-[#2563EB] hover:text-[#1D4ED8]"
-                }`}
+                className={`font-medium underline ${resendTimer > 0 || isResending
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "text-[#2563EB] hover:text-[#1D4ED8]"
+                  }`}
               >
                 {isResending ? "Resending..." : "Resend OTP"}
               </button>
@@ -286,7 +284,7 @@ const VerifyOTP = () => {
             )}
           </div>
 
-          {/* VERIFY BUTTON  */}
+          {/* verify button */}
           <button
             type="submit"
             disabled={isVerifying || otp.some((digit) => digit === "")}
@@ -306,7 +304,7 @@ const VerifyOTP = () => {
           </button>
         </form>
 
-        {/* BACK TO EMAIL*/}
+        {/*back to email*/}
         <div className="flex justify-center mb-4">
           <Link
             to="/forgot-password"
@@ -317,7 +315,7 @@ const VerifyOTP = () => {
           </Link>
         </div>
 
-        {/* SECURITY NOTE */}
+        {/*security note*/}
         <div className="flex items-start gap-3 bg-[#EAF1FF] rounded-xl px-4 py-3">
           <HiOutlineShieldCheck className="text-[#2563EB] text-xl shrink-0 mt-0.5" />
           <p className="font-inter text-sm leading-[1.4] text-[#2563EB]">

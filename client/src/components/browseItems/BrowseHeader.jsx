@@ -3,9 +3,7 @@ import { FiSend } from "react-icons/fi";
 function BrowseHeader({ onOpenFoundReport, onOpenLostReport }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
-      {/* Title & 3D Isometric Cube Icon */}
       <div className="flex items-start gap-4">
-        {/* Green 3D Isometric Cube matching screenshot */}
         <div className="w-12 h-12 shrink-0 flex items-center justify-center">
           <svg
             className="w-11 h-11"

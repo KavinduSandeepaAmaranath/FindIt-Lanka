@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
 import { FiUsers, FiUserCheck, FiUserX, FiUserPlus } from "react-icons/fi";
 
 import AdminNavBar from "../components/AdminDashboard/AdminNavBar";
@@ -16,6 +17,9 @@ const AllUsers = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [selectedFilter, setSelectedFilter] = useState("All Users");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchUsers = async () => {
     try {
@@ -72,40 +76,108 @@ const AllUsers = () => {
     );
   }).length;
 
+  const totalUsersCount = usersList.length;
+  const activeCount = usersList.filter(
+    (u) => u.status === "Active" || u.status === "active"
+  ).length;
+  const suspendedCount = usersList.filter(
+    (u) => u.status === "Suspended" || u.status === "suspended"
+  ).length;
+
   const dynamicUsersCard = [
     {
       title: "Total Users",
-      value: usersList.length.toLocaleString(),
+      value: totalUsersCount.toLocaleString(),
       description: "All registered users",
-      change: "Live data",
+      sub: `${totalUsersCount} total registered users`,
       icon: FiUsers,
+      iconBg: "bg-blue-50",
+      iconColor: "text-blue-600",
     },
     {
       title: "Active Users",
-      value: usersList
-        .filter((u) => u.status === "Active" || u.status === "active")
-        .length.toLocaleString(),
-      description: "Currently active users",
-      change: "Live data",
+      value: activeCount.toLocaleString(),
+      description: "Currently active accounts",
+      sub:
+        totalUsersCount > 0
+          ? `${((activeCount / totalUsersCount) * 100).toFixed(1)}% of total users`
+          : "0.0% of total users",
       icon: FiUserCheck,
+      iconBg: "bg-emerald-50",
+      iconColor: "text-emerald-600",
     },
     {
       title: "Suspended Users",
-      value: usersList
-        .filter((u) => u.status === "Suspended" || u.status === "suspended")
-        .length.toLocaleString(),
+      value: suspendedCount.toLocaleString(),
       description: "Suspended accounts",
-      change: "Live data",
+      sub:
+        totalUsersCount > 0
+          ? `${((suspendedCount / totalUsersCount) * 100).toFixed(1)}% of total users`
+          : "0.0% of total users",
       icon: FiUserX,
+      iconBg: "bg-red-50",
+      iconColor: "text-red-600",
     },
     {
-      title: "New Users This Month",
+      title: "New Users",
       value: newUsersThisMonth.toLocaleString(),
-      description: "New registrations this month",
-      change: "Live data",
+      description: "Registered this month",
+      sub: `${newUsersThisMonth} registered this month`,
       icon: FiUserPlus,
+      iconBg: "bg-purple-50",
+      iconColor: "text-purple-600",
     },
   ];
+
+  const handleCardClick = (cardTitle) => {
+    if (cardTitle === "Active Users") {
+      setSelectedFilter("Active Users");
+    } else if (cardTitle === "Suspended Users") {
+      setSelectedFilter("Suspend Users");
+    } else if (cardTitle.includes("New")) {
+      setSelectedFilter("New Users");
+    } else {
+      setSelectedFilter("All Users");
+    }
+  };
+
+  // Filtered users list
+  const filteredUsers = useMemo(() => {
+    return usersList.filter((user) => {
+      // 1. Dropdown Filter
+      if (selectedFilter === "Active Users") {
+        const isActive = user.status?.toLowerCase() === "active";
+        if (!isActive) return false;
+      } else if (
+        selectedFilter === "Suspend Users" ||
+        selectedFilter === "Suspended Users"
+      ) {
+        const isSuspended = user.status?.toLowerCase() === "suspended";
+        if (!isSuspended) return false;
+      } else if (selectedFilter === "New Users") {
+        if (!user.createdAt) return false;
+        const regDate = new Date(user.createdAt);
+        const isThisMonth =
+          regDate.getMonth() === now.getMonth() &&
+          regDate.getFullYear() === now.getFullYear();
+        if (!isThisMonth) return false;
+      }
+
+      // 2. Search Text
+      if (searchTerm.trim()) {
+        const query = searchTerm.toLowerCase().trim();
+        const nameMatch = user.name?.toLowerCase().includes(query);
+        const emailMatch = user.email?.toLowerCase().includes(query);
+        const phoneMatch = user.phone?.toLowerCase().includes(query);
+        const districtMatch = user.district?.toLowerCase().includes(query);
+        if (!nameMatch && !emailMatch && !phoneMatch && !districtMatch) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [usersList, selectedFilter, searchTerm]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -118,25 +190,28 @@ const AllUsers = () => {
         />
 
         {/* Content */}
-        <main
-          className="
-            flex-1
-            p-4
-            sm:p-6
-            lg:p-8
-            overflow-x-hidden
-          "
+        <motion.main
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
         >
           {/* Header */}
           <UsersHeader
             header={usersHeader}
             setIsOpen={setIsSidebarOpen}
+            selectedFilter={selectedFilter}
+            onFilterChange={setSelectedFilter}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
           />
 
           {/* Cards */}
           <section className="mt-6">
             <AllUsersCard
               stats={dynamicUsersCard}
+              selectedFilter={selectedFilter}
+              onCardClick={handleCardClick}
             />
           </section>
 
@@ -148,12 +223,12 @@ const AllUsers = () => {
               </div>
             ) : (
               <UsersTable
-                users={usersList}
+                users={filteredUsers}
                 onUserStatusChange={handleUserStatusChange}
               />
             )}
           </section>
-        </main>
+        </motion.main>
       </div>
 
       {/* Full Width Footer */}

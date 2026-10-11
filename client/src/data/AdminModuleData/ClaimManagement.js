@@ -6,6 +6,7 @@ import {
   FiCheck,
   FiX,
   FiSearch,
+  FiChevronDown,
   FiEye,
   FiChevronLeft,
   FiChevronRight,
@@ -44,45 +45,38 @@ export const claimCardsData = [
   {
     id: 1,
     title: "Total Claims",
-    value: "1,500",
-    changeText: "↑ 12.5% from last 30 days",
+    value: "16",
+    changeText: "-40.0% from last month",
     icon: FiFileText,
-
-    iconBg: "bg-[#8ACAF5]",
-    iconColor: "text-white",
+    iconBg: "bg-red-50",
+    iconColor: "text-red-500",
   },
-
   {
     id: 2,
     title: "In Progress",
-    value: "100",
-    changeText: "↑ 8.7% vs last month",
+    value: "4",
+    changeText: "-66.7% from last month",
     icon: FiFileText,
-
-    iconBg: "bg-[#EC7378]",
-    iconColor: "text-white",
+    iconBg: "bg-blue-50",
+    iconColor: "text-blue-500",
   },
-
   {
     id: 3,
     title: "Completed",
-    value: "1,300",
-    changeText: "↑ 3.2% vs last month",
+    value: "10",
+    changeText: "-33.3% from last month",
     icon: FiCheck,
-
-    iconBg: "bg-[#38B777]",
-    iconColor: "text-[#8ED6F8]",
+    iconBg: "bg-orange-50",
+    iconColor: "text-orange-500",
   },
-
   {
     id: 4,
     title: "Rejected",
-    value: "100",
-    changeText: "0.2% vs last month",
+    value: "2",
+    changeText: "+0.0% from last month",
     icon: FiX,
-
-    iconBg: "bg-[#EB2429]",
-    iconColor: "text-white",
+    iconBg: "bg-purple-50",
+    iconColor: "text-purple-500",
   },
 ];
 
@@ -91,8 +85,11 @@ export const claimCardsData = [
 
 
 export const claimFilterData = {
-  searchPlaceholder: "Search Reports by item name, reporter name...",
-
+  search: {
+    placeholder: "Search claims by item name, owner or finder...",
+    buttonText: "Search",
+  },
+  searchPlaceholder: "Search claims by item name, owner or finder...",
   tabs: [
     "All",
     "Submitted",
@@ -101,10 +98,30 @@ export const claimFilterData = {
     "Completed",
     "Rejected",
   ],
+  filters: [
+    {
+      id: "status",
+      label: "Status",
+      options: [
+        "All",
+        "Submitted",
+        "Accepted",
+        "Handover",
+        "Completed",
+        "Rejected",
+      ],
+    },
+    {
+      id: "type",
+      label: "Claim Type",
+      options: ["All", "Lost", "Found"],
+    },
+  ],
 };
 
 export const claimFilterIcons = {
   search: FiSearch,
+  dropdown: FiChevronDown,
 };
 
 // table
