@@ -1,13 +1,21 @@
 import { useMemo, useState } from "react";
 
 import {
-  claimTableData,
   claimTableIcons,
 } from "../../../data/AdminModuleData/ClaimManagement";
 
+import { approveClaim, rejectClaim } from "../../../services/claimService";
 import Pagination from "../Pagination";
 
-const ClaimsTable = ({ searchValue = "", activeTab = "All", claimType = "All" }) => {
+const ClaimsTable = ({
+  claims = [],
+  loading = false,
+  error = null,
+  onRefresh,
+  searchValue = "",
+  activeTab = "All",
+  claimType = "All",
+}) => {
   const [selectedClaim, setSelectedClaim] = useState(null);
 
   const rowsPerPage = 7;
@@ -17,7 +25,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All", claimType = "All" })
   const filteredClaims = useMemo(() => {
     const query = searchValue.trim().toLowerCase();
 
-    return claimTableData.filter((claim) => {
+    return (claims || []).filter((claim) => {
       const matchesSearch =
         !query ||
         [
@@ -50,7 +58,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All", claimType = "All" })
 
       return matchesSearch && matchesStatus && matchesType;
     });
-  }, [searchValue, activeTab, claimType]);
+  }, [claims, searchValue, activeTab, claimType]);
 
 //pagination
 
@@ -425,19 +433,41 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All", claimType = "All" })
 
         </div>
 
-        {/*empty badge */}
-
-        {visibleClaims.length === 0 && (
+        {/* Loading state */}
+        {loading && (
           <div className="py-14 text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#2563EB] border-r-transparent" />
+            <p className="mt-3 font-semibold text-[#263A63]">
+              Loading claims from database...
+            </p>
+          </div>
+        )}
 
+        {/* Error state */}
+        {!loading && error && (
+          <div className="py-14 text-center">
+            <p className="font-semibold text-red-600">{error}</p>
+            {onRefresh && (
+              <button
+                type="button"
+                onClick={onRefresh}
+                className="mt-3 rounded-lg bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white shadow transition hover:bg-[#1d4ed8]"
+              >
+                Retry
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && visibleClaims.length === 0 && (
+          <div className="py-14 text-center">
             <p className="font-semibold text-[#263A63]">
               No claims found
             </p>
-
             <p className="mt-1 text-sm text-gray-500">
               Try another search or filter.
             </p>
-
           </div>
         )}
 
@@ -460,6 +490,7 @@ const ClaimsTable = ({ searchValue = "", activeTab = "All", claimType = "All" })
         <ViewClaimModal
           claim={selectedClaim}
           onClose={() => setSelectedClaim(null)}
+          onRefresh={onRefresh}
         />
       )}
     </>
@@ -606,8 +637,52 @@ const ClaimStatusBadge = ({ status }) => {
 // viev claim 
 
 
-const ViewClaimModal = ({ claim, onClose }) => {
+const ViewClaimModal = ({ claim, onClose, onRefresh }) => {
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState(null);
 
+  const handleApprove = async () => {
+    const note = window.prompt("Enter approval note:", "Approved by admin");
+    if (note === null) return;
+    try {
+      setActionLoading(true);
+      setActionError(null);
+      await approveClaim(claim.id, note || "Approved by admin");
+      onRefresh?.();
+      onClose();
+    } catch (err) {
+      setActionError(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to approve claim"
+      );
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleReject = async () => {
+    const note = window.prompt(
+      "Enter reason for rejection (required):",
+      "Claim details do not match item"
+    );
+    if (!note || !note.trim()) return;
+    try {
+      setActionLoading(true);
+      setActionError(null);
+      await rejectClaim(claim.id, note.trim());
+      onRefresh?.();
+      onClose();
+    } catch (err) {
+      setActionError(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to reject claim"
+      );
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   // claim prograss
  
@@ -1022,6 +1097,29 @@ const ViewClaimModal = ({ claim, onClose }) => {
 
         </div>
 
+        {/* Claim message if present */}
+        {claim.message && (
+          <div className="mx-3 mt-4 rounded-lg border border-[#C9DCF8] bg-blue-50/40 p-3.5">
+            <h4 className="text-xs font-bold text-[#173F94]">
+              CLAIM MESSAGE / PROOF
+            </h4>
+            <p className="mt-1 text-sm text-[#2A3B63]">
+              {claim.message}
+            </p>
+          </div>
+        )}
+
+        {/* Review note if present */}
+        {claim.reviewNote && (
+          <div className="mx-3 mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3.5">
+            <h4 className="text-xs font-bold text-gray-700">
+              ADMIN REVIEW NOTE
+            </h4>
+            <p className="mt-1 text-sm text-gray-600">
+              {claim.reviewNote}
+            </p>
+          </div>
+        )}
 
         {/*claim prograss*/}
 
@@ -1150,6 +1248,60 @@ const ViewClaimModal = ({ claim, onClose }) => {
 
         </div>
 
+        {/* Action Error Banner */}
+        {actionError && (
+          <div className="mx-3 mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-center text-xs font-semibold text-red-600">
+            {actionError}
+          </div>
+        )}
+
+        {/* Action Buttons for Pending Claims */}
+        {(claim.rawStatus === "pending" || claim.status === "Submitted") && (
+          <div className="mx-3 mt-4 flex gap-3">
+            <button
+              type="button"
+              disabled={actionLoading}
+              onClick={handleApprove}
+              className="
+                flex-1
+                rounded-lg
+                bg-[#009B50]
+                py-2.5
+                text-sm
+                font-semibold
+                text-white
+                shadow-sm
+                transition
+                hover:bg-[#007D40]
+                disabled:opacity-50
+                active:scale-95
+              "
+            >
+              {actionLoading ? "Processing..." : "✓ Approve Claim"}
+            </button>
+            <button
+              type="button"
+              disabled={actionLoading}
+              onClick={handleReject}
+              className="
+                flex-1
+                rounded-lg
+                bg-[#B63838]
+                py-2.5
+                text-sm
+                font-semibold
+                text-white
+                shadow-sm
+                transition
+                hover:bg-[#962828]
+                disabled:opacity-50
+                active:scale-95
+              "
+            >
+              {actionLoading ? "Processing..." : "✕ Reject Claim"}
+            </button>
+          </div>
+        )}
 
         {/*close btn*/}
 

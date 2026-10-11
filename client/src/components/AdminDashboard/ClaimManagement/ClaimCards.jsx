@@ -1,19 +1,19 @@
 import {
   claimCardsData,
-  claimTableData,
 } from "../../../data/AdminModuleData/ClaimManagement";
 
-const ClaimCards = ({ activeTab = "All", setActiveTab }) => {
-  const totalClaims = claimTableData.length;
-  const inProgressCount = claimTableData.filter(
+const ClaimCards = ({ claims = [], activeTab = "All", setActiveTab }) => {
+  const totalClaims = claims.length;
+  const inProgressCount = claims.filter(
     (c) => c.status === "In Progress" || c.status === "Submitted"
   ).length;
-  const completedCount = claimTableData.filter(
+  const completedCount = claims.filter(
     (c) => c.status === "Completed" || c.status === "Accepted"
   ).length;
-  const rejectedCount = claimTableData.filter(
+  const rejectedCount = claims.filter(
     (c) => c.status === "Rejected"
   ).length;
+
 
   const getCount = (cardTitle) => {
     if (cardTitle.includes("Total")) return totalClaims;
@@ -85,7 +85,7 @@ const ClaimCards = ({ activeTab = "All", setActiveTab }) => {
                   {card.title}
                 </h3>
                 <p className="mt-1 text-3xl font-bold text-[#0F3292]">
-                  {getCount(card.title) || card.value}
+                  {getCount(card.title) ?? card.value}
                 </p>
               </div>
             </div>
