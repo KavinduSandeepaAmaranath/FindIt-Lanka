@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { FiCheckCircle, FiXCircle, FiCircle } from "react-icons/fi";
 
 import {
@@ -23,7 +23,8 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
   const rowsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(reports.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
+  const safePage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  const startIndex = (safePage - 1) * rowsPerPage;
   const currentReports = reports.slice(
     startIndex,
     startIndex + rowsPerPage
@@ -248,19 +249,17 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
               </p>
             </div>
           )}
-
-          {/* Pagination inside Card */}
-          <div className="p-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={reports.length}
-              rowsPerPage={rowsPerPage}
-              onPageChange={setCurrentPage}
-              itemName="reports"
-            />
-          </div>
         </div>
+
+        {/* Pagination outside table card */}
+        <Pagination
+          currentPage={safePage}
+          totalPages={totalPages}
+          totalItems={reports.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={setCurrentPage}
+          itemName="reports"
+        />
       </section>
 
       {/* Approve / Reject confirmation modal */}
