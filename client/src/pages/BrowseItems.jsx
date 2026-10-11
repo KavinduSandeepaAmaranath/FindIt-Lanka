@@ -108,33 +108,31 @@ function BrowseItems() {
   const [isLostMethodOpen, setIsLostMethodOpen] = useState(false);
   const [isEligibleLostReportsOpen, setIsEligibleLostReportsOpen] = useState(false);
 
-  // Toast Notification
   const [submissionToast, setSubmissionToast] = useState("");
 
-  // Filter items according to search, dropdowns, and active tab
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
-      // 1. Tab filter (All, Lost, Found)
+      // Tab filter
       if (activeTab !== "all" && item.status.toLowerCase() !== activeTab.toLowerCase()) {
         return false;
       }
 
-      // 2. Dropdown Status filter
+      // Dropdown Status filter
       if (statusFilter !== "all" && item.status.toLowerCase() !== statusFilter.toLowerCase()) {
         return false;
       }
 
-      // 3. Category filter
+      // category filter
       if (categoryFilter !== "all" && item.category !== categoryFilter) {
         return false;
       }
 
-      // 4. District filter
+      // District filter
       if (districtFilter !== "all" && item.district !== districtFilter) {
         return false;
       }
 
-      // 5. Date filter
+      // Date filter
       if (dateFilter !== "all" && item.rawDate) {
         const days = Number(dateFilter);
         const itemDate = new Date(item.rawDate);
@@ -145,7 +143,7 @@ function BrowseItems() {
         }
       }
 
-      // 6. Search keyword
+      // Search keyword
       if (searchTerm) {
         const query = searchTerm.toLowerCase();
         const haystack = `${item.title} ${item.category} ${item.location} ${item.district} ${item.status}`.toLowerCase();
@@ -166,7 +164,7 @@ function BrowseItems() {
     searchTerm,
   ]);
 
-  // Dynamic counts for tabs based on current search & filter state
+  // Dynamic counts
   const tabCounts = useMemo(() => {
     const baseItems = items.filter((item) => {
       if (statusFilter !== "all" && item.status.toLowerCase() !== statusFilter.toLowerCase()) {
@@ -258,7 +256,6 @@ function BrowseItems() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // View Details Click: route to Lost or Found modal based on item.status
   const handleViewDetails = (item) => {
     if (item.status === "Lost") {
       setSelectedLostItem(item);
@@ -267,9 +264,6 @@ function BrowseItems() {
     }
   };
 
-  /* ============================================================
-     LOST ITEM FLOW (Return Item)
-  ============================================================ */
   const handleReturnItem = () => {
     setIsReportMethodOpen(true);
   };
@@ -316,9 +310,6 @@ function BrowseItems() {
     }, 4500);
   };
 
-  /* ============================================================
-     FOUND ITEM FLOW (Claim Item)
-  ============================================================ */
   const handleClaimItem = () => {
     setIsLostMethodOpen(true);
   };
@@ -330,7 +321,7 @@ function BrowseItems() {
 
   const handleCreateNewLostReport = () => {
     setIsLostMethodOpen(false);
-    setOpenLostReport(true); // Links directly to "Add Lost Reports" page/modal!
+    setOpenLostReport(true);
   };
 
   const handleSubmitEligibleLostReport = async (report) => {
@@ -367,7 +358,6 @@ function BrowseItems() {
 
   return (
     <div className="flex bg-slate-50 min-h-screen">
-      {/* Sidebar with active link highlighting */}
       <DashboardSidebar
         onOpenLostReport={() => setOpenLostReport(true)}
         onOpenFoundReport={() => setOpenFoundReport(true)}
@@ -391,20 +381,19 @@ function BrowseItems() {
             </div>
           )}
 
-          {/* Topbar: Search Bar + Kasun Perera User Profile */}
+          {/* Search Bar + Kasun Perera User Profile */}
           <BrowseTopbar
             user={undefined}
             onSearch={setSearchTerm}
             initialSearchTerm={searchTerm}
           />
 
-          {/* Page Header: Green 3D cube + "Browse Items" + Action Buttons */}
           <BrowseHeader
             onOpenFoundReport={() => setOpenFoundReport(true)}
             onOpenLostReport={() => setOpenLostReport(true)}
           />
 
-          {/* 4 Filter Dropdowns Bar */}
+          {/*Filter Dropdowns Bar */}
           <div className="relative z-30">
             <BrowseFilters
               category={categoryFilter}
@@ -424,7 +413,7 @@ function BrowseItems() {
             />
           </div>
 
-          {/* Tab Pills Bar: All Items, Lost Items, Found Items */}
+          {/*All Items, Lost Items, Found Items */}
           <div className="relative z-10">
             <BrowseTabs
               activeTab={activeTab}
@@ -433,7 +422,6 @@ function BrowseItems() {
             />
           </div>
 
-          {/* 4-Column Responsive Items Grid */}
           <div className="relative z-0">
             <BrowseItemsGrid
               items={visibleItems}
@@ -451,9 +439,6 @@ function BrowseItems() {
         </div>
       </div>
 
-      {/* ============================================================
-          LOST ITEM MODALS (Return Flow)
-      ============================================================ */}
       {selectedLostItem && (
         <LostItemDetailsModal
           item={selectedLostItem}
@@ -477,9 +462,6 @@ function BrowseItems() {
         />
       )}
 
-      {/* ============================================================
-          FOUND ITEM MODALS (Claim Flow)
-      ============================================================ */}
       {selectedFoundItem && (
         <FoundItemDetailsModal
           item={selectedFoundItem}
@@ -503,7 +485,6 @@ function BrowseItems() {
         />
       )}
 
-      {/* Sidebar & Action Header Report Modals */}
       {openLostReport && (
         <ReportModal
           header={lostHeader}

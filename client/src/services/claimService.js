@@ -15,6 +15,11 @@ export const getMyReturns = async () => {
   return response.data;
 };
 
+export const getAllClaims = async () => {
+  const response = await api.get("/claims/All");
+  return response.data;
+};
+
 export const approveClaim = async (claimId, reviewNote = "Approved") => {
   const response = await api.patch(`/claims/${claimId}/approve`, { reviewNote });
   return response.data;
@@ -24,3 +29,4 @@ export const rejectClaim = async (claimId, reviewNote = "Rejected") => {
   const response = await api.patch(`/claims/${claimId}/reject`, { reviewNote });
   return response.data;
 };
+

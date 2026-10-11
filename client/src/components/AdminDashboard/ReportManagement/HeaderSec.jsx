@@ -86,7 +86,7 @@ const HeaderSec = ({ setIsOpen }) => {
           {/* navbar */}
 
           <div className="flex-1">
-            {/*  Hamburger for responsive */}
+            {/* Hamburger for responsive */}
 
             <button
               type="button"
@@ -149,7 +149,7 @@ const HeaderSec = ({ setIsOpen }) => {
             {buttons.map((button) => {
               const Icon = button.icon;
 
-              // Identify notification settings button
+              //Identify notification settings button
               const isNotificationButton =
                 button.label.toLowerCase().includes("notification");
 
@@ -167,8 +167,8 @@ const HeaderSec = ({ setIsOpen }) => {
                     isNotificationButton
                       ? () => setShowNotificationSettings(true)
                       : isExportButton
-                      ? handleExportReport
-                      : undefined
+                        ? handleExportReport
+                        : undefined
                   }
                   className="
                     flex

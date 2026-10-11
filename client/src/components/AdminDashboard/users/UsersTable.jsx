@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UserViewModal from "./UserViewModal";
 import SuspendUserModal from "./SuspendUserModal";
 import Pagination from "../Pagination";
@@ -35,10 +35,14 @@ const UsersTable = ({ users = [], onUserStatusChange }) => {
   const rowsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [users.length]);
+
   const totalPages = Math.ceil(users.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const currentRows = users.slice(startIndex, endIndex);
+  const safePage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  const startIndex = (safePage - 1) * rowsPerPage;
+  const currentRows = users.slice(startIndex, startIndex + rowsPerPage);
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [suspendUser, setSuspendUser] = useState(null);
@@ -96,11 +100,18 @@ const UsersTable = ({ users = [], onUserStatusChange }) => {
 
               {/* Table Body */}
               <tbody>
-                {currentRows.map((user) => {
-                  const isSuspended = user.status === "Suspended" || user.status === "suspended";
+                {currentRows.length === 0 ? (
+                  <tr>
+                    <td colSpan={11} className="py-12 text-center text-sm font-medium text-gray-500">
+                      No users found matching the selected filter or search.
+                    </td>
+                  </tr>
+                ) : (
+                  currentRows.map((user) => {
+                    const isSuspended = user.status === "Suspended" || user.status === "suspended";
 
-                  return (
-                    <tr
+                    return (
+                      <tr
                       key={user.id || user._id}
                       onClick={() => setSelectedUser(user)}
                       className="cursor-pointer border-b border-gray-200 transition-all duration-200 hover:bg-blue-50/40"
@@ -182,7 +193,7 @@ const UsersTable = ({ users = [], onUserStatusChange }) => {
                       </td>
                     </tr>
                   );
-                })}
+                }))}
               </tbody>
             </table>
           </div>
@@ -190,7 +201,7 @@ const UsersTable = ({ users = [], onUserStatusChange }) => {
 
         {/* Pagination outside table card */}
         <Pagination
-          currentPage={currentPage}
+          currentPage={safePage}
           totalPages={totalPages}
           totalItems={users.length}
           rowsPerPage={rowsPerPage}

@@ -2,7 +2,6 @@ import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
 import { createNotification } from "./notificationService.js";
 
-// Helper to tokenize and clean text strings into arrays of lowercase keywords
 const extractKeywords = (text) => {
   if (!text || typeof text !== "string") return [];
   const stopWords = new Set(["the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "with", "my", "of", "is", "it", "was", "this", "that", "item", "lost", "found"]);
@@ -13,11 +12,9 @@ const extractKeywords = (text) => {
     .filter((word) => word.length > 2 && !stopWords.has(word));
 };
 
-// Calculate match score between 0 and 100
 export const calculateMatchScore = (lostItem, foundItem) => {
   let score = 0;
 
-  // 1. Category Match (30 pts)
   if (
     lostItem.category &&
     foundItem.category &&
@@ -26,7 +23,6 @@ export const calculateMatchScore = (lostItem, foundItem) => {
     score += 30;
   }
 
-  // 2. District Match (20 pts)
   if (
     lostItem.district &&
     foundItem.district &&
@@ -35,7 +31,6 @@ export const calculateMatchScore = (lostItem, foundItem) => {
     score += 20;
   }
 
-  // 3. Specific Location Similarity (15 pts)
   const lostLocKeywords = extractKeywords(lostItem.location);
   const foundLocKeywords = extractKeywords(foundItem.location);
   if (lostLocKeywords.length > 0 && foundLocKeywords.length > 0) {
@@ -47,7 +42,6 @@ export const calculateMatchScore = (lostItem, foundItem) => {
     }
   }
 
-  // 4. Title & Description Keyword Similarity (20 pts)
   const lostTextKeywords = [
     ...extractKeywords(lostItem.title),
     ...extractKeywords(lostItem.description),
@@ -68,7 +62,6 @@ export const calculateMatchScore = (lostItem, foundItem) => {
     }
   }
 
-  // 5. Date Proximity (15 pts)
   const lostDate = lostItem.lostDate ? new Date(lostItem.lostDate) : new Date(lostItem.createdAt);
   const foundDate = foundItem.foundDate ? new Date(foundItem.foundDate) : new Date(foundItem.createdAt);
   
@@ -86,7 +79,6 @@ export const calculateMatchScore = (lostItem, foundItem) => {
   return Math.min(score, 100);
 };
 
-// Trigger matches for a Lost Item against all active Found Items
 export const findAndTriggerMatchesForLostItem = async (lostItemArg) => {
   let lostItem = lostItemArg;
   if (!lostItem) return [];
@@ -118,7 +110,6 @@ export const findAndTriggerMatchesForLostItem = async (lostItemArg) => {
     if (matchScore >= 50) {
       matches.push({ foundItem, matchScore });
 
-      // Notify Lost Item Owner
       if (lostItem.userId) {
         await createNotification({
           userId: lostItem.userId,
@@ -135,7 +126,6 @@ export const findAndTriggerMatchesForLostItem = async (lostItemArg) => {
         });
       }
 
-      // Notify Found Item Owner
       if (foundItem.userId) {
         await createNotification({
           userId: foundItem.userId,
@@ -157,7 +147,6 @@ export const findAndTriggerMatchesForLostItem = async (lostItemArg) => {
   return matches;
 };
 
-// Trigger matches for a Found Item against all active Lost Items
 export const findAndTriggerMatchesForFoundItem = async (foundItemArg) => {
   let foundItem = foundItemArg;
   if (!foundItem) return [];
@@ -189,7 +178,6 @@ export const findAndTriggerMatchesForFoundItem = async (foundItemArg) => {
     if (matchScore >= 50) {
       matches.push({ lostItem, matchScore });
 
-      // Notify Lost Item Owner
       if (lostItem.userId) {
         await createNotification({
           userId: lostItem.userId,
@@ -206,7 +194,6 @@ export const findAndTriggerMatchesForFoundItem = async (foundItemArg) => {
         });
       }
 
-      // Notify Found Item Owner
       if (foundItem.userId) {
         await createNotification({
           userId: foundItem.userId,

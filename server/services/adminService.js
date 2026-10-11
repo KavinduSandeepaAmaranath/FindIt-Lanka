@@ -322,7 +322,6 @@ export const approveLostItem = async (itemId) => {
 
     await lostItem.save();
 
-    // 1. Send approval notification in isolated try-catch
     try {
         if (lostItem.userId) {
             await createNotification({
@@ -341,7 +340,6 @@ export const approveLostItem = async (itemId) => {
         console.error("Error creating approval notification:", notifErr);
     }
 
-    // 2. Trigger matching mechanism in isolated try-catch
     try {
         await findAndTriggerMatchesForLostItem(lostItem._id);
     } catch (matchErr) {
@@ -411,7 +409,6 @@ export const deleteLostItemByAdmin = async (itemId) => {
     return lostItem;
 };
 
-/* Found Item */
 export const getPendingFoundItems = async () => {
     return await FoundItem.find({
         approvalStatus: "pending",
@@ -439,7 +436,6 @@ export const approveFoundItem = async (itemId) => {
 
     await foundItem.save();
 
-    // 1. Send approval notification in isolated try-catch
     try {
         if (foundItem.userId) {
             await createNotification({
@@ -458,7 +454,6 @@ export const approveFoundItem = async (itemId) => {
         console.error("Error creating approval notification:", notifErr);
     }
 
-    // 2. Trigger matching mechanism in isolated try-catch
     try {
         await findAndTriggerMatchesForFoundItem(foundItem._id);
     } catch (matchErr) {

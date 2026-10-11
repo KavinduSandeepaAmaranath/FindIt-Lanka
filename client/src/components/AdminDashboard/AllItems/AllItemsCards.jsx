@@ -3,8 +3,8 @@ import {
   allItemsTableData,
 } from "../../../data/AdminModuleData/AllItems";
 
-const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => {} }) => {
-  // Dynamic card value & percentage calculations
+const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => { } }) => {
+  //Dynamic card value & percentage calculations
   const totalCount = items.length;
   const lostCount = items.filter((i) => i.type === "Lost").length;
   const foundCount = items.filter((i) => i.type === "Found").length;
@@ -67,7 +67,7 @@ const AllItemsCards = ({ items = allItemsTableData, onCardSelect = () => {} }) =
                 <Icon size={22} strokeWidth={2} className={Card.iconColor} />
               </div>
 
-              {/* Card Content */}
+              {/*card content */}
               <div className="min-w-0 flex-1">
                 <h3 className="text-sm sm:text-base font-semibold text-[#2A3B63] leading-snug">
                   {Card.title}

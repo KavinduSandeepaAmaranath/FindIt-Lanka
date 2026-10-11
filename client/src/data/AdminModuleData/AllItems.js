@@ -184,11 +184,6 @@ export const allItemsTableColumns = [
     align: "center",
   },
   {
-    key: "claimStatus",
-    label: "Claim Status",
-    align: "center",
-  },
-  {
     key: "action",
     label: "Action",
     align: "center",
