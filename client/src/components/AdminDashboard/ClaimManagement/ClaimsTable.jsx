@@ -18,7 +18,7 @@ const ClaimsTable = ({
 }) => {
   const [selectedClaim, setSelectedClaim] = useState(null);
 
-  const rowsPerPage = 7;
+  const rowsPerPage = 5;
 
 //filter claim
 
@@ -471,18 +471,18 @@ const ClaimsTable = ({
           </div>
         )}
 
-        {/*pagination */}
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredClaims.length}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handlePageChange}
-          itemName="claims"
-        />
-
       </div>
+
+      {/*pagination */}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredClaims.length}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        itemName="claims"
+      />
 
       {/*view claim */}
 
