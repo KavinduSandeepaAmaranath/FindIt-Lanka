@@ -144,14 +144,12 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
             <table className="w-full min-w-[1050px] border-collapse">
               {/* table headers */}
               <thead>
-                <tr className="border-b border-gray-300 bg-gray-50">
-                  {columns.map((column, index) => (
+                <tr className="border-b border-gray-200 bg-gray-50/75">
+                  {columns.map((column) => (
                     <th
                       key={column.key}
-                      className={`px-4 py-4 text-xs font-semibold text-[#2A3B63] underline underline-offset-2 ${
+                      className={`px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500 ${
                         column.align === "center" ? "text-center" : "text-left"
-                      } ${
-                        index !== columns.length - 1 ? "border-r border-gray-300" : ""
                       }`}
                     >
                       {column.label}

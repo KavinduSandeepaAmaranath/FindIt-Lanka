@@ -123,132 +123,28 @@ const ClaimsTable = ({
             {/* table head*/}
 
             <thead>
-              <tr className="border-b border-gray-200">
-
-                {/* Items */}
-
-                <th
-                  className="
-                    border-r
-                    border-gray-200
-                    px-3
-                    py-4
-                    text-left
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+              <tr className="border-b border-gray-200 bg-gray-50/75">
+                <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Items
                 </th>
-
-                {/* Type */}
-
-                <th
-                  className="
-                    border-r
-                    border-gray-200
-                    px-3
-                    py-4
-                    text-left
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+                <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Type
                 </th>
-
-                {/* Owner */}
-
-                <th
-                  className="
-                    border-r
-                    border-gray-200
-                    px-3
-                    py-4
-                    text-left
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+                <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Owner
                 </th>
-
-                {/* Finder */}
-
-                <th
-                  className="
-                    border-r
-                    border-gray-200
-                    px-3
-                    py-4
-                    text-left
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+                <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Finder
                 </th>
-
-                {/* Date */}
-
-                <th
-                  className="
-                    border-r
-                    border-gray-200
-                    px-3
-                    py-4
-                    text-left
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+                <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Date
                 </th>
-
-                {/* Status */}
-
-                <th
-                  className="
-                    border-r
-                    border-gray-200
-                    px-3
-                    py-4
-                    text-left
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+                <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Status
                 </th>
-
-                {/* action*/}
-
-                <th
-                  className="
-                    px-3
-                    py-4
-                    text-center
-                    text-sm
-                    font-semibold
-                    text-[#2A3B63]
-                    underline
-                  "
-                >
+                <th className="px-4 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Actions
                 </th>
-
               </tr>
             </thead>
 
