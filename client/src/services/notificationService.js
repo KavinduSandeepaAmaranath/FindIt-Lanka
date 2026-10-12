@@ -15,6 +15,16 @@ export const markAllNotificationsAsReadApi = async () => {
   return response.data;
 };
 
+export const fetchAdminNotifications = async () => {
+  const response = await api.get("/notifications?scope=admin");
+  return response.data;
+};
+
+export const markAllAdminNotificationsAsReadApi = async () => {
+  const response = await api.patch("/notifications/read-all?scope=admin");
+  return response.data;
+};
+
 export const deleteNotificationApi = async (id) => {
   const response = await api.delete(`/notifications/${id}`);
   return response.data;
@@ -24,3 +34,4 @@ export const deleteAllNotificationsApi = async () => {
   const response = await api.delete("/notifications/delete-all");
   return response.data;
 };
+

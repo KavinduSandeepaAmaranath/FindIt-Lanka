@@ -39,12 +39,35 @@ const formatTime = (date) => {
   });
 };
 
-export const getUserNotifications = async (userId) => {
-  const rawNotifications = await Notification.find({ userId })
+const formatTimeAgo = (date) => {
+  const now = new Date();
+  const target = new Date(date);
+  const diffInSeconds = Math.max(0, Math.floor((now - target) / 1000));
+
+  if (diffInSeconds < 60) return "Just now";
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays === 1) return "Yesterday";
+  if (diffInDays < 7) return `${diffInDays} days ago`;
+
+  return formatDate(date);
+};
+
+export const getUserNotifications = async (userId, role = "user", scope = "user") => {
+  const query =
+    role === "admin" && (scope === "admin" || scope === "all")
+      ? {}
+      : { userId };
+
+  const rawNotifications = await Notification.find(query)
     .sort({ createdAt: -1 })
     .populate("lostItemId", "title category district location lostDate description images status approvalStatus rejectionReason userId createdAt")
     .populate("foundItemId", "title category district location foundDate description images status approvalStatus rejectionReason userId createdAt")
-    .populate("claimId", "status createdAt");
+    .populate("claimId", "status createdAt claimantId message")
+    .populate("userId", "firstName lastName email role");
 
   return rawNotifications.map((doc) => {
     const n = doc.toObject();
@@ -70,7 +93,7 @@ export const getUserNotifications = async (userId) => {
       tone = "blue";
       icon = "report";
       actionLabel = "View Report";
-      if (n.title === "Found item report approved") {
+      if (n.title === "Found item report approved" && role !== "admin") {
         n.title = "Your Found item report has been approved";
       }
     } else if (n.type === "rejection") {
@@ -78,7 +101,7 @@ export const getUserNotifications = async (userId) => {
       tone = "red";
       icon = "reject";
       actionLabel = "View Report";
-      if (n.title === "Your report was rejected" || !n.title) {
+      if ((n.title === "Your report was rejected" || !n.title) && role !== "admin") {
         n.title = n.lostItemId
           ? "Your lost item report was rejected"
           : n.foundItemId
@@ -97,27 +120,51 @@ export const getUserNotifications = async (userId) => {
       actionLabel = "Open Chat";
     }
 
+    // Build user-friendly details string
+    let details = "";
+    if (n.lostItemId?.title) {
+      details = `Item: ${n.lostItemId.title}${n.lostItemId.category ? ` | ${n.lostItemId.category}` : ""}`;
+    } else if (n.foundItemId?.title) {
+      details = `Item: ${n.foundItemId.title}${n.foundItemId.category ? ` | ${n.foundItemId.category}` : ""}`;
+    } else if (n.claimId) {
+      details = `Claim ID: ${String(n.claimId._id || n.claimId).slice(-6)}`;
+    } else if (n.userId?.email) {
+      const uName = [n.userId.firstName, n.userId.lastName].filter(Boolean).join(" ");
+      details = `User: ${uName || n.userId.email}`;
+    } else {
+      details = "FindIt Lanka Activity";
+    }
+
     return {
       ...n,
       id: n._id.toString(),
+      _id: n._id.toString(),
       description: n.message || n.description,
+      details,
       category,
       tone,
       icon,
       actionLabel,
       matchScore: n.matchScore || 0,
       group: getDateGroup(createdAt),
+      section: getDateGroup(createdAt),
+      sectionDate: formatDate(createdAt),
       date: formatDate(createdAt),
-      time: formatTime(createdAt),
+      time: formatTimeAgo(createdAt),
+      rawTime: formatTime(createdAt),
+      read: Boolean(n.isRead),
+      isRead: Boolean(n.isRead),
     };
   });
 };
 
-export const markAsRead = async (notificationId, userId) => {
-  const notification = await Notification.findOne({
-    _id: notificationId,
-    userId,
-  });
+export const markAsRead = async (notificationId, userId, role = "user") => {
+  const query =
+    role === "admin"
+      ? { _id: notificationId }
+      : { _id: notificationId, userId };
+
+  const notification = await Notification.findOne(query);
 
   if (!notification) {
     throw new Error("Notification not found");
@@ -128,13 +175,23 @@ export const markAsRead = async (notificationId, userId) => {
   return notification;
 };
 
-export const markAllAsRead = async (userId) => {
-  await Notification.updateMany({ userId, isRead: false }, { isRead: true });
+export const markAllAsRead = async (userId, role = "user", scope = "user") => {
+  const query =
+    role === "admin" && (scope === "admin" || scope === "all")
+      ? { isRead: false }
+      : { userId, isRead: false };
+
+  await Notification.updateMany(query, { isRead: true });
   return { success: true };
 };
 
-export const deleteNotification = async (notificationId, userId) => {
-  const result = await Notification.deleteOne({ _id: notificationId, userId });
+export const deleteNotification = async (notificationId, userId, role = "user") => {
+  const query =
+    role === "admin"
+      ? { _id: notificationId }
+      : { _id: notificationId, userId };
+
+  const result = await Notification.deleteOne(query);
   if (result.deletedCount === 0) {
     throw new Error("Notification not found");
   }
