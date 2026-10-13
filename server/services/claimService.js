@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { createNotification } from "./notificationService.js";
+import { createNotification, notifyAdminNewClaim } from "./notificationService.js";
 import Claim from "../models/Claim.js";
 import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
@@ -78,6 +78,12 @@ export const createClaim = async ({
             lostItemId: lostItem._id,
             claimId: claim._id,
         });
+    }
+
+    try {
+        await notifyAdminNewClaim(claim, lostItem.title || foundItem.title);
+    } catch (adminNotifErr) {
+        console.error("Error creating admin claim notification:", adminNotifErr);
     }
 
     return claim;

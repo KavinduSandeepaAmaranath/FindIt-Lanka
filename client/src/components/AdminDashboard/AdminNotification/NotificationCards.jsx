@@ -18,13 +18,14 @@ const NotificationCards = ({
     (n) =>
       (n.category && n.category.toLowerCase() === "reports") ||
       n.type === "approval" ||
-      n.type === "rejection"
+      n.type === "rejection" ||
+      n.type === "report" ||
+      n.type === "found"
   ).length;
   const claimsCount = notifications.filter(
     (n) =>
       (n.category && n.category.toLowerCase() === "claims") ||
-      n.type === "claim" ||
-      n.type === "found"
+      n.type === "claim"
   ).length;
 
   const cards = [

@@ -160,12 +160,13 @@ const NotificationList = ({
         matchesFilter =
           category === "reports" ||
           notification.type === "approval" ||
-          notification.type === "rejection";
+          notification.type === "rejection" ||
+          notification.type === "report" ||
+          notification.type === "found";
       } else if (activeFilter.toLowerCase() === "claims") {
         matchesFilter =
           category === "claims" ||
-          notification.type === "claim" ||
-          notification.type === "found";
+          notification.type === "claim";
       } else if (activeFilter.toLowerCase() === "system") {
         matchesFilter =
           category === "system" ||
@@ -230,10 +231,12 @@ const NotificationList = ({
       notification.foundItemId ||
       cat === "reports" ||
       type === "approval" ||
-      type === "rejection"
+      type === "rejection" ||
+      type === "report" ||
+      type === "found"
     ) {
       navigate("/admin-reports");
-    } else if (cat === "users") {
+    } else if (cat === "users" || type === "user") {
       navigate("/all-users");
     }
   };

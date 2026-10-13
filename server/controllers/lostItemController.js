@@ -9,6 +9,7 @@ import {
     updateLostItem,
     getRecentLostItems, 
 } from "../services/lostItemService.js";
+import { notifyAdminNewReport } from "../services/notificationService.js";
 
 export const create = async (req, res) => {
     try {
@@ -21,6 +22,9 @@ export const create = async (req, res) => {
             images: imagePaths,
             userId: req.user.userId,
         });
+
+        // Notify admins about new report
+        await notifyAdminNewReport(lostItem, "lost");
 
         res.status(201).json({
             message: "Lost item created successfully",

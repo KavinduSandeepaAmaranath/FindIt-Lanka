@@ -9,6 +9,7 @@ import {
     updateFoundItem,
     getRecentFoundItems,
 } from "../services/foundItemService.js";
+import { notifyAdminNewReport } from "../services/notificationService.js";
 
 export const create = async (req, res) => {
     try {
@@ -21,6 +22,9 @@ export const create = async (req, res) => {
             images: imagePaths,
             userId: req.user.userId,
         });
+
+        // Notify admins about new found item report
+        await notifyAdminNewReport(foundItem, "found");
 
         res.status(201).json({
             message: "Found item created successfully",

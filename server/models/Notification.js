@@ -20,8 +20,17 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["match", "claim", "system", "approval", "rejection", "found"],
+      enum: ["match", "claim", "system", "approval", "rejection", "found", "report", "user"],
       default: "match",
+    },
+    category: {
+      type: String,
+      default: null,
+    },
+    targetRole: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
     lostItemId: {
       type: mongoose.Schema.Types.ObjectId,
