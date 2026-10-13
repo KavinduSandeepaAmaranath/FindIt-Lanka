@@ -6,10 +6,12 @@ import LogoImg from "../../assets/images/LogoImg.jpg";
 import { navMenuItems, navbarIcons } from "../../data/AdminDashboard";
 import { logout } from "../../services/authService";
 import AdminLogoutModal from "./AdminLogoutModal";
+import { useNotifications } from "../../context/NotificationContext";
 
 export default function AdminNavBar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const CloseIcon = navbarIcons.close;
+  const { hasUnread, unreadCount } = useNotifications();
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -148,11 +150,24 @@ export default function AdminNavBar({ isOpen, setIsOpen }) {
                         />
                       )}
 
-                      <span className="relative z-10 flex items-center gap-4">
-                        <Icon className="text-xl" />
-                        <span className="font-medium">
-                          {item.title}
+                      <span className="relative z-10 flex items-center justify-between w-full">
+                        <span className="flex items-center gap-4">
+                          <Icon className="text-xl" />
+                          <span className="font-medium">
+                            {item.title}
+                          </span>
                         </span>
+                        {item.path === "/admin-notification" && hasUnread && (
+                          <span
+                            className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${
+                              isActive
+                                ? "bg-red-500 text-white"
+                                : "bg-white text-red-600 font-extrabold shadow-xs"
+                            }`}
+                          >
+                            {unreadCount > 99 ? "99+" : unreadCount}
+                          </span>
+                        )}
                       </span>
                     </>
                   )}

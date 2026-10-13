@@ -1,8 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import {
   fetchNotifications,
+  fetchAdminNotifications,
   markNotificationAsReadApi,
   markAllNotificationsAsReadApi,
+  markAllAdminNotificationsAsReadApi,
   deleteNotificationApi,
   deleteAllNotificationsApi,
 } from "../services/notificationService";
@@ -13,7 +15,18 @@ export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch real notifications from backend
+  const getIsAdmin = () => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.role === "admin";
+      }
+    } catch {}
+    return false;
+  };
+
+  // Fetch real notifications from backend based on user role
   const loadNotifications = useCallback(async () => {
     const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
     if (!token) {
@@ -24,7 +37,8 @@ export function NotificationProvider({ children }) {
 
     try {
       setLoading(true);
-      const data = await fetchNotifications();
+      const isAdmin = getIsAdmin();
+      const data = isAdmin ? await fetchAdminNotifications() : await fetchNotifications();
       if (data && data.success && Array.isArray(data.notifications)) {
         setNotifications(data.notifications);
       } else {
@@ -57,7 +71,9 @@ export function NotificationProvider({ children }) {
     const interval = setInterval(() => {
       const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
       if (token) {
-        fetchNotifications()
+        const isAdmin = getIsAdmin();
+        const fetcher = isAdmin ? fetchAdminNotifications : fetchNotifications;
+        fetcher()
           .then((data) => {
             if (data && data.success && Array.isArray(data.notifications)) {
               setNotifications(data.notifications);
@@ -74,12 +90,12 @@ export function NotificationProvider({ children }) {
     };
   }, [loadNotifications]);
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.isRead && !n.read).length;
   const hasUnread = unreadCount > 0;
 
   const markAsRead = async (id) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id || n._id === id ? { ...n, isRead: true } : n))
+      prev.map((n) => (n.id === id || n._id === id ? { ...n, isRead: true, read: true } : n))
     );
     try {
       await markNotificationAsReadApi(id);
@@ -89,9 +105,14 @@ export function NotificationProvider({ children }) {
   };
 
   const markAllAsRead = async () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true, read: true })));
     try {
-      await markAllNotificationsAsReadApi();
+      const isAdmin = getIsAdmin();
+      if (isAdmin) {
+        await markAllAdminNotificationsAsReadApi();
+      } else {
+        await markAllNotificationsAsReadApi();
+      }
     } catch (err) {
       console.error("Error marking all notifications read:", err);
     }

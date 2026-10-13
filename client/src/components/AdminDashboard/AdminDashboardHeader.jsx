@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import ProfileImg from "../../assets/icons/ProfileImg.jpeg";
+import { useNotifications } from "../../context/NotificationContext";
 
 export default function AdminDashboardHeader({
   showCalendar,
@@ -11,6 +12,7 @@ export default function AdminDashboardHeader({
   header,
   setIsOpen,
 }) {
+  const { hasUnread, unreadCount } = useNotifications();
   const BellIcon = header.icons.bell;
   const CalendarIcon = header.icons.calendar;
   const MenuIcon = header.icons.menu;
@@ -81,10 +83,21 @@ export default function AdminDashboardHeader({
 
           {/* Notification */}
           <NavLink
-            to="/admin-notifications"
-            className="hover:scale-110 transition flex items-center justify-center p-1"
+            to="/admin-notification"
+            className="relative hover:scale-110 transition flex items-center justify-center p-1"
+            title={
+              hasUnread
+                ? `${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`
+                : "Notifications"
+            }
+            aria-label={`Notifications${hasUnread ? ` (${unreadCount} unread)` : ""}`}
           >
             <BellIcon className="text-xl sm:text-2xl text-orange-400" />
+            {hasUnread && (
+              <span className="absolute -top-1 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white pointer-events-none shadow-xs">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
           </NavLink>
 
           {/* Profile */}

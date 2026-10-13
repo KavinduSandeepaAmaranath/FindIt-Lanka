@@ -102,6 +102,8 @@ function AppRoutes() {
       <Route path="/claim-management" element={<ProtectedAdminRoute><ClaimManagement /></ProtectedAdminRoute>} />
       <Route path="/Admin-Notification" element={<ProtectedAdminRoute><AdminNotification /></ProtectedAdminRoute>} />
       <Route path="/admin-notification" element={<ProtectedAdminRoute><AdminNotification /></ProtectedAdminRoute>} />
+      <Route path="/Admin-Notifications" element={<ProtectedAdminRoute><AdminNotification /></ProtectedAdminRoute>} />
+      <Route path="/admin-notifications" element={<ProtectedAdminRoute><AdminNotification /></ProtectedAdminRoute>} />
       <Route path="/Admin-Setting" element={<ProtectedAdminRoute><AdminSetting /></ProtectedAdminRoute>} />
       <Route path="/admin-setting" element={<ProtectedAdminRoute><AdminSetting /></ProtectedAdminRoute>} />
 
