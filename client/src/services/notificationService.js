@@ -35,3 +35,8 @@ export const deleteAllNotificationsApi = async () => {
   return response.data;
 };
 
+export const clearAllAdminNotificationsApi = async () => {
+  const response = await api.delete("/notifications/delete-all?scope=admin");
+  return response.data;
+};
+

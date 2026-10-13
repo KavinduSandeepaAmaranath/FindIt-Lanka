@@ -200,10 +200,6 @@ export const ensureAdminNotifications = async (adminUserId) => {
 export const getUserNotifications = async (userId, role = "user", scope = "user") => {
   const isAdminScope = role === "admin" && (scope === "admin" || scope === "all");
 
-  if (isAdminScope) {
-    await ensureAdminNotifications(userId);
-  }
-
   const query = isAdminScope
     ? { targetRole: "admin" }
     : { userId, targetRole: { $ne: "admin" } };
@@ -327,7 +323,7 @@ export const markAllAsRead = async (userId, role = "user", scope = "user") => {
   const query =
     role === "admin" && (scope === "admin" || scope === "all")
       ? { targetRole: "admin", isRead: false }
-      : { userId, isRead: false };
+      : { userId, targetRole: { $ne: "admin" }, isRead: false };
 
   await Notification.updateMany(query, { isRead: true });
   return { success: true };
@@ -337,7 +333,7 @@ export const deleteNotification = async (notificationId, userId, role = "user") 
   const query =
     role === "admin"
       ? { _id: notificationId }
-      : { _id: notificationId, userId };
+      : { _id: notificationId, userId, targetRole: { $ne: "admin" } };
 
   const result = await Notification.deleteOne(query);
   if (result.deletedCount === 0) {
@@ -382,9 +378,14 @@ export const createAutoMatchNotifications = async (lostItem, foundItem) => {
   return await Promise.all(notifications);
 };
 
-export const deleteAllNotifications = async (userId) => {
-  await Notification.deleteMany({ userId });
-  return { success: true };
+export const deleteAllNotifications = async (userId, role = "user", scope = "user") => {
+  const query =
+    role === "admin" && (scope === "admin" || scope === "all")
+      ? { targetRole: "admin" }
+      : { userId, targetRole: { $ne: "admin" } };
+
+  const result = await Notification.deleteMany(query);
+  return { success: true, deletedCount: result.deletedCount };
 };
 
 export const sendAdminSystemMessage = async ({

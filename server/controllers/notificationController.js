@@ -79,10 +79,13 @@ export const deleteNotificationController = async (req, res) => {
 
 export const deleteAllNotificationsController = async (req, res) => {
   try {
-    await deleteAllNotifications(req.user.userId);
+    const { scope } = req.query;
+    const role = req.user?.role || "user";
+    const result = await deleteAllNotifications(req.user.userId, role, scope);
     res.status(200).json({
       success: true,
       message: "All notifications deleted",
+      deletedCount: result.deletedCount,
     });
   } catch (error) {
     res.status(500).json({
