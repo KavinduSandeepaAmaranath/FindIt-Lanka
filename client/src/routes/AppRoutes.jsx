@@ -20,6 +20,8 @@ import MyReturns from "../pages/MyReturns";
 import Notification from "../pages/Notification";
 import Help from "../pages/Help";
 import BrowseItems from "../pages/BrowseItems";
+import ReportLostItem from "../pages/ReportLostItem";
+import ReportFoundItem from "../pages/ReportFoundItem";
 
 import AdminDashboard from "../pages/AdminDashboard";
 import AllUsers from "../pages/AllUsers";
@@ -50,6 +52,10 @@ function AppRoutes() {
         <Route path="/browse" element={<BrowseItems />} />
         <Route path="/dashboard/help" element={<Help />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/report-lost-item" element={<ReportLostItem />} />
+        <Route path="/report-found-item" element={<ReportFoundItem />} />
+        <Route path="/report-lost" element={<ReportLostItem />} />
+        <Route path="/report-found" element={<ReportFoundItem />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

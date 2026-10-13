@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FiGrid,
   FiFileText,
@@ -41,12 +41,12 @@ const navItems = [
   { label: "My Claims", to: "/dashboard/my-claims", icon: FiCheckSquare },
   { label: "My Returns", to: "/dashboard/my-returns", icon: MyReturnsIcon },
   {
-    label: "Add Lost Reports",
+    label: "Report Lost Item",
     to: "/report-lost-item",
     icon: FiSend,
   },
   {
-    label: "Add Found Reports",
+    label: "Report Found Item",
     to: "/report-found-item",
     icon: FiSend,
   },
@@ -58,6 +58,7 @@ const navItems = [
 function DashboardSidebar({onOpenLostReport,
   onOpenFoundReport,}) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const closeDrawer = () => setIsOpen(false);
@@ -131,71 +132,79 @@ function DashboardSidebar({onOpenLostReport,
           location.pathname === "/browse"));
 
     if (label === "Report Lost Item" || label === "Add Lost Reports") {
-      if (onOpenLostReport) {
-        return (
-          <button
-            key={label}
-            type="button"
-            onClick={() => {
-              closeDrawer();
+      return (
+        <button
+          key={label}
+          type="button"
+          onClick={() => {
+            closeDrawer();
+            if (onOpenLostReport) {
               onOpenLostReport();
-            }}
-            className="
-              w-full
-              flex
-              items-center
-              gap-3
-              px-3.5
-              py-3
-              rounded-xl
-              text-sm
-              font-semibold
-              text-blue-100
-              hover:bg-white/10
-              hover:text-white
-              transition-colors
-              cursor-pointer
-            "
-          >
-            <Icon className="w-5 h-5" />
-            <span>{label}</span>
-          </button>
-        );
-      }
+            } else {
+              navigate(to);
+            }
+          }}
+          className={`
+            w-full
+            flex
+            items-center
+            gap-3
+            px-3.5
+            py-3
+            rounded-xl
+            text-sm
+            font-semibold
+            transition-colors
+            cursor-pointer
+            ${
+              active
+                ? "bg-white text-blue-900 shadow-sm"
+                : "text-blue-100 hover:bg-white/10 hover:text-white"
+            }
+          `}
+        >
+          <Icon className="w-5 h-5" />
+          <span>{label}</span>
+        </button>
+      );
     }
 
     if (label === "Report Found Item" || label === "Add Found Reports") {
-      if (onOpenFoundReport) {
-        return (
-          <button
-            key={label}
-            type="button"
-            onClick={() => {
-              closeDrawer();
+      return (
+        <button
+          key={label}
+          type="button"
+          onClick={() => {
+            closeDrawer();
+            if (onOpenFoundReport) {
               onOpenFoundReport();
-            }}
-            className="
-              w-full
-              flex
-              items-center
-              gap-3
-              px-3.5
-              py-3
-              rounded-xl
-              text-sm
-              font-semibold
-              text-blue-100
-              hover:bg-white/10
-              hover:text-white
-              transition-colors
-              cursor-pointer
-            "
-          >
-            <Icon className="w-5 h-5" />
-            <span>{label}</span>
-          </button>
-        );
-      }
+            } else {
+              navigate(to);
+            }
+          }}
+          className={`
+            w-full
+            flex
+            items-center
+            gap-3
+            px-3.5
+            py-3
+            rounded-xl
+            text-sm
+            font-semibold
+            transition-colors
+            cursor-pointer
+            ${
+              active
+                ? "bg-white text-blue-900 shadow-sm"
+                : "text-blue-100 hover:bg-white/10 hover:text-white"
+            }
+          `}
+        >
+          <Icon className="w-5 h-5" />
+          <span>{label}</span>
+        </button>
+      );
     }
 
     return (
