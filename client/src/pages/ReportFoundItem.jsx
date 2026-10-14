@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import ReportHeader from "../components/LostFoundForm/ReportHeader";
@@ -22,9 +23,14 @@ const ReportFoundItem = () => {
       />
 
       {/* Content */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-screen pt-[60px] lg:pt-0">
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+        <motion.main
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden"
+        >
 
           {/* Header */}
           <ReportHeader
@@ -37,7 +43,7 @@ const ReportFoundItem = () => {
             formData={reportForm}
           />
 
-        </main>
+        </motion.main>
 
       </div>
 

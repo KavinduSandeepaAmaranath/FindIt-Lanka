@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { FiUser } from "react-icons/fi";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { FaBell } from "react-icons/fa";
@@ -236,7 +237,12 @@ function Settings() {
         onOpenFoundReport={() => setOpenFoundReport(true)}
       />
 
-      <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
+      <motion.main
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="flex-1 min-w-0 pt-[60px] lg:pt-0"
+      >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3 min-w-0">
@@ -312,7 +318,7 @@ function Settings() {
             />
           </div>
         </div>
-      </div>
+      </motion.main>
 
 
       {/* Save Changes Confirmation Modal */}

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { motion } from "framer-motion";
 import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
@@ -350,7 +351,12 @@ function MyReports() {
         onOpenFoundReport={() => setOpenFoundReport(true)}
       />
 
-      <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
+      <motion.main
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="flex-1 min-w-0 pt-[60px] lg:pt-0"
+      >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
 
           {/* Header & User Profile Topbar in one aligned row */}
@@ -404,7 +410,7 @@ function MyReports() {
             onPageChange={handlePageChange}
           />
         </div>
-      </div>
+      </motion.main>
 
       {/*report details popup*/}
       {selectedReport && (

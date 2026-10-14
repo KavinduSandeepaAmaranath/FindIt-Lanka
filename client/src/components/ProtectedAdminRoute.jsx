@@ -65,6 +65,17 @@ const ProtectedAdminRoute = ({ children }) => {
         return;
       }
 
+      try {
+        const user = JSON.parse(userStr);
+        if (user.role !== "admin") {
+          clearAuthAndRedirect();
+          return;
+        }
+      } catch {
+        clearAuthAndRedirect();
+        return;
+      }
+
       const payload = parseJwt(token);
       if (!payload || (payload.exp && payload.exp * 1000 <= Date.now())) {
         clearAuthAndRedirect();
@@ -88,10 +99,12 @@ const ProtectedAdminRoute = ({ children }) => {
     }
 
     window.addEventListener("focus", checkAndHandleExpiry);
+    window.addEventListener("storage", checkAndHandleExpiry);
 
     return () => {
       if (timer) clearTimeout(timer);
       window.removeEventListener("focus", checkAndHandleExpiry);
+      window.removeEventListener("storage", checkAndHandleExpiry);
     };
   }, [navigate]);
 

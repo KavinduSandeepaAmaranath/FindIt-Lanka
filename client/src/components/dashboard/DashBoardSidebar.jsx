@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   FiGrid,
   FiFileText,
@@ -14,6 +15,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import logo from "../../assets/images/Loginlogo.png";
+import { useNotifications } from "../../context/NotificationContext";
 
 function MyReturnsIcon({ className = "w-5 h-5" }) {
   return (
@@ -55,16 +57,17 @@ const navItems = [
   { label: "Help", to: "/dashboard/help", icon: FiHelpCircle },
 ];
 
-function DashboardSidebar({onOpenLostReport,
-  onOpenFoundReport,}) {
+function DashboardSidebar({ onOpenLostReport, onOpenFoundReport }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { hasUnread, unreadCount } = useNotifications();
 
   const closeDrawer = () => setIsOpen(false);
 
   return (
     <>
+      {/* Mobile topbar */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-blue-950 text-white shadow-sm">
         <Link to="/dashboard" className="flex items-center gap-2">
           <img
@@ -83,22 +86,22 @@ function DashboardSidebar({onOpenLostReport,
         </button>
       </div>
 
-      {/*overlay*/}
+      {/* Mobile overlay */}
       {isOpen && (
         <div
           onClick={closeDrawer}
-          className="fixed top-[60px] inset-x-0 bottom-0 z-30 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden transition-opacity duration-300"
         />
       )}
 
-      {/*sidebar drawer*/}
+      {/* Sidebar drawer */}
       <aside
         className={`
-          fixed top-[60px] bottom-0 left-0 z-40 w-72 flex flex-col
+          fixed top-[60px] lg:top-0 bottom-0 left-0 z-40 w-72 flex flex-col
           bg-gradient-to-b from-blue-800 to-blue-950 text-white
-          transform transition-transform duration-300 ease-in-out
+          transform transition-transform duration-300 ease-in-out shadow-2xl
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:sticky lg:top-0 lg:translate-x-0 lg:flex lg:w-72 lg:shrink-0 lg:h-screen lg:self-start
+          lg:sticky lg:translate-x-0 lg:flex lg:w-72 lg:shrink-0 lg:h-screen lg:self-start
         `}
       >
         <div className="px-7 pt-8 pb-6 border-b border-white/10 flex items-center justify-between">
@@ -123,108 +126,155 @@ function DashboardSidebar({onOpenLostReport,
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1">
-  {navItems.map(({ label, to, icon: Icon }) => {
-    const active =
-      location.pathname === to ||
-      (to === "/dashboard/browse" &&
-        (location.pathname === "/dashboard/browse" ||
-          location.pathname === "/browse"));
+        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          {navItems.map(({ label, to, icon: Icon }) => {
+            const active =
+              location.pathname === to ||
+              (to === "/dashboard/browse" &&
+                (location.pathname === "/dashboard/browse" ||
+                  location.pathname === "/browse"));
 
-    if (label === "Report Lost Item" || label === "Add Lost Reports") {
-      return (
-        <button
-          key={label}
-          type="button"
-          onClick={() => {
-            closeDrawer();
-            if (onOpenLostReport) {
-              onOpenLostReport();
-            } else {
-              navigate(to);
+            if (label === "Report Lost Item" || label === "Add Lost Reports") {
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    closeDrawer();
+                    if (onOpenLostReport) {
+                      onOpenLostReport();
+                    } else {
+                      navigate(to);
+                    }
+                  }}
+                  className={`
+                    relative
+                    w-full
+                    flex
+                    items-center
+                    px-3.5
+                    py-3
+                    rounded-xl
+                    text-sm
+                    font-semibold
+                    transition-colors
+                    duration-200
+                    cursor-pointer
+                    ${
+                      active
+                        ? "text-blue-900 font-semibold"
+                        : "text-blue-100 hover:bg-white/10 hover:text-white"
+                    }
+                  `}
+                >
+                  {active && (
+                    <motion.div
+                      layoutId="activeUserTab"
+                      className="absolute inset-0 rounded-xl bg-white shadow-md"
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-3">
+                    <Icon className="w-5 h-5 shrink-0" />
+                    <span>{label}</span>
+                  </span>
+                </button>
+              );
             }
-          }}
-          className={`
-            w-full
-            flex
-            items-center
-            gap-3
-            px-3.5
-            py-3
-            rounded-xl
-            text-sm
-            font-semibold
-            transition-colors
-            cursor-pointer
-            ${
-              active
-                ? "bg-white text-blue-900 shadow-sm"
-                : "text-blue-100 hover:bg-white/10 hover:text-white"
-            }
-          `}
-        >
-          <Icon className="w-5 h-5" />
-          <span>{label}</span>
-        </button>
-      );
-    }
 
-    if (label === "Report Found Item" || label === "Add Found Reports") {
-      return (
-        <button
-          key={label}
-          type="button"
-          onClick={() => {
-            closeDrawer();
-            if (onOpenFoundReport) {
-              onOpenFoundReport();
-            } else {
-              navigate(to);
+            if (label === "Report Found Item" || label === "Add Found Reports") {
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    closeDrawer();
+                    if (onOpenFoundReport) {
+                      onOpenFoundReport();
+                    } else {
+                      navigate(to);
+                    }
+                  }}
+                  className={`
+                    relative
+                    w-full
+                    flex
+                    items-center
+                    px-3.5
+                    py-3
+                    rounded-xl
+                    text-sm
+                    font-semibold
+                    transition-colors
+                    duration-200
+                    cursor-pointer
+                    ${
+                      active
+                        ? "text-blue-900 font-semibold"
+                        : "text-blue-100 hover:bg-white/10 hover:text-white"
+                    }
+                  `}
+                >
+                  {active && (
+                    <motion.div
+                      layoutId="activeUserTab"
+                      className="absolute inset-0 rounded-xl bg-white shadow-md"
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-3">
+                    <Icon className="w-5 h-5 shrink-0" />
+                    <span>{label}</span>
+                  </span>
+                </button>
+              );
             }
-          }}
-          className={`
-            w-full
-            flex
-            items-center
-            gap-3
-            px-3.5
-            py-3
-            rounded-xl
-            text-sm
-            font-semibold
-            transition-colors
-            cursor-pointer
-            ${
-              active
-                ? "bg-white text-blue-900 shadow-sm"
-                : "text-blue-100 hover:bg-white/10 hover:text-white"
-            }
-          `}
-        >
-          <Icon className="w-5 h-5" />
-          <span>{label}</span>
-        </button>
-      );
-    }
 
-    return (
-      <Link
-        key={label}
-        to={to}
-        onClick={closeDrawer}
-        className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-colors ${
-          active
-            ? "bg-white text-blue-900 shadow-sm"
-            : "text-blue-100 hover:bg-white/10 hover:text-white"
-        }`}
-      >
-        <Icon className="w-5 h-5" />
-        <span>{label}</span>
-      </Link>
-    );
-  })}
-</nav>
-
+            return (
+              <Link
+                key={label}
+                to={to}
+                onClick={closeDrawer}
+                className={`relative flex items-center px-3.5 py-3 rounded-xl text-sm font-semibold transition-colors duration-200 ${
+                  active
+                    ? "text-blue-900 font-semibold"
+                    : "text-blue-100 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {active && (
+                  <motion.div
+                    layoutId="activeUserTab"
+                    className="absolute inset-0 rounded-xl bg-white shadow-md"
+                    transition={{
+                      type: "spring",
+                      stiffness: 420,
+                      damping: 32,
+                    }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center justify-between w-full">
+                  <span className="flex items-center gap-3">
+                    <Icon className="w-5 h-5 shrink-0" />
+                    <span>{label}</span>
+                  </span>
+                  {to === "/dashboard/notifications" && hasUnread && (
+                    <span className="bg-red-500 text-white text-[11px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
       </aside>
     </>
   );
