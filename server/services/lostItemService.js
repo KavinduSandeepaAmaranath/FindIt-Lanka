@@ -1,6 +1,9 @@
 import FoundItem from "../models/FoundItem.js";
 import { createAutoMatchNotifications } from "./notificationService.js";
 import LostItem from "../models/LostItem.js";
+import Notification from "../models/Notification.js";
+import Claim from "../models/Claim.js";
+import { deleteImageFiles } from "../utils/fileStorage.js";
 
 export const createLostItem = async ({
     title,
@@ -33,7 +36,41 @@ export const getAllLostItems = async () => {
 };
 
 export const getMyLostItems = async (userId) => {
-    return await LostItem.find({ userId });
+    const items = await LostItem.find({ userId });
+    try {
+        const rejectedWithoutReason = items.filter(
+            (it) => it.approvalStatus === "rejected" && !it.rejectionReason
+        );
+        if (rejectedWithoutReason.length > 0) {
+            const itemIds = rejectedWithoutReason.map((it) => it._id);
+            const notifs = await Notification.find({
+                userId,
+                type: "rejection",
+                lostItemId: { $in: itemIds },
+            }).sort({ createdAt: -1 });
+
+            const reasonMap = {};
+            for (const notif of notifs) {
+                if (notif.lostItemId && !reasonMap[notif.lostItemId.toString()]) {
+                    if (notif.message && !notif.message.startsWith("Your lost item report (")) {
+                        reasonMap[notif.lostItemId.toString()] = notif.message;
+                    }
+                }
+            }
+
+            return items.map((it) => {
+                const doc = it.toObject ? it.toObject() : { ...it };
+                if (doc.approvalStatus === "rejected" && !doc.rejectionReason && reasonMap[doc._id.toString()]) {
+                    doc.rejectionReason = reasonMap[doc._id.toString()];
+                    LostItem.updateOne({ _id: doc._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                }
+                return doc;
+            });
+        }
+    } catch (err) {
+        console.error("Error looking up rejection reasons for lost items:", err);
+    }
+    return items;
 };
 
 export const getLostItemById = async (itemId) => {
@@ -41,6 +78,21 @@ export const getLostItemById = async (itemId) => {
 
     if (!lostItem) {
         throw new Error("Lost item not found");
+    }
+
+    if (lostItem.approvalStatus === "rejected" && !lostItem.rejectionReason) {
+        try {
+            const notif = await Notification.findOne({
+                type: "rejection",
+                lostItemId: lostItem._id,
+            }).sort({ createdAt: -1 });
+            if (notif && notif.message && !notif.message.startsWith("Your lost item report (")) {
+                const doc = lostItem.toObject ? lostItem.toObject() : { ...lostItem };
+                doc.rejectionReason = notif.message;
+                LostItem.updateOne({ _id: lostItem._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                return doc;
+            }
+        } catch (e) {}
     }
 
     return lostItem;
@@ -56,10 +108,56 @@ export const getSingleLostItem = async (itemId, userId) => {
         throw new Error("Lost item not found");
     }
 
+    if (lostItem.approvalStatus === "rejected" && !lostItem.rejectionReason) {
+        try {
+            const notif = await Notification.findOne({
+                userId,
+                type: "rejection",
+                lostItemId: lostItem._id,
+            }).sort({ createdAt: -1 });
+            if (notif && notif.message && !notif.message.startsWith("Your lost item report (")) {
+                const doc = lostItem.toObject ? lostItem.toObject() : { ...lostItem };
+                doc.rejectionReason = notif.message;
+                LostItem.updateOne({ _id: lostItem._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                return doc;
+            }
+        } catch (e) {}
+    }
+
     return lostItem;
 };
 
 export const updateLostItem = async (itemId, userId, updateData) => {
+    const existing = await LostItem.findOne({
+        _id: itemId,
+        userId,
+    });
+
+    if (!existing) {
+        throw new Error("Lost item not found or unauthorized");
+    }
+
+    // Check if the report is resolved or closed
+    if (existing.status === "recovered" || existing.status === "closed") {
+        throw new Error("Resolved or recovered reports cannot be edited");
+    }
+
+    // Check if there is an approved claim for this lost item
+    const activeClaim = await Claim.findOne({
+        lostItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be edited");
+    }
+
+    // If item was rejected or pending, reset approvalStatus to "pending" and clear rejectionReason
+    const wasRejected = existing.approvalStatus === "rejected";
+    if (wasRejected || existing.approvalStatus === "pending") {
+        updateData.approvalStatus = "pending";
+        updateData.rejectionReason = "";
+    }
+
     const lostItem = await LostItem.findOneAndUpdate({
         _id: itemId,
         userId,            
@@ -70,24 +168,48 @@ export const updateLostItem = async (itemId, userId, updateData) => {
         runValidators: true,
     });
 
-    if (!lostItem) {
-        throw new Error("Item not found");
+    if (lostItem) {
+        lostItem._wasRejected = wasRejected;
+    }
+
+    // If new images were provided, delete the old image files
+    if (updateData.images && updateData.images.length > 0 && existing.images && existing.images.length > 0) {
+        await deleteImageFiles(existing.images);
     }
 
     return lostItem;
 };
 
 export const deleteLostItem = async (itemId, userId) => {
-    const lostItem = await LostItem.findOneAndDelete({
+    const existing = await LostItem.findOne({
         _id: itemId,
         userId,
     });
 
-    if (!lostItem) {
-        throw new Error("Lost item not found");
+    if (!existing) {
+        throw new Error("Lost item not found or unauthorized");
     }
 
-    return lostItem;
+    if (existing.status === "recovered" || existing.status === "closed") {
+        throw new Error("Resolved or recovered reports cannot be deleted");
+    }
+
+    const activeClaim = await Claim.findOne({
+        lostItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be deleted");
+    }
+
+    await LostItem.findByIdAndDelete(itemId);
+
+    // Delete image files from disk
+    if (existing.images && existing.images.length > 0) {
+        await deleteImageFiles(existing.images);
+    }
+
+    return existing;
 };
 
 export const markLostItemAsRecovered = async (itemId, userId) => {

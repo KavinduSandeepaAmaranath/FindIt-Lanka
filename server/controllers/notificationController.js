@@ -9,8 +9,10 @@ import {
 
 export const getUserNotificationsController = async (req, res) => {
   try {
-    const notifications = await getUserNotifications(req.user.userId);
-    const unreadCount = notifications.filter((n) => !n.isRead).length;
+    const { scope } = req.query;
+    const role = req.user?.role || "user";
+    const notifications = await getUserNotifications(req.user.userId, role, scope);
+    const unreadCount = notifications.filter((n) => !n.isRead && !n.read).length;
 
     res.status(200).json({
       success: true,
@@ -28,7 +30,8 @@ export const getUserNotificationsController = async (req, res) => {
 
 export const markAsReadController = async (req, res) => {
   try {
-    const notification = await markAsRead(req.params.id, req.user.userId);
+    const role = req.user?.role || "user";
+    const notification = await markAsRead(req.params.id, req.user.userId, role);
     res.status(200).json({
       success: true,
       notification,
@@ -43,7 +46,9 @@ export const markAsReadController = async (req, res) => {
 
 export const markAllAsReadController = async (req, res) => {
   try {
-    await markAllAsRead(req.user.userId);
+    const { scope } = req.query;
+    const role = req.user?.role || "user";
+    await markAllAsRead(req.user.userId, role, scope);
     res.status(200).json({
       success: true,
       message: "All notifications marked as read",
@@ -58,7 +63,8 @@ export const markAllAsReadController = async (req, res) => {
 
 export const deleteNotificationController = async (req, res) => {
   try {
-    await deleteNotification(req.params.id, req.user.userId);
+    const role = req.user?.role || "user";
+    await deleteNotification(req.params.id, req.user.userId, role);
     res.status(200).json({
       success: true,
       message: "Notification deleted",
@@ -73,10 +79,13 @@ export const deleteNotificationController = async (req, res) => {
 
 export const deleteAllNotificationsController = async (req, res) => {
   try {
-    await deleteAllNotifications(req.user.userId);
+    const { scope } = req.query;
+    const role = req.user?.role || "user";
+    const result = await deleteAllNotifications(req.user.userId, role, scope);
     res.status(200).json({
       success: true,
       message: "All notifications deleted",
+      deletedCount: result.deletedCount,
     });
   } catch (error) {
     res.status(500).json({

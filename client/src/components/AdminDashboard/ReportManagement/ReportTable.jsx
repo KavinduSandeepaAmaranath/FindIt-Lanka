@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { FiCheckCircle, FiXCircle, FiCircle } from "react-icons/fi";
 
 import {
@@ -23,7 +23,8 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
   const rowsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(reports.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
+  const safePage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  const startIndex = (safePage - 1) * rowsPerPage;
   const currentReports = reports.slice(
     startIndex,
     startIndex + rowsPerPage
@@ -65,7 +66,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
           await approveFoundItem(report.id);
         }
       } else if (type === "reject") {
-        const rejectionReason = typeof payload === "string" ? payload : "";
+        const rejectionReason = typeof payload === "string" ? payload : (payload?.rejectionReason || "");
         if (isLost) {
           await rejectLostItem(report.id, rejectionReason);
         } else {
@@ -75,7 +76,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
     } catch (err) {
       console.error("Primary report action failed, trying alternative item type...", err);
       try {
-        const rejectionReason = typeof payload === "string" ? payload : "";
+        const rejectionReason = typeof payload === "string" ? payload : (payload?.rejectionReason || "");
         if (type === "reject") {
           if (isLost) {
             await rejectFoundItem(report.id, rejectionReason);
@@ -143,14 +144,12 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
             <table className="w-full min-w-[1050px] border-collapse">
               {/* table headers */}
               <thead>
-                <tr className="border-b border-gray-300 bg-gray-50">
-                  {columns.map((column, index) => (
+                <tr className="border-b border-gray-200 bg-gray-50/75">
+                  {columns.map((column) => (
                     <th
                       key={column.key}
-                      className={`px-4 py-4 text-xs font-semibold text-[#2A3B63] underline underline-offset-2 ${
+                      className={`px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500 ${
                         column.align === "center" ? "text-center" : "text-left"
-                      } ${
-                        index !== columns.length - 1 ? "border-r border-gray-300" : ""
                       }`}
                     >
                       {column.label}
@@ -248,19 +247,17 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
               </p>
             </div>
           )}
-
-          {/* Pagination inside Card */}
-          <div className="p-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={reports.length}
-              rowsPerPage={rowsPerPage}
-              onPageChange={setCurrentPage}
-              itemName="reports"
-            />
-          </div>
         </div>
+
+        {/* Pagination outside table card */}
+        <Pagination
+          currentPage={safePage}
+          totalPages={totalPages}
+          totalItems={reports.length}
+          rowsPerPage={rowsPerPage}
+          onPageChange={setCurrentPage}
+          itemName="reports"
+        />
       </section>
 
       {/* Approve / Reject confirmation modal */}
@@ -625,6 +622,18 @@ const ReportDetailsModal = ({ report, onClose }) => {
             </p>
           </div>
         </div>
+
+        {/* Rejection reason if rejected */}
+        {report.status?.toLowerCase() === "rejected" && (
+          <div className="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2">
+            <h3 className="mb-1 text-[13px] font-semibold text-red-700">
+              Rejection Reason
+            </h3>
+            <p className="text-xs text-red-600 leading-relaxed">
+              {report.rejectionReason || "No specific reason provided."}
+            </p>
+          </div>
+        )}
 
         {/* done btn */}
         <button

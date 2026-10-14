@@ -1,5 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
+import { deleteLostItem } from "../services/lostItemService.js";
+import { deleteFoundItem } from "../services/foundItemService.js";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
@@ -57,76 +60,90 @@ function MyReports() {
   const [activeStat, setActiveStat] = useState("total");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [editingReport, setEditingReport] = useState(null);
 
   const [reportsList, setReportsList] = useState([]);
   const [liveStats, setLiveStats] = useState(null);
 
-  useEffect(() => {
-    const fetchBackendData = async () => {
-      try {
-        const [statsRes, lostRes, foundRes] = await Promise.all([
-          getDashboardStatistics().catch(() => null),
-          getMyLostItems().catch(() => null),
-          getMyFoundItems().catch(() => null),
-        ]);
+  const fetchBackendData = useCallback(async () => {
+    try {
+      const [statsRes, lostRes, foundRes] = await Promise.all([
+        getDashboardStatistics().catch(() => null),
+        getMyLostItems().catch(() => null),
+        getMyFoundItems().catch(() => null),
+      ]);
 
-        if (statsRes?.statistics) {
-          setLiveStats(statsRes.statistics);
-        }
-
-        const lostItems = lostRes?.lostItems || [];
-        const foundItems = foundRes?.foundItems || [];
-
-        const formatBackendItem = (item, type) => {
-          let statusLabel = "Under Review";
-          if (item.approvalStatus === "pending") {
-            statusLabel = "Pending";
-          } else if (item.approvalStatus === "rejected") {
-            statusLabel = "Rejected";
-          } else if (item.status === "recovered" || item.status === "returned") {
-            statusLabel = "Resolved";
-          } else if (item.approvalStatus === "approved") {
-            statusLabel = "Under Review";
-          }
-
-          const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
-          let imageUrl = "https://via.placeholder.com/150?text=No+Image";
-          if (rawImg) {
-            imageUrl = rawImg.startsWith("http")
-              ? rawImg
-              : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
-          }
-
-          const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
-
-          return {
-            id: item._id,
-            title: item.title,
-            location: `${item.location || ""}, ${item.district || ""}`.replace(/^,\s*/, "").replace(/,\s*$/, ""),
-            reportType: type,
-            reportedOn: item.lostDate || item.foundDate || item.createdAt,
-            description: item.description,
-            status: statusLabel,
-            image: imageUrl,
-            category: item.category || "General",
-            referenceNo: refNum,
-          };
-        };
-
-        const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
-        const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
-        const allFetched = [...formattedLost, ...formattedFound];
-
-        if (allFetched.length > 0) {
-          setReportsList(allFetched);
-        }
-      } catch (err) {
-        console.warn("Could not fetch user backend items:", err);
+      if (statsRes?.statistics) {
+        setLiveStats(statsRes.statistics);
       }
-    };
 
-    fetchBackendData();
+      const lostItems = lostRes?.lostItems || [];
+      const foundItems = foundRes?.foundItems || [];
+
+      const formatBackendItem = (item, type) => {
+        let statusLabel = "Under Review";
+        if (item.status === "recovered" || item.status === "returned" || item.status === "closed") {
+          statusLabel = "Resolved";
+        } else if (item.status === "claimed") {
+          statusLabel = "Claimed";
+        } else if (item.approvalStatus === "rejected") {
+          statusLabel = "Rejected";
+        } else if (item.approvalStatus === "pending") {
+          statusLabel = "Pending";
+        } else if (item.approvalStatus === "approved") {
+          statusLabel = "Under Review";
+        }
+
+        const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
+        let imageUrl = "https://via.placeholder.com/150?text=No+Image";
+        if (rawImg) {
+          imageUrl = rawImg.startsWith("http")
+            ? rawImg
+            : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+        }
+
+        const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
+
+        return {
+          id: item._id,
+          title: item.title,
+          location: item.location || item.district || "Location not specified",
+          district: item.district || "",
+          reportType: type,
+          reportedOn: item.lostDate || item.foundDate || item.createdAt,
+          approvedOn: item.approvalStatus === "approved" ? item.updatedAt : null,
+          resolvedOn: item.status === "recovered" || item.status === "returned" || item.status === "closed" ? item.updatedAt : null,
+          claimedOn: item.status === "claimed" ? item.updatedAt : null,
+          rejectedOn: item.approvalStatus === "rejected" ? item.updatedAt : null,
+          rejectionReason: item.rejectionReason || item.rejectReason || item.rejection_reason || "",
+          time: item.lostTime || item.foundTime || item.time,
+          description: item.description,
+          status: statusLabel,
+          approvalStatus: item.approvalStatus,
+          image: imageUrl,
+          images: item.images || (rawImg ? [rawImg] : []),
+          custodyStatus: item.custodyStatus || "with_me",
+          category: item.category || "General",
+          referenceNo: refNum,
+          rawItem: item,
+        };
+      };
+
+      const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
+      const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
+      const allFetched = [...formattedLost, ...formattedFound];
+
+      if (allFetched.length > 0) {
+        setReportsList(allFetched);
+      }
+    } catch (err) {
+      console.warn("Could not fetch user backend items:", err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchBackendData();
+  }, [fetchBackendData]);
 
   const dynamicReportStats = useMemo(() => {
     const total = liveStats?.totalReports ?? reportsList.length;
@@ -350,7 +367,12 @@ function MyReports() {
         onOpenFoundReport={() => setOpenFoundReport(true)}
       />
 
-      <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
+      <motion.main
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="flex-1 min-w-0 pt-[60px] lg:pt-0"
+      >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 space-y-8">
 
           {/* Header & User Profile Topbar in one aligned row */}
@@ -404,13 +426,52 @@ function MyReports() {
             onPageChange={handlePageChange}
           />
         </div>
-      </div>
+      </motion.main>
 
       {/*report details popup*/}
       {selectedReport && (
         <ReportDetailsModal
           report={selectedReport}
           onClose={() => setSelectedReport(null)}
+          onEdit={(report) => {
+            setSelectedReport(null);
+            setEditingReport(report);
+          }}
+          onDelete={async (reportToDelete) => {
+            const isLost =
+              (reportToDelete.reportType || "").toLowerCase().includes("lost") ||
+              (reportToDelete.type || "").toLowerCase().includes("lost");
+
+            if (isLost) {
+              await deleteLostItem(reportToDelete.id);
+            } else {
+              await deleteFoundItem(reportToDelete.id);
+            }
+
+            setSelectedReport(null);
+            await fetchBackendData();
+          }}
+        />
+      )}
+
+      {/*edit report modal*/}
+      {editingReport && (
+        <ReportModal
+          header={
+            (editingReport.reportType || "").toLowerCase().includes("lost")
+              ? lostHeader
+              : foundHeader
+          }
+          formData={
+            (editingReport.reportType || "").toLowerCase().includes("lost")
+              ? lostForm
+              : foundForm
+          }
+          editItem={editingReport}
+          onClose={() => setEditingReport(null)}
+          onSuccess={() => {
+            fetchBackendData();
+          }}
         />
       )}
 
@@ -420,6 +481,9 @@ function MyReports() {
           header={lostHeader}
           formData={lostForm}
           onClose={() => setOpenLostReport(false)}
+          onSuccess={() => {
+            fetchBackendData();
+          }}
         />
       )}
 
@@ -428,6 +492,9 @@ function MyReports() {
           header={foundHeader}
           formData={foundForm}
           onClose={() => setOpenFoundReport(false)}
+          onSuccess={() => {
+            fetchBackendData();
+          }}
         />
       )}
     </div>

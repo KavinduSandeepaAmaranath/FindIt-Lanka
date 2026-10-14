@@ -53,16 +53,13 @@ const AllItemsTable = ({ items = [], loading, error }) => {
 
               {/* table headers */}
               <thead>
-                <tr className="border-b border-gray-300 bg-gray-50">
-                  {allItemsTableColumns.map((column, index) => (
+                <tr className="border-b border-gray-200 bg-gray-50/75">
+                  {allItemsTableColumns.map((column) => (
                     <th
                       key={column.key}
                       className={`${tableHeaderClass} ${column.align === "center"
                           ? "text-center"
                           : "text-left"
-                        } ${index !== allItemsTableColumns.length - 1
-                          ? "border-r border-gray-300"
-                          : ""
                         }`}
                     >
                       {column.label}
@@ -582,12 +579,12 @@ const ViewItemModal = ({ item, onClose }) => {
 //table styles
 const tableHeaderClass = `
   px-4
-  py-4
+  py-3.5
   text-xs
   font-semibold
-  text-[#2A3B63]
-  underline
-  underline-offset-2
+  uppercase
+  tracking-wider
+  text-gray-500
 `;
 
 export default AllItemsTable;

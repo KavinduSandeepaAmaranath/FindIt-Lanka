@@ -1,6 +1,9 @@
 import LostItem from "../models/LostItem.js";
 import { createAutoMatchNotifications } from "./notificationService.js";
 import FoundItem from "../models/FoundItem.js";
+import Notification from "../models/Notification.js";
+import Claim from "../models/Claim.js";
+import { deleteImageFiles } from "../utils/fileStorage.js";
 
 export const createFoundItem = async ({
     title,
@@ -31,7 +34,41 @@ export const getAllFoundItems = async () => {
 };
 
 export const getMyFoundItems = async (userId) => {
-    return await FoundItem.find({ userId });
+    const items = await FoundItem.find({ userId });
+    try {
+        const rejectedWithoutReason = items.filter(
+            (it) => it.approvalStatus === "rejected" && !it.rejectionReason
+        );
+        if (rejectedWithoutReason.length > 0) {
+            const itemIds = rejectedWithoutReason.map((it) => it._id);
+            const notifs = await Notification.find({
+                userId,
+                type: "rejection",
+                foundItemId: { $in: itemIds },
+            }).sort({ createdAt: -1 });
+
+            const reasonMap = {};
+            for (const notif of notifs) {
+                if (notif.foundItemId && !reasonMap[notif.foundItemId.toString()]) {
+                    if (notif.message && !notif.message.startsWith("Your found item report (")) {
+                        reasonMap[notif.foundItemId.toString()] = notif.message;
+                    }
+                }
+            }
+
+            return items.map((it) => {
+                const doc = it.toObject ? it.toObject() : { ...it };
+                if (doc.approvalStatus === "rejected" && !doc.rejectionReason && reasonMap[doc._id.toString()]) {
+                    doc.rejectionReason = reasonMap[doc._id.toString()];
+                    FoundItem.updateOne({ _id: doc._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                }
+                return doc;
+            });
+        }
+    } catch (err) {
+        console.error("Error looking up rejection reasons for found items:", err);
+    }
+    return items;
 };
 
 export const getFoundItemById = async (itemId) => {
@@ -39,6 +76,21 @@ export const getFoundItemById = async (itemId) => {
 
     if (!foundItem) {
         throw new Error("Found item not found");
+    }
+
+    if (foundItem.approvalStatus === "rejected" && !foundItem.rejectionReason) {
+        try {
+            const notif = await Notification.findOne({
+                type: "rejection",
+                foundItemId: foundItem._id,
+            }).sort({ createdAt: -1 });
+            if (notif && notif.message && !notif.message.startsWith("Your found item report (")) {
+                const doc = foundItem.toObject ? foundItem.toObject() : { ...foundItem };
+                doc.rejectionReason = notif.message;
+                FoundItem.updateOne({ _id: foundItem._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                return doc;
+            }
+        } catch (e) {}
     }
 
     return foundItem;
@@ -54,10 +106,56 @@ export const getSingleFoundItem = async (itemId, userId) => {
         throw new Error("Found item not found");
     }
 
+    if (foundItem.approvalStatus === "rejected" && !foundItem.rejectionReason) {
+        try {
+            const notif = await Notification.findOne({
+                userId,
+                type: "rejection",
+                foundItemId: foundItem._id,
+            }).sort({ createdAt: -1 });
+            if (notif && notif.message && !notif.message.startsWith("Your found item report (")) {
+                const doc = foundItem.toObject ? foundItem.toObject() : { ...foundItem };
+                doc.rejectionReason = notif.message;
+                FoundItem.updateOne({ _id: foundItem._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                return doc;
+            }
+        } catch (e) {}
+    }
+
     return foundItem;
 };
 
 export const updateFoundItem = async (itemId, userId, updateData) => {
+    const existing = await FoundItem.findOne({
+        _id: itemId,
+        userId,
+    });
+
+    if (!existing) {
+        throw new Error("Found item not found or unauthorized");
+    }
+
+    // Check if the report is returned, resolved, or closed
+    if (existing.status === "returned" || existing.status === "closed") {
+        throw new Error("Resolved or returned reports cannot be edited");
+    }
+
+    // Check if there is an approved claim for this found item
+    const activeClaim = await Claim.findOne({
+        foundItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be edited");
+    }
+
+    // If item was rejected or pending, reset approvalStatus to "pending" and clear rejectionReason
+    const wasRejected = existing.approvalStatus === "rejected";
+    if (wasRejected || existing.approvalStatus === "pending") {
+        updateData.approvalStatus = "pending";
+        updateData.rejectionReason = "";
+    }
+
     const foundItem = await FoundItem.findOneAndUpdate({
         _id: itemId,
         userId,            
@@ -68,24 +166,48 @@ export const updateFoundItem = async (itemId, userId, updateData) => {
         runValidators: true,
     });
 
-    if (!foundItem) {
-        throw new Error("Found item not found");
+    if (foundItem) {
+        foundItem._wasRejected = wasRejected;
+    }
+
+    // If new images were provided, delete the old image files
+    if (updateData.images && updateData.images.length > 0 && existing.images && existing.images.length > 0) {
+        await deleteImageFiles(existing.images);
     }
 
     return foundItem;
 };
 
 export const deleteFoundItem = async (itemId, userId) => {
-    const foundItem = await FoundItem.findOneAndDelete({
+    const existing = await FoundItem.findOne({
         _id: itemId,
         userId,
     });
 
-    if (!foundItem) {
-        throw new Error("Found item not found");
+    if (!existing) {
+        throw new Error("Found item not found or unauthorized");
     }
 
-    return foundItem;
+    if (existing.status === "returned" || existing.status === "closed") {
+        throw new Error("Resolved or returned reports cannot be deleted");
+    }
+
+    const activeClaim = await Claim.findOne({
+        foundItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be deleted");
+    }
+
+    await FoundItem.findByIdAndDelete(itemId);
+
+    // Delete image files from disk
+    if (existing.images && existing.images.length > 0) {
+        await deleteImageFiles(existing.images);
+    }
+
+    return existing;
 };
 
 export const markFoundItemAsReturned = async (itemId, userId) => {

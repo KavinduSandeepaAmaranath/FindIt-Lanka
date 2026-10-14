@@ -9,6 +9,7 @@ import {
     updateLostItem,
     getRecentLostItems, 
 } from "../services/lostItemService.js";
+import { notifyAdminNewReport, notifyAdminReportUpdate } from "../services/notificationService.js";
 
 export const create = async (req, res) => {
     try {
@@ -21,6 +22,9 @@ export const create = async (req, res) => {
             images: imagePaths,
             userId: req.user.userId,
         });
+
+        // Notify admins about new report
+        await notifyAdminNewReport(lostItem, "lost");
 
         res.status(201).json({
             message: "Lost item created successfully",
@@ -100,11 +104,24 @@ export const getSingleLostItemController = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
+        const updateData = { ...req.body };
+
+        if (req.files && req.files.length > 0) {
+            updateData.images = req.files.map((file) => `images/${file.filename}`);
+        }
+
         const item = await updateLostItem(
             req.params.id,
             req.user.userId,
-            req.body,
+            updateData,
         );
+
+        // Notify admins about the updated or resubmitted report (safely non-blocking)
+        try {
+            await notifyAdminReportUpdate(item, "lost");
+        } catch (notifErr) {
+            console.error("Failed to notify admin on report update:", notifErr);
+        }
 
         res.status(200).json({
             success: true,

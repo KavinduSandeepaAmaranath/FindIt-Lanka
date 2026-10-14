@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import HelpHeader from "../components/help/HelpHeader";
 import HelpCategoryGrid from "../components/help/HelpCategoryGrid";
@@ -75,7 +76,12 @@ function Help() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
+      <motion.main
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="flex-1 min-w-0 pt-[60px] lg:pt-0"
+      >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6 sm:space-y-8">
           {/* Page Top Header */}
           <HelpHeader user={undefined} />
@@ -97,7 +103,7 @@ function Help() {
             onContactSupport={() => setOpenContactForm(true)}
           />
         </div>
-      </div>
+      </motion.main>
 
       <GettingStartedModal
         isOpen={openGettingStarted}

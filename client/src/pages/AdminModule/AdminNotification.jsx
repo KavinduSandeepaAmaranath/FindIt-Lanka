@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
 import AdminNavBar from "../../components/AdminDashboard/AdminNavBar";
@@ -11,33 +11,53 @@ import NotificationList from "../../components/AdminDashboard/AdminNotification/
 import Footer from "../../components/Footer";
 
 import {
-  notificationListData,
-} from "../../data/AdminModuleData/AdminNotification";
+  fetchAdminNotifications,
+  markAllAdminNotificationsAsReadApi,
+} from "../../services/notificationService";
 
 const AdminNotification = () => {
-  const [isOpen, setIsOpen] =
-    useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [searchValue, setSearchValue] =
-    useState("");
+  const loadNotifications = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAdminNotifications();
+      if (data && data.success && Array.isArray(data.notifications)) {
+        setNotifications(data.notifications);
+      } else {
+        setNotifications([]);
+      }
+    } catch (err) {
+      console.error("Error loading admin notifications:", err);
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const [activeFilter, setActiveFilter] =
-    useState("All");
+  useEffect(() => {
+    loadNotifications();
+  }, [loadNotifications]);
 
-  const [notifications, setNotifications] =
-    useState(notificationListData);
-
-  /* mark all as */
-
-  const handleMarkAllRead = () => {
+  /* Mark all as read */
+  const handleMarkAllRead = async () => {
     setNotifications((previous) =>
-      previous.map(
-        (notification) => ({
-          ...notification,
-          read: true,
-        })
-      )
+      previous.map((notification) => ({
+        ...notification,
+        read: true,
+        isRead: true,
+      }))
     );
+
+    try {
+      await markAllAdminNotificationsAsReadApi();
+    } catch (err) {
+      console.error("Failed to mark all admin notifications as read:", err);
+    }
   };
 
   return (
@@ -49,20 +69,15 @@ const AdminNotification = () => {
         bg-gray-50
       "
     >
-
-      {/*main area*/}
-
+      {/* Main area */}
       <div className="flex flex-1">
-
-        {/*nav*/}
-
+        {/* Nav */}
         <AdminNavBar
           isOpen={isOpen}
           setIsOpen={setIsOpen}
         />
 
-        {/*content*/}
-
+        {/* Content */}
         <motion.main
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,33 +90,28 @@ const AdminNotification = () => {
             lg:p-8
           "
         >
-
           {/* Header */}
           <HeaderSec
             setIsOpen={setIsOpen}
-            onMarkAllRead={
-              handleMarkAllRead
-            }
+            onMarkAllRead={handleMarkAllRead}
           />
 
           {/* Cards */}
           <section className="mt-6">
-            <NotificationCards />
+            <NotificationCards
+              notifications={notifications}
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+            />
           </section>
 
           {/* Filters */}
           <section className="mt-8">
             <NotificationFilters
               searchValue={searchValue}
-              setSearchValue={
-                setSearchValue
-              }
-              activeFilter={
-                activeFilter
-              }
-              setActiveFilter={
-                setActiveFilter
-              }
+              setSearchValue={setSearchValue}
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
             />
           </section>
 
@@ -109,26 +119,17 @@ const AdminNotification = () => {
           <section className="mt-8">
             <NotificationList
               searchValue={searchValue}
-              activeFilter={
-                activeFilter
-              }
-              notifications={
-                notifications
-              }
-              setNotifications={
-                setNotifications
-              }
+              activeFilter={activeFilter}
+              notifications={notifications}
+              setNotifications={setNotifications}
+              loading={loading}
             />
           </section>
-
         </motion.main>
-
       </div>
 
-      {/*footer*/}
-
+      {/* Footer */}
       <Footer />
-
     </div>
   );
 };

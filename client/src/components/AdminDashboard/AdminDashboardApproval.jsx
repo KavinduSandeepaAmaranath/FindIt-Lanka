@@ -1,9 +1,9 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import fallbackImage from "../../assets/images/UdbFallbackImage.avif";
 import { useNavigate } from "react-router-dom";
 import { FiCheckCircle, FiXCircle, FiEye, FiX } from "react-icons/fi";
 
-const tableHeaderClass = "px-4 py-4 text-xs font-semibold text-[#2A3B63] underline underline-offset-2";
+const tableHeaderClass = "px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500";
 
 export default function ApprovalTable({ 
   approvals, 
@@ -193,14 +193,14 @@ export default function ApprovalTable({
         <div className="w-full overflow-x-auto">
           <table className="w-full min-w-[1050px] border-collapse">
             <thead>
-              <tr className="border-b border-gray-300 bg-gray-50">
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>Id</th>
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-left`}>Item Title</th>
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>Type</th>
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>Category</th>
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>Submitted By</th>
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>Date</th>
-                <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>Status</th>
+              <tr className="border-b border-gray-200 bg-gray-50/75">
+                <th className={`${tableHeaderClass} text-center`}>Id</th>
+                <th className={`${tableHeaderClass} text-left`}>Item Title</th>
+                <th className={`${tableHeaderClass} text-center`}>Type</th>
+                <th className={`${tableHeaderClass} text-center`}>Category</th>
+                <th className={`${tableHeaderClass} text-center`}>Submitted By</th>
+                <th className={`${tableHeaderClass} text-center`}>Date</th>
+                <th className={`${tableHeaderClass} text-center`}>Status</th>
                 <th className={`${tableHeaderClass} text-center`}>Action</th>
               </tr>
             </thead>

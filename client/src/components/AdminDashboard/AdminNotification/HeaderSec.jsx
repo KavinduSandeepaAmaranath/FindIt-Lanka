@@ -13,6 +13,23 @@ const HeaderSec = ({
     profile,
   } = notificationHeaderData;
 
+  let activeProfile = profile;
+  try {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      const fullName = [parsed.firstName, parsed.lastName].filter(Boolean).join(" ") || parsed.name;
+      if (fullName) {
+        activeProfile = {
+          name: fullName,
+          role: parsed.role ? parsed.role.charAt(0).toUpperCase() + parsed.role.slice(1) : profile.role,
+        };
+      }
+    }
+  } catch (e) {
+    // fallback to default profile
+  }
+
   const NotificationIcon =
     notificationHeaderIcons.notification;
 
@@ -196,7 +213,7 @@ const HeaderSec = ({
                   text-[#2A3B63]
                 "
               >
-                {profile.name}
+                {activeProfile.name}
               </p>
 
               <p
@@ -206,7 +223,7 @@ const HeaderSec = ({
                   text-[#64748B]
                 "
               >
-                {profile.role}
+                {activeProfile.role}
               </p>
             </div>
 
