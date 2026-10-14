@@ -3,6 +3,7 @@ import { createAutoMatchNotifications } from "./notificationService.js";
 import FoundItem from "../models/FoundItem.js";
 import Notification from "../models/Notification.js";
 import Claim from "../models/Claim.js";
+import { deleteImageFiles } from "../utils/fileStorage.js";
 
 export const createFoundItem = async ({
     title,
@@ -169,6 +170,11 @@ export const updateFoundItem = async (itemId, userId, updateData) => {
         foundItem._wasRejected = wasRejected;
     }
 
+    // If new images were provided, delete the old image files
+    if (updateData.images && updateData.images.length > 0 && existing.images && existing.images.length > 0) {
+        await deleteImageFiles(existing.images);
+    }
+
     return foundItem;
 };
 
@@ -195,6 +201,12 @@ export const deleteFoundItem = async (itemId, userId) => {
     }
 
     await FoundItem.findByIdAndDelete(itemId);
+
+    // Delete image files from disk
+    if (existing.images && existing.images.length > 0) {
+        await deleteImageFiles(existing.images);
+    }
+
     return existing;
 };
 

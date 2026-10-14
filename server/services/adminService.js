@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import LostItem from "../models/LostItem.js";
 import FoundItem from "../models/FoundItem.js";
 import Claim from "../models/Claim.js";
+import { deleteImageFiles } from "../utils/fileStorage.js";
 
 /* Dashboard */
 export const getDashboardStatistics = async () => {
@@ -404,6 +405,10 @@ export const deleteLostItemByAdmin = async (itemId) => {
         throw new Error("Lost item not found");
     }
 
+    if (lostItem.images && lostItem.images.length > 0) {
+        await deleteImageFiles(lostItem.images);
+    }
+
     return lostItem;
 };
 
@@ -514,6 +519,10 @@ export const deleteFoundItemByAdmin = async (itemId) => {
 
     if (!foundItem) {
         throw new Error("Found item not found");
+    }
+
+    if (foundItem.images && foundItem.images.length > 0) {
+        await deleteImageFiles(foundItem.images);
     }
 
     return foundItem;
