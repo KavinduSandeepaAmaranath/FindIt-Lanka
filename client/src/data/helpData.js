@@ -141,7 +141,7 @@ export const faqList = [
       "Add an image (if available) and submit the report.",
     ],
     answer:
-      "To report a lost item, click the 'Add Lost Reports' button in the sidebar or dashboard. Fill out the report form with item details including the item name, category, date and time lost, last known location, and upload clear photos. Include unique distinguishing features like scratches, engravings, or stickers to help match with found items.",
+      "To report a lost item, click the 'Report Lost Item' button in the sidebar or dashboard. Fill out the report form with item details including the item name, category, date and time lost, last known location, and upload clear photos. Include unique distinguishing features like scratches, engravings, or stickers to help match with found items.",
   },
   {
     id: "faq-2",
@@ -187,12 +187,12 @@ export const faqList = [
     question: "What should I do if I find someone else's item?",
     subtitle: "To report a found item, follow these steps:",
     steps: [
-      "Go to Add Found Reports in the sidebar.",
+      "Go to Report Found Item in the sidebar.",
       "Fill in the item details, location, date, and condition.",
       "Upload photos of the item without exposing sensitive info.",
       "Keep the item safe until a verified claim is submitted.",
     ],
     answer:
-      "Click 'Add Found Reports' from the sidebar and provide the location and condition of the found item. Please do not publish sensitive identifiers (like passport numbers or bank card security codes) in public descriptions. Store the item safely until a verified claim is confirmed or hand it to local police / FindIt Lanka partners.",
+      "Click 'Report Found Item' from the sidebar and provide the location and condition of the found item. Please do not publish sensitive identifiers (like passport numbers or bank card security codes) in public descriptions. Store the item safely until a verified claim is confirmed or hand it to local police / FindIt Lanka partners.",
   },
 ];

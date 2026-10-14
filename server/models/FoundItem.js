@@ -87,6 +87,11 @@ const foundItemSchema = new mongoose.Schema({
         enum: ["pending", "approved", "rejected"],
         default: "pending",
     },
+    rejectionReason: {
+        type: String,
+        default: "",
+        trim: true,
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

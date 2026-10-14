@@ -47,12 +47,18 @@ export const login = async (email, password) => {
 };
 
 export const logout = async () => {
-    const response = await api.post("/auth/logout");
-    
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    
-    return response.data;
+    try {
+        const response = await api.post("/auth/logout");
+        return response.data;
+    } catch (error) {
+        console.warn("Logout API call failed or already invalidated:", error?.message);
+        return { success: true };
+    } finally {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+    }
 };
 
 export const sendResetOTP = async (email) => {

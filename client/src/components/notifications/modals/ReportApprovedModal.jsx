@@ -1,21 +1,8 @@
 import { FiFileText, FiInfo, FiX, FiEye } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import fallbackImg from "../../../assets/images/UdbFallbackImage.avif";
-import handbagImg from "../../../assets/images/LpLeatherHandbag.avif";
-import iphoneImg from "../../../assets/images/LpIphone1.avif";
-import watchImg from "../../../assets/images/LpWristWatch1.avif";
-import petImg from "../../../assets/images/LpRetrieverDog.avif";
-import keyImg from "../../../assets/images/LpCarKey.webp";
 
-const getCategoryFallback = (category) => {
-  const cat = (category || "").toLowerCase();
-  if (cat.includes("bag") || cat.includes("wallet")) return handbagImg;
-  if (cat.includes("electronic") || cat.includes("phone")) return iphoneImg;
-  if (cat.includes("jewel") || cat.includes("watch")) return watchImg;
-  if (cat.includes("pet") || cat.includes("animal")) return petImg;
-  if (cat.includes("vehicle") || cat.includes("key")) return keyImg;
-  return fallbackImg;
-};
+const getCategoryFallback = () => fallbackImg;
 
 function ReportApprovedModal({ isOpen, onClose, notification }) {
   if (!isOpen) return null;
@@ -59,11 +46,13 @@ function ReportApprovedModal({ isOpen, onClose, notification }) {
   const getItemImage = () => {
     if (item?.images && item.images.length > 0 && item.images[0]) {
       const img = item.images[0];
-      if (img.startsWith("http")) return img;
-      const cleanPath = img.startsWith("/") ? img.substring(1) : img;
-      return `http://localhost:5000/${cleanPath}`;
+      if (typeof img === "string" && img.trim()) {
+        if (img.startsWith("http")) return img;
+        const cleanPath = img.startsWith("/") ? img.substring(1) : img;
+        return `http://localhost:5000/${cleanPath}`;
+      }
     }
-    return getCategoryFallback(itemCategory);
+    return fallbackImg;
   };
 
   return (
@@ -89,9 +78,10 @@ function ReportApprovedModal({ isOpen, onClose, notification }) {
           <img
             src={getItemImage()}
             alt={itemTitle}
-            className="w-16 h-16 object-cover rounded-lg border border-slate-200 shrink-0"
+            className="w-16 h-16 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-50"
             onError={(e) => {
-              e.target.src = getCategoryFallback(itemCategory);
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = fallbackImg;
             }}
           />
           <div className="space-y-0.5 min-w-0">

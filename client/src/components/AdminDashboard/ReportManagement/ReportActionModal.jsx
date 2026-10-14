@@ -45,6 +45,14 @@ const ReportActionModal = ({
       return;
     }
 
+    if (action === "reject") {
+      onConfirm({
+        ...report,
+        rejectionReason: rejectionReason.trim(),
+      });
+      return;
+    }
+
     onConfirm(report);
   };
 

@@ -7,6 +7,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 import { generateAccessToken } from "../utils/generateAccessToken.js";
 import { generateRefreshToken } from "../utils/generateRefreshToken.js";
+import { notifyAdminNewUser } from "./notificationService.js";
 
 export const startRegistration = async ({
     name,
@@ -108,6 +109,12 @@ export const verifyRegistrationOTP = async (email, otp) => {
     });
     
     await PendingRegistration.deleteOne({ email });
+
+    try {
+        await notifyAdminNewUser(user);
+    } catch (adminNotifErr) {
+        console.error("Error creating admin user notification:", adminNotifErr);
+    }
 
     return {
         message: "Account created successfully",

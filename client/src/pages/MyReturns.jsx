@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { motion } from "framer-motion";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import MyReturnsHeader from "../components/dashboard/myReturns/MyReturnsHeader";
@@ -367,7 +368,12 @@ function MyReturns() {
         onOpenFoundReport={() => setOpenFoundReport(true)}
       />
 
-      <div className="flex-1 min-w-0 pt-[60px] lg:pt-0">
+      <motion.main
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="flex-1 min-w-0 pt-[60px] lg:pt-0"
+      >
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8 space-y-7">
           {/* Top User Bar */}
           <MyReturnsUserBar user={undefined} />
@@ -425,7 +431,7 @@ function MyReturns() {
             />
           </div>
         </div>
-      </div>
+      </motion.main>
 
       {/* Toast Alert */}
       {toastMessage && (

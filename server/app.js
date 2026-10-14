@@ -8,12 +8,13 @@ import claimRoutes from "./routes/claimRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import userDashboardRoutes from "./routes/userDashboardRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import { IMAGE_STORAGE_DIR } from "./utils/fileStorage.js";
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/images", express.static("D:/FindItLankaImages"));
+app.use("/images", express.static(IMAGE_STORAGE_DIR));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/lost", lostItemRoutes);

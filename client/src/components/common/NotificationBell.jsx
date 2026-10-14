@@ -25,8 +25,10 @@ function NotificationBell({
       <FaBell className={`${iconClassName} text-yellow-500 drop-shadow-sm`} />
       {hasUnread && (
         <span
-          className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white pointer-events-none"
-        />
+          className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white pointer-events-none shadow-xs"
+        >
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
       )}
     </Link>
   );

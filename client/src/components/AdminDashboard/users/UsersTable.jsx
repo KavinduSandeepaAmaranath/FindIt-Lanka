@@ -4,7 +4,7 @@ import SuspendUserModal from "./SuspendUserModal";
 import Pagination from "../Pagination";
 import { Eye, ShieldOff, UserCheck, User } from "lucide-react";
 
-const tableHeaderClass = "px-4 py-4 text-xs font-semibold text-[#2A3B63] underline underline-offset-2";
+const tableHeaderClass = "px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500";
 
 /* Fallback Profile Avatar Component */
 const UserAvatar = ({ image, name }) => {
@@ -61,35 +61,35 @@ const UsersTable = ({ users = [], onUserStatusChange }) => {
             <table className="w-full min-w-[1100px] border-collapse">
               {/* Table Header */}
               <thead>
-                <tr className="border-b border-gray-300 bg-gray-50">
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>
+                <tr className="border-b border-gray-200 bg-gray-50/75">
+                  <th className={`${tableHeaderClass} text-center`}>
                     Profile
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-left`}>
+                  <th className={`${tableHeaderClass} text-left`}>
                     Full Name
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-left`}>
+                  <th className={`${tableHeaderClass} text-left`}>
                     Email
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-left`}>
+                  <th className={`${tableHeaderClass} text-left`}>
                     Phone
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-left`}>
+                  <th className={`${tableHeaderClass} text-left`}>
                     District
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-left`}>
+                  <th className={`${tableHeaderClass} text-left`}>
                     Registered
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>
+                  <th className={`${tableHeaderClass} text-center`}>
                     Lost
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>
+                  <th className={`${tableHeaderClass} text-center`}>
                     Found
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>
+                  <th className={`${tableHeaderClass} text-center`}>
                     Claims
                   </th>
-                  <th className={`${tableHeaderClass} border-r border-gray-300 text-center`}>
+                  <th className={`${tableHeaderClass} text-center`}>
                     Status
                   </th>
                   <th className={`${tableHeaderClass} text-center`}>

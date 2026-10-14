@@ -52,7 +52,7 @@ const RecentActivities = () => {
   };
 
   const handleViewAll = () => {
-    navigate("/admin-notifications");
+    navigate("/admin-notification");
   };
 
   return (

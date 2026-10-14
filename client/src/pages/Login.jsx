@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FaEnvelope,
   FaLock,
@@ -17,6 +17,8 @@ import LoginBgImage from "../assets/images/LoginRegBackground.png";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isSessionExpired = new URLSearchParams(location.search).get("expired") === "true";
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -187,6 +189,18 @@ const Login = () => {
               Sign in to your FindIt Lanka account
             </p>
           </div>
+
+          {/* Session Expired Notice */}
+          {isSessionExpired && (
+            <div className="mb-3 flex items-center gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-800 shadow-xs">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-200 font-bold text-amber-900">
+                !
+              </span>
+              <p className="font-medium">
+                Your session has expired. Please sign in again to continue.
+              </p>
+            </div>
+          )}
 
           {/*  Form fields  */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:gap-2.5">

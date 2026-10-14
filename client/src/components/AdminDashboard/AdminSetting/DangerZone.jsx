@@ -1,15 +1,43 @@
 import { useState } from "react";
-
 import {
   dangerZoneData,
 } from "../../../data/AdminModuleData/AdminSetting";
+import { clearAllAdminNotificationsApi } from "../../../services/notificationService";
+import { useNotifications } from "../../../context/NotificationContext";
 
 const DangerZone = () => {
-  const [showConfirm, setShowConfirm] =
-    useState(null);
+  const [showConfirm, setShowConfirm] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(null);
+  const { setNotifications, refreshNotifications } = useNotifications();
 
-  const MainIcon =
-    dangerZoneData.mainIcon;
+  const MainIcon = dangerZoneData.mainIcon;
+
+  const handleConfirmAction = async () => {
+    if (showConfirm === "clear") {
+      try {
+        setIsProcessing(true);
+        const res = await clearAllAdminNotificationsApi();
+        setNotifications([]);
+        if (refreshNotifications) refreshNotifications();
+        setStatusMessage({
+          type: "success",
+          text: `Successfully cleared ${res.deletedCount ?? "all"} admin notification(s) from the database.`,
+        });
+      } catch (err) {
+        console.error("Failed to clear admin notifications:", err);
+        setStatusMessage({
+          type: "error",
+          text: err?.response?.data?.message || "Failed to clear admin notifications. Please try again.",
+        });
+      } finally {
+        setIsProcessing(false);
+        setShowConfirm(null);
+      }
+    } else {
+      setShowConfirm(null);
+    }
+  };
 
   return (
     <>
@@ -71,6 +99,26 @@ const DangerZone = () => {
           </div>
 
         </div>
+
+        {/* Status Feedback Message */}
+        {statusMessage && (
+          <div
+            className={`mt-4 flex items-center justify-between rounded-xl p-3.5 text-xs sm:text-sm font-medium ${
+              statusMessage.type === "success"
+                ? "border border-emerald-300 bg-emerald-50 text-emerald-800"
+                : "border border-rose-300 bg-rose-50 text-rose-800"
+            }`}
+          >
+            <span>{statusMessage.text}</span>
+            <button
+              type="button"
+              onClick={() => setStatusMessage(null)}
+              className="ml-3 font-bold text-xs underline cursor-pointer"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
 
         {/* Actions */}
         <div
@@ -234,7 +282,9 @@ const DangerZone = () => {
                 text-[#2A3B63]
               "
             >
-              Are you sure?
+              {showConfirm === "clear"
+                ? "Clear All Admin Notifications?"
+                : "Are you sure?"}
             </h3>
 
             <p
@@ -246,9 +296,9 @@ const DangerZone = () => {
                 text-[#64748B]
               "
             >
-              This action can affect the
-              FindIt Lanka platform. Please
-              confirm before continuing.
+              {showConfirm === "clear"
+                ? "This will permanently remove all admin notifications from the database. This action cannot be undone."
+                : "This action can affect the FindIt Lanka platform. Please confirm before continuing."}
             </p>
 
             <div
@@ -264,6 +314,7 @@ const DangerZone = () => {
 
               <button
                 type="button"
+                disabled={isProcessing}
                 onClick={() =>
                   setShowConfirm(null)
                 }
@@ -278,6 +329,7 @@ const DangerZone = () => {
                   text-[#2A3B63]
                   transition
                   hover:bg-gray-50
+                  disabled:opacity-50
                 "
               >
                 Cancel
@@ -285,9 +337,8 @@ const DangerZone = () => {
 
               <button
                 type="button"
-                onClick={() =>
-                  setShowConfirm(null)
-                }
+                disabled={isProcessing}
+                onClick={handleConfirmAction}
                 className="
                   rounded-lg
                   bg-red-500
@@ -298,9 +349,10 @@ const DangerZone = () => {
                   text-white
                   transition
                   hover:bg-red-600
+                  disabled:opacity-50
                 "
               >
-                Confirm
+                {isProcessing ? "Clearing..." : "Confirm"}
               </button>
 
             </div>
