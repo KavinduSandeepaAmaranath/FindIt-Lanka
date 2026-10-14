@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
+import { deleteLostItem } from "../services/lostItemService.js";
+import { deleteFoundItem } from "../services/foundItemService.js";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
 import DashboardTopbar from "../components/dashboard/DashboardTopbar";
@@ -80,12 +82,14 @@ function MyReports() {
 
       const formatBackendItem = (item, type) => {
         let statusLabel = "Under Review";
-        if (item.approvalStatus === "pending") {
-          statusLabel = "Pending";
+        if (item.status === "recovered" || item.status === "returned" || item.status === "closed") {
+          statusLabel = "Resolved";
+        } else if (item.status === "claimed") {
+          statusLabel = "Claimed";
         } else if (item.approvalStatus === "rejected") {
           statusLabel = "Rejected";
-        } else if (item.status === "recovered" || item.status === "returned") {
-          statusLabel = "Resolved";
+        } else if (item.approvalStatus === "pending") {
+          statusLabel = "Pending";
         } else if (item.approvalStatus === "approved") {
           statusLabel = "Under Review";
         }
@@ -108,7 +112,8 @@ function MyReports() {
           reportType: type,
           reportedOn: item.lostDate || item.foundDate || item.createdAt,
           approvedOn: item.approvalStatus === "approved" ? item.updatedAt : null,
-          resolvedOn: item.status === "recovered" || item.status === "returned" ? item.updatedAt : null,
+          resolvedOn: item.status === "recovered" || item.status === "returned" || item.status === "closed" ? item.updatedAt : null,
+          claimedOn: item.status === "claimed" ? item.updatedAt : null,
           rejectedOn: item.approvalStatus === "rejected" ? item.updatedAt : null,
           rejectionReason: item.rejectionReason || item.rejectReason || item.rejection_reason || "",
           time: item.lostTime || item.foundTime || item.time,
@@ -431,6 +436,20 @@ function MyReports() {
           onEdit={(report) => {
             setSelectedReport(null);
             setEditingReport(report);
+          }}
+          onDelete={async (reportToDelete) => {
+            const isLost =
+              (reportToDelete.reportType || "").toLowerCase().includes("lost") ||
+              (reportToDelete.type || "").toLowerCase().includes("lost");
+
+            if (isLost) {
+              await deleteLostItem(reportToDelete.id);
+            } else {
+              await deleteFoundItem(reportToDelete.id);
+            }
+
+            setSelectedReport(null);
+            await fetchBackendData();
           }}
         />
       )}

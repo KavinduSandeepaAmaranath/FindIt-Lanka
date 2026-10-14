@@ -15,8 +15,23 @@ const ReportForm = ({ formData, editItem, onClose, onSuccess }) => {
   const navigate = useNavigate();
 
   const isEdit = Boolean(editItem);
+  const rawStatus = (editItem?.status || "").toLowerCase();
+  const isResolvedOrClaimed = Boolean(
+    editItem &&
+      (rawStatus.includes("resolve") ||
+        rawStatus.includes("recover") ||
+        rawStatus.includes("return") ||
+        rawStatus.includes("close") ||
+        rawStatus.includes("claim") ||
+        editItem.status === "recovered" ||
+        editItem.status === "returned" ||
+        editItem.status === "closed" ||
+        editItem.status === "claimed")
+  );
+
   const isRejected = Boolean(
     editItem &&
+      !isResolvedOrClaimed &&
       (editItem.status?.toLowerCase().includes("reject") ||
         editItem.approvalStatus === "rejected")
   );
@@ -216,6 +231,11 @@ const ReportForm = ({ formData, editItem, onClose, onSuccess }) => {
       return;
     }
 
+    if (isResolvedOrClaimed) {
+      setSubmitError("Resolved or claimed reports cannot be modified.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -348,6 +368,23 @@ const ReportForm = ({ formData, editItem, onClose, onSuccess }) => {
 
   return (
     <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 lg:p-10 transition-all">
+      {/* Locked Alert Notice if item is resolved or claimed */}
+      {isResolvedOrClaimed && (
+        <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 animate-in fade-in">
+          <div className="p-2 bg-amber-100 rounded-xl text-amber-700 shrink-0 mt-0.5">
+            <FiAlertCircle className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <h4 className="text-sm font-bold text-amber-900">
+              Report Locked (Read-Only)
+            </h4>
+            <p className="text-xs sm:text-sm text-amber-800 mt-1 leading-relaxed">
+              This report has been marked as resolved or claimed. To protect historical records and prevent dispute, resolved and claimed items cannot be modified.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Rejection Alert Notice if in Resubmit mode */}
       {isRejected && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-900 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 animate-in fade-in">
@@ -447,7 +484,9 @@ const ReportForm = ({ formData, editItem, onClose, onSuccess }) => {
         onCancel={handleCancel}
         isSubmitting={isSubmitting}
         submitLabel={
-          isEdit
+          isResolvedOrClaimed
+            ? "Report Locked"
+            : isEdit
             ? isRejected
               ? "Resubmit for Review"
               : "Save Changes"

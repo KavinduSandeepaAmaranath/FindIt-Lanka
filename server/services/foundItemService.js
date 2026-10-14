@@ -2,6 +2,7 @@ import LostItem from "../models/LostItem.js";
 import { createAutoMatchNotifications } from "./notificationService.js";
 import FoundItem from "../models/FoundItem.js";
 import Notification from "../models/Notification.js";
+import Claim from "../models/Claim.js";
 
 export const createFoundItem = async ({
     title,
@@ -133,6 +134,20 @@ export const updateFoundItem = async (itemId, userId, updateData) => {
         throw new Error("Found item not found or unauthorized");
     }
 
+    // Check if the report is returned, resolved, or closed
+    if (existing.status === "returned" || existing.status === "closed") {
+        throw new Error("Resolved or returned reports cannot be edited");
+    }
+
+    // Check if there is an approved claim for this found item
+    const activeClaim = await Claim.findOne({
+        foundItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be edited");
+    }
+
     // If item was rejected or pending, reset approvalStatus to "pending" and clear rejectionReason
     const wasRejected = existing.approvalStatus === "rejected";
     if (wasRejected || existing.approvalStatus === "pending") {
@@ -158,16 +173,29 @@ export const updateFoundItem = async (itemId, userId, updateData) => {
 };
 
 export const deleteFoundItem = async (itemId, userId) => {
-    const foundItem = await FoundItem.findOneAndDelete({
+    const existing = await FoundItem.findOne({
         _id: itemId,
         userId,
     });
 
-    if (!foundItem) {
-        throw new Error("Found item not found");
+    if (!existing) {
+        throw new Error("Found item not found or unauthorized");
     }
 
-    return foundItem;
+    if (existing.status === "returned" || existing.status === "closed") {
+        throw new Error("Resolved or returned reports cannot be deleted");
+    }
+
+    const activeClaim = await Claim.findOne({
+        foundItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be deleted");
+    }
+
+    await FoundItem.findByIdAndDelete(itemId);
+    return existing;
 };
 
 export const markFoundItemAsReturned = async (itemId, userId) => {

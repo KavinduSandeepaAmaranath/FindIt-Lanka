@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiX,
@@ -6,23 +7,40 @@ import {
   FiThumbsUp,
   FiAlertCircle,
   FiEdit3,
+  FiTrash2,
 } from "react-icons/fi";
 import fallbackImage from "../../../assets/images/UdbFallbackImage.avif";
 
-function ReportDetailsModal({ report, onClose, onEdit }) {
+function ReportDetailsModal({ report, onClose, onEdit, onDelete }) {
   const navigate = useNavigate();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   if (!report) return null;
 
   // Determine normalized status
   const rawStatus = (report.status || "Pending").toLowerCase().trim();
+  const rawApproval = (report.approvalStatus || "").toLowerCase().trim();
+
   let statusKey = "pending";
-  if (rawStatus.includes("active") || rawStatus.includes("approved")) {
-    statusKey = "active";
-  } else if (rawStatus.includes("resolve") || rawStatus.includes("recover")) {
+  if (rawStatus.includes("claim")) {
+    statusKey = "claimed";
+  } else if (
+    rawStatus.includes("resolve") ||
+    rawStatus.includes("recover") ||
+    rawStatus.includes("return") ||
+    rawStatus.includes("close")
+  ) {
     statusKey = "resolved";
-  } else if (rawStatus.includes("reject")) {
+  } else if (rawStatus.includes("reject") || rawApproval === "rejected") {
     statusKey = "rejected";
+  } else if (
+    rawStatus.includes("active") ||
+    rawStatus.includes("approve") ||
+    rawApproval === "approved"
+  ) {
+    statusKey = "active";
   } else if (rawStatus.includes("review")) {
     statusKey = "under_review";
   } else {
@@ -78,14 +96,38 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
     districtText = parts.slice(1).join(",").trim();
   }
 
-  // Handle edit action
+  // Handle edit action (only permitted for pending and rejected items)
   const handleEditClick = () => {
+    if (
+      statusKey === "resolved" ||
+      statusKey === "claimed" ||
+      statusKey === "active" ||
+      statusKey === "under_review"
+    ) {
+      return;
+    }
     onClose();
     if (onEdit) {
       onEdit(report);
     } else {
       const targetRoute = isLost ? "/report-lost-item" : "/report-found-item";
       navigate(targetRoute, { state: { editReport: report } });
+    }
+  };
+
+  // Handle delete action
+  const handleConfirmDelete = async () => {
+    if (!onDelete) return;
+    try {
+      setIsDeleting(true);
+      setDeleteError(null);
+      await onDelete(report);
+    } catch (err) {
+      console.error("Delete failed:", err);
+      setDeleteError(
+        err.response?.data?.message || err.message || "Failed to delete report."
+      );
+      setIsDeleting(false);
     }
   };
 
@@ -133,6 +175,13 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
               <span className="bg-[#059669] text-white text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1.5 shadow-xs">
                 <FiCheck className="w-3.5 h-3.5 stroke-[3]" />
                 <span>Resolved</span>
+              </span>
+            )}
+
+            {statusKey === "claimed" && (
+              <span className="bg-[#0284c7] text-white text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1.5 shadow-xs">
+                <FiCheck className="w-3.5 h-3.5 stroke-[3]" />
+                <span>Claimed</span>
               </span>
             )}
 
@@ -212,6 +261,13 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
             </div>
           )}
 
+          {statusKey === "claimed" && (
+            <div>
+              Claimed on :{" "}
+              {formatDisplayDate(report.claimedOn || report.updatedAt || report.reportedOn)}
+            </div>
+          )}
+
           {statusKey === "rejected" && (
             <div>
               Reject On :{" "}
@@ -249,11 +305,22 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
 
             {statusKey === "resolved" && (
               <>
-                <p className="font-bold text-xs text-[#0369a1]">
-                  Resolved
+                <p className="font-bold text-xs uppercase tracking-wide text-[#0369a1]">
+                  Resolved / Case Closed
                 </p>
                 <p className="text-xs text-[#059669] mt-0.5 leading-snug">
-                  The item was successfully returned to its rightful owner.
+                  The item was successfully returned to its rightful owner. This report is closed and read-only.
+                </p>
+              </>
+            )}
+
+            {statusKey === "claimed" && (
+              <>
+                <p className="font-bold text-xs uppercase tracking-wide text-[#0284c7]">
+                  Claim in Progress / Claimed
+                </p>
+                <p className="text-xs text-[#0369a1] mt-0.5 leading-snug">
+                  An ownership claim has been verified or is being processed. Report details are locked.
                 </p>
               </>
             )}
@@ -295,63 +362,164 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
         </div>
 
         {/* 4. Action Buttons Footer */}
-        {statusKey === "rejected" && (
-          <div className="flex items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-32 py-2.5 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-            >
-              <FiX className="w-4 h-4 stroke-[2.5]" />
-              <span>Close</span>
-            </button>
+        {showDeleteConfirm ? (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 space-y-3 animate-in fade-in">
+            <div className="flex items-start gap-2.5">
+              <FiAlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-xs sm:text-sm text-red-900">
+                  Delete this report?
+                </p>
+                <p className="text-xs text-red-700 mt-0.5 leading-relaxed">
+                  Are you sure you want to delete &ldquo;{report.title}&rdquo;? This action cannot be undone.
+                </p>
+              </div>
+            </div>
 
-            <button
-              type="button"
-              onClick={handleEditClick}
-              className="py-2.5 px-5 rounded-xl bg-[#eab308] hover:bg-[#ca8a04] text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
-            >
-              <FiEdit3 className="w-4 h-4" />
-              <span>Edit &amp; Resubmit</span>
-            </button>
+            {deleteError && (
+              <p className="text-xs text-red-600 font-semibold">{deleteError}</p>
+            )}
+
+            <div className="flex items-center justify-end gap-2.5 pt-1">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setDeleteError(null);
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-colors flex items-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+              >
+                {isDeleting ? (
+                  <span>Deleting...</span>
+                ) : (
+                  <>
+                    <FiTrash2 className="w-3.5 h-3.5" />
+                    <span>Yes, Delete</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-        )}
+        ) : (
+          <>
+            {/* Buttons when status is rejected */}
+            {statusKey === "rejected" && (
+              <div className="flex items-center justify-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer min-w-[70px]"
+                >
+                  <FiX className="w-4 h-4 stroke-[2.5]" />
+                  <span>Close</span>
+                </button>
 
-        {statusKey === "pending" && (
-          <div className="flex items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-32 py-2.5 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-            >
-              <FiX className="w-4 h-4 stroke-[2.5]" />
-              <span>Close</span>
-            </button>
+                {onDelete && (
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer min-w-[80px]"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                    <span>Delete</span>
+                  </button>
+                )}
 
-            <button
-              type="button"
-              onClick={handleEditClick}
-              className="py-2.5 px-5 rounded-xl bg-[#eab308] hover:bg-[#ca8a04] text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
-            >
-              <FiEdit3 className="w-4 h-4" />
-              <span>Edit Report</span>
-            </button>
-          </div>
-        )}
+                <button
+                  type="button"
+                  onClick={handleEditClick}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#eab308] hover:bg-[#ca8a04] text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer min-w-[120px]"
+                >
+                  <FiEdit3 className="w-4 h-4" />
+                  <span>Edit &amp; Resubmit</span>
+                </button>
+              </div>
+            )}
 
-        {(statusKey === "active" ||
-          statusKey === "resolved" ||
-          statusKey === "under_review") && (
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={onClose}
-              className="w-32 py-2.5 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-            >
-              <FiX className="w-4 h-4 stroke-[2.5]" />
-              <span>Close</span>
-            </button>
-          </div>
+            {/* Buttons when status is pending */}
+            {statusKey === "pending" && (
+              <div className="flex items-center justify-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer min-w-[70px]"
+                >
+                  <FiX className="w-4 h-4 stroke-[2.5]" />
+                  <span>Close</span>
+                </button>
+
+                {onDelete && (
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer min-w-[80px]"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                    <span>Delete</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleEditClick}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#eab308] hover:bg-[#ca8a04] text-slate-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer min-w-[100px]"
+                >
+                  <FiEdit3 className="w-4 h-4" />
+                  <span>Edit Report</span>
+                </button>
+              </div>
+            )}
+
+            {/* Buttons when status is active */}
+            {statusKey === "active" && (
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="w-32 py-2.5 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                >
+                  <FiX className="w-4 h-4 stroke-[2.5]" />
+                  <span>Close</span>
+                </button>
+
+                {onDelete && (
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="py-2.5 px-5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                    <span>Delete Report</span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Buttons when status is resolved, claimed, or under review */}
+            {(statusKey === "resolved" ||
+              statusKey === "claimed" ||
+              statusKey === "under_review") && (
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="w-32 py-2.5 rounded-xl bg-[#94a3b8] hover:bg-[#64748b] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                >
+                  <FiX className="w-4 h-4 stroke-[2.5]" />
+                  <span>Close</span>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -359,3 +527,4 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
 }
 
 export default ReportDetailsModal;
+

@@ -33,3 +33,8 @@ export const updateLostItem = async (id, data) => {
   });
   return response.data;
 };
+
+export const deleteLostItem = async (id) => {
+  const response = await api.delete(`/lost/${id}`);
+  return response.data;
+};

@@ -32,3 +32,8 @@ export const updateFoundItem = async (id, data) => {
   });
   return response.data;
 };
+
+export const deleteFoundItem = async (id) => {
+  const response = await api.delete(`/found/${id}`);
+  return response.data;
+};

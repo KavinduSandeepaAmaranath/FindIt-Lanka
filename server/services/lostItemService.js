@@ -2,6 +2,7 @@ import FoundItem from "../models/FoundItem.js";
 import { createAutoMatchNotifications } from "./notificationService.js";
 import LostItem from "../models/LostItem.js";
 import Notification from "../models/Notification.js";
+import Claim from "../models/Claim.js";
 
 export const createLostItem = async ({
     title,
@@ -135,6 +136,20 @@ export const updateLostItem = async (itemId, userId, updateData) => {
         throw new Error("Lost item not found or unauthorized");
     }
 
+    // Check if the report is resolved or closed
+    if (existing.status === "recovered" || existing.status === "closed") {
+        throw new Error("Resolved or recovered reports cannot be edited");
+    }
+
+    // Check if there is an approved claim for this lost item
+    const activeClaim = await Claim.findOne({
+        lostItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be edited");
+    }
+
     // If item was rejected or pending, reset approvalStatus to "pending" and clear rejectionReason
     const wasRejected = existing.approvalStatus === "rejected";
     if (wasRejected || existing.approvalStatus === "pending") {
@@ -160,16 +175,29 @@ export const updateLostItem = async (itemId, userId, updateData) => {
 };
 
 export const deleteLostItem = async (itemId, userId) => {
-    const lostItem = await LostItem.findOneAndDelete({
+    const existing = await LostItem.findOne({
         _id: itemId,
         userId,
     });
 
-    if (!lostItem) {
-        throw new Error("Lost item not found");
+    if (!existing) {
+        throw new Error("Lost item not found or unauthorized");
     }
 
-    return lostItem;
+    if (existing.status === "recovered" || existing.status === "closed") {
+        throw new Error("Resolved or recovered reports cannot be deleted");
+    }
+
+    const activeClaim = await Claim.findOne({
+        lostItemId: itemId,
+        status: "approved",
+    });
+    if (activeClaim) {
+        throw new Error("Claimed reports cannot be deleted");
+    }
+
+    await LostItem.findByIdAndDelete(itemId);
+    return existing;
 };
 
 export const markLostItemAsRecovered = async (itemId, userId) => {

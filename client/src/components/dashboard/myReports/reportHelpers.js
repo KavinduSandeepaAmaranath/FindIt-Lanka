@@ -23,6 +23,11 @@ export const statusConfig = {
     soft: "bg-blue-50 text-blue-700",
     icon: FiEye,
   },
+  Claimed: {
+    pill: "bg-cyan-600 text-white",
+    soft: "bg-cyan-50 text-cyan-700",
+    icon: FiCheckCircle,
+  },
 };
 
 export const getStatusConfig = (status) =>
