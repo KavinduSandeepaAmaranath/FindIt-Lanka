@@ -66,7 +66,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
           await approveFoundItem(report.id);
         }
       } else if (type === "reject") {
-        const rejectionReason = typeof payload === "string" ? payload : "";
+        const rejectionReason = typeof payload === "string" ? payload : (payload?.rejectionReason || "");
         if (isLost) {
           await rejectLostItem(report.id, rejectionReason);
         } else {
@@ -76,7 +76,7 @@ const ReportTable = ({ reports = [], loading, error, onRefresh }) => {
     } catch (err) {
       console.error("Primary report action failed, trying alternative item type...", err);
       try {
-        const rejectionReason = typeof payload === "string" ? payload : "";
+        const rejectionReason = typeof payload === "string" ? payload : (payload?.rejectionReason || "");
         if (type === "reject") {
           if (isLost) {
             await rejectFoundItem(report.id, rejectionReason);
@@ -622,6 +622,18 @@ const ReportDetailsModal = ({ report, onClose }) => {
             </p>
           </div>
         </div>
+
+        {/* Rejection reason if rejected */}
+        {report.status?.toLowerCase() === "rejected" && (
+          <div className="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2">
+            <h3 className="mb-1 text-[13px] font-semibold text-red-700">
+              Rejection Reason
+            </h3>
+            <p className="text-xs text-red-600 leading-relaxed">
+              {report.rejectionReason || "No specific reason provided."}
+            </p>
+          </div>
+        )}
 
         {/* done btn */}
         <button

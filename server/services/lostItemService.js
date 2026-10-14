@@ -1,6 +1,7 @@
 import FoundItem from "../models/FoundItem.js";
 import { createAutoMatchNotifications } from "./notificationService.js";
 import LostItem from "../models/LostItem.js";
+import Notification from "../models/Notification.js";
 
 export const createLostItem = async ({
     title,
@@ -33,7 +34,41 @@ export const getAllLostItems = async () => {
 };
 
 export const getMyLostItems = async (userId) => {
-    return await LostItem.find({ userId });
+    const items = await LostItem.find({ userId });
+    try {
+        const rejectedWithoutReason = items.filter(
+            (it) => it.approvalStatus === "rejected" && !it.rejectionReason
+        );
+        if (rejectedWithoutReason.length > 0) {
+            const itemIds = rejectedWithoutReason.map((it) => it._id);
+            const notifs = await Notification.find({
+                userId,
+                type: "rejection",
+                lostItemId: { $in: itemIds },
+            }).sort({ createdAt: -1 });
+
+            const reasonMap = {};
+            for (const notif of notifs) {
+                if (notif.lostItemId && !reasonMap[notif.lostItemId.toString()]) {
+                    if (notif.message && !notif.message.startsWith("Your lost item report (")) {
+                        reasonMap[notif.lostItemId.toString()] = notif.message;
+                    }
+                }
+            }
+
+            return items.map((it) => {
+                const doc = it.toObject ? it.toObject() : { ...it };
+                if (doc.approvalStatus === "rejected" && !doc.rejectionReason && reasonMap[doc._id.toString()]) {
+                    doc.rejectionReason = reasonMap[doc._id.toString()];
+                    LostItem.updateOne({ _id: doc._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                }
+                return doc;
+            });
+        }
+    } catch (err) {
+        console.error("Error looking up rejection reasons for lost items:", err);
+    }
+    return items;
 };
 
 export const getLostItemById = async (itemId) => {
@@ -41,6 +76,21 @@ export const getLostItemById = async (itemId) => {
 
     if (!lostItem) {
         throw new Error("Lost item not found");
+    }
+
+    if (lostItem.approvalStatus === "rejected" && !lostItem.rejectionReason) {
+        try {
+            const notif = await Notification.findOne({
+                type: "rejection",
+                lostItemId: lostItem._id,
+            }).sort({ createdAt: -1 });
+            if (notif && notif.message && !notif.message.startsWith("Your lost item report (")) {
+                const doc = lostItem.toObject ? lostItem.toObject() : { ...lostItem };
+                doc.rejectionReason = notif.message;
+                LostItem.updateOne({ _id: lostItem._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                return doc;
+            }
+        } catch (e) {}
     }
 
     return lostItem;
@@ -54,6 +104,22 @@ export const getSingleLostItem = async (itemId, userId) => {
 
     if (!lostItem) {
         throw new Error("Lost item not found");
+    }
+
+    if (lostItem.approvalStatus === "rejected" && !lostItem.rejectionReason) {
+        try {
+            const notif = await Notification.findOne({
+                userId,
+                type: "rejection",
+                lostItemId: lostItem._id,
+            }).sort({ createdAt: -1 });
+            if (notif && notif.message && !notif.message.startsWith("Your lost item report (")) {
+                const doc = lostItem.toObject ? lostItem.toObject() : { ...lostItem };
+                doc.rejectionReason = notif.message;
+                LostItem.updateOne({ _id: lostItem._id }, { rejectionReason: doc.rejectionReason }).catch(() => {});
+                return doc;
+            }
+        } catch (e) {}
     }
 
     return lostItem;

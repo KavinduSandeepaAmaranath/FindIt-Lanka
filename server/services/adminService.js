@@ -357,9 +357,7 @@ export const rejectLostItem = async (itemId, rejectionReason) => {
     }
 
     lostItem.approvalStatus = "rejected";
-    if (rejectionReason) {
-        lostItem.rejectionReason = rejectionReason;
-    }
+    lostItem.rejectionReason = rejectionReason ? rejectionReason.trim() : "";
 
     await lostItem.save();
 
@@ -471,9 +469,7 @@ export const rejectFoundItem = async (itemId, rejectionReason) => {
     }
 
     foundItem.approvalStatus = "rejected";
-    if (rejectionReason) {
-        foundItem.rejectionReason = rejectionReason;
-    }
+    foundItem.rejectionReason = rejectionReason ? rejectionReason.trim() : "";
 
     await foundItem.save();
 

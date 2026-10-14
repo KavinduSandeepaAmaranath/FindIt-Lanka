@@ -61,6 +61,7 @@ const ReportManagement = () => {
         status: item.approvalStatus ? item.approvalStatus.charAt(0).toUpperCase() + item.approvalStatus.slice(1) : "Pending",
         itemImage: getImageUrl(item),
         category: item.category,
+        rejectionReason: item.rejectionReason || item.rejectReason || "",
       }));
 
       const formattedFound = foundList.map((item) => ({
@@ -74,6 +75,7 @@ const ReportManagement = () => {
         status: item.approvalStatus ? item.approvalStatus.charAt(0).toUpperCase() + item.approvalStatus.slice(1) : "Pending",
         itemImage: getImageUrl(item),
         category: item.category,
+        rejectionReason: item.rejectionReason || item.rejectReason || "",
       }));
 
       setReports([...formattedLost, ...formattedFound]);

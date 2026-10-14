@@ -263,8 +263,9 @@ function ReportDetailsModal({ report, onClose, onEdit }) {
                 <p className="font-bold text-xs text-[#b91c1c]">
                   Rejected
                 </p>
-                <p className="text-xs text-[#dc2626] mt-0.5 leading-snug">
-                  Reason: {report.rejectionReason || "Duplicate report / Insufficient information"}
+                <p className="text-xs text-[#dc2626] mt-0.5 leading-snug break-words">
+                  <span className="font-semibold">Reason:</span>{" "}
+                  {report.rejectionReason || "No specific reason provided by administrator."}
                 </p>
               </>
             )}

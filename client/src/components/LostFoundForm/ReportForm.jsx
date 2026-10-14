@@ -361,7 +361,7 @@ const ReportForm = ({ formData, editItem, onClose, onSuccess }) => {
             <p className="text-xs sm:text-sm text-red-700 mt-1 leading-relaxed">
               <span className="font-semibold">Reason:</span>{" "}
               {editItem.rejectionReason ||
-                "Duplicate report / Insufficient information"}
+                "No specific reason provided by administrator."}
             </p>
             <p className="text-xs text-red-600/90 mt-1.5 italic">
               Please review and update the details below to resubmit this report for admin verification.

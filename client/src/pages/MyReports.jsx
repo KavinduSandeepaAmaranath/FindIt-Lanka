@@ -110,7 +110,7 @@ function MyReports() {
           approvedOn: item.approvalStatus === "approved" ? item.updatedAt : null,
           resolvedOn: item.status === "recovered" || item.status === "returned" ? item.updatedAt : null,
           rejectedOn: item.approvalStatus === "rejected" ? item.updatedAt : null,
-          rejectionReason: item.rejectionReason || item.rejectReason,
+          rejectionReason: item.rejectionReason || item.rejectReason || item.rejection_reason || "",
           time: item.lostTime || item.foundTime || item.time,
           description: item.description,
           status: statusLabel,
