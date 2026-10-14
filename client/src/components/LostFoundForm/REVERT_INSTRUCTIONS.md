@@ -16,4 +16,11 @@ Copy-Item "client\src\components\LostFoundForm\backup_original\*" -Destination "
 git checkout -- client/src/components/LostFoundForm/
 ```
 
-Or ask the AI assistant: *"Please revert the Report Lost and Found form changes to the original backup"*, and it will be restored in one step.
+### Revert Report Details Modal:
+The original Report Details Modal is backed up at:
+`client/src/components/dashboard/myReports/ReportDetailsModal.original.jsx`
+
+To restore:
+```powershell
+Copy-Item "client\src\components\dashboard\myReports\ReportDetailsModal.original.jsx" -Destination "client\src\components\dashboard\myReports\ReportDetailsModal.jsx" -Force
+```

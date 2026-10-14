@@ -103,14 +103,21 @@ function MyReports() {
           return {
             id: item._id,
             title: item.title,
-            location: `${item.location || ""}, ${item.district || ""}`.replace(/^,\s*/, "").replace(/,\s*$/, ""),
+            location: item.location || item.district || "Location not specified",
+            district: item.district || "",
             reportType: type,
             reportedOn: item.lostDate || item.foundDate || item.createdAt,
+            approvedOn: item.approvalStatus === "approved" ? item.updatedAt : null,
+            resolvedOn: item.status === "recovered" || item.status === "returned" ? item.updatedAt : null,
+            rejectedOn: item.approvalStatus === "rejected" ? item.updatedAt : null,
+            rejectionReason: item.rejectionReason || item.rejectReason,
+            time: item.lostTime || item.foundTime || item.time,
             description: item.description,
             status: statusLabel,
             image: imageUrl,
             category: item.category || "General",
             referenceNo: refNum,
+            rawItem: item,
           };
         };
 
