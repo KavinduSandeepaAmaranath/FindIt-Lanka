@@ -1,17 +1,24 @@
-const SectionTitle = ({ icon: Icon, title }) => {
+const SectionTitle = ({ icon: Icon, title, subtitle }) => {
   return (
-    <div className="flex items-center gap-3 mb-5">
-
+    <div className="flex items-start gap-3.5 mb-6">
       {/* Icon Box */}
-      <div className="bg-blue-600 p-2 sm:p-2.5 rounded-xl text-white flex-shrink-0">
-        <Icon className="text-lg sm:text-xl" />
+      {Icon && (
+        <div className="bg-blue-600 p-2 sm:p-2.5 rounded-xl text-white shrink-0 mt-0.5 shadow-sm shadow-blue-500/20">
+          <Icon className="text-lg sm:text-xl" />
+        </div>
+      )}
+
+      {/* Title & Subtitle */}
+      <div>
+        <h2 className="text-lg sm:text-xl font-bold text-slate-800 leading-tight">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            {subtitle}
+          </p>
+        )}
       </div>
-
-      {/* Title */}
-      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-800 leading-tight">
-        {title}
-      </h2>
-
     </div>
   );
 };

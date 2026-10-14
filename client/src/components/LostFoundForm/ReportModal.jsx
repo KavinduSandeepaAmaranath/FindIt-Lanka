@@ -80,6 +80,7 @@ const ReportModal = ({
           {/* Form */}
           <ReportForm
             formData={formData}
+            onClose={onClose}
           />
         </div>
       </div>
