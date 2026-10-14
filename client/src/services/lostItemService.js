@@ -24,3 +24,12 @@ export const getMyLostItems = async () => {
   const response = await api.get("/lost/my-items");
   return response.data;
 };
+
+export const updateLostItem = async (id, data) => {
+  const response = await api.put(`/lost/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};

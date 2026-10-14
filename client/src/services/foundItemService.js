@@ -23,3 +23,12 @@ export const getMyFoundItems = async () => {
     const response = await api.get("/found/my-items");
     return response.data;
 };
+
+export const updateFoundItem = async (id, data) => {
+  const response = await api.put(`/found/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};

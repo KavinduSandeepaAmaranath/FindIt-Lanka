@@ -60,6 +60,22 @@ export const getSingleLostItem = async (itemId, userId) => {
 };
 
 export const updateLostItem = async (itemId, userId, updateData) => {
+    const existing = await LostItem.findOne({
+        _id: itemId,
+        userId,
+    });
+
+    if (!existing) {
+        throw new Error("Lost item not found or unauthorized");
+    }
+
+    // If item was rejected or pending, reset approvalStatus to "pending" and clear rejectionReason
+    const wasRejected = existing.approvalStatus === "rejected";
+    if (wasRejected || existing.approvalStatus === "pending") {
+        updateData.approvalStatus = "pending";
+        updateData.rejectionReason = "";
+    }
+
     const lostItem = await LostItem.findOneAndUpdate({
         _id: itemId,
         userId,            
@@ -69,10 +85,6 @@ export const updateLostItem = async (itemId, userId, updateData) => {
         new: true,
         runValidators: true,
     });
-
-    if (!lostItem) {
-        throw new Error("Item not found");
-    }
 
     return lostItem;
 };

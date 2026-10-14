@@ -9,6 +9,7 @@ const FormActions = ({
   onCancel,
   isSubmitting = false,
   isLastStep = false,
+  submitLabel = "Publish Report",
 }) => {
   return (
     <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-8 mt-8 border-t border-slate-100">
@@ -62,7 +63,7 @@ const FormActions = ({
             ) : (
               <>
                 <FiCheckCircle className="w-4 h-4" />
-                <span>Publish Report</span>
+                <span>{submitLabel}</span>
               </>
             )}
           </button>

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createLostItem } from "../../services/lostItemService.js";
-import { createFoundItem } from "../../services/foundItemService.js";
+import { createLostItem, updateLostItem } from "../../services/lostItemService.js";
+import { createFoundItem, updateFoundItem } from "../../services/foundItemService.js";
 import ItemDetails from "./ItemDetails";
 import Location from "./Location";
 import DateTime from "./DateTime";
@@ -11,8 +11,15 @@ import FormReview from "./FormReview";
 import FormActions from "./FormActions";
 import { FiCheckCircle, FiAlertCircle, FiArrowRight, FiRotateCcw } from "react-icons/fi";
 
-const ReportForm = ({ formData, onClose, onSuccess }) => {
+const ReportForm = ({ formData, editItem, onClose, onSuccess }) => {
   const navigate = useNavigate();
+
+  const isEdit = Boolean(editItem);
+  const isRejected = Boolean(
+    editItem &&
+      (editItem.status?.toLowerCase().includes("reject") ||
+        editItem.approvalStatus === "rejected")
+  );
 
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -34,6 +41,63 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
     time: "",
     custodyStatus: "with_me",
   });
+
+  // Pre-fill form values when in edit mode
+  useEffect(() => {
+    if (editItem) {
+      const itemDate =
+        editItem.reportedOn ||
+        editItem.lostDate ||
+        editItem.foundDate ||
+        editItem.createdAt;
+
+      let dateStr = "";
+      if (itemDate) {
+        try {
+          dateStr = new Date(itemDate).toISOString().split("T")[0];
+        } catch {
+          dateStr = itemDate;
+        }
+      }
+
+      // Populate existing image previews
+      const initialPreviews = [];
+      if (editItem.images && editItem.images.length > 0) {
+        editItem.images.forEach((img, idx) => {
+          const imgUrl = img.startsWith("http")
+            ? img
+            : `http://localhost:5000/${img.replace(/^\//, "")}`;
+          initialPreviews.push({
+            id: `existing-${idx}`,
+            url: imgUrl,
+            name: `Photo ${idx + 1}`,
+            size: "Existing",
+          });
+        });
+      } else if (editItem.image) {
+        initialPreviews.push({
+          id: "existing-0",
+          url: editItem.image,
+          name: "Existing Photo",
+          size: "Existing",
+        });
+      }
+
+      setFormValues({
+        title: editItem.title || "",
+        category: editItem.category || "",
+        district: editItem.district || "",
+        location: editItem.location || "",
+        description: editItem.description || "",
+        images: [],
+        imagePreviews: initialPreviews,
+        coverIndex: 0,
+        date: dateStr || new Date().toISOString().split("T")[0],
+        time: editItem.time || "",
+        custodyStatus: editItem.custodyStatus || "with_me",
+      });
+    }
+  }, [editItem]);
 
   // Validate step fields
   const validateStep = (stepNumber) => {
@@ -84,7 +148,9 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
-      setCompletedSteps((prev) => (prev.includes(currentStep) ? prev : [...prev, currentStep]));
+      setCompletedSteps((prev) =>
+        prev.includes(currentStep) ? prev : [...prev, currentStep]
+      );
       setCurrentStep((prev) => Math.min(prev + 1, 4));
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -96,7 +162,6 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
   };
 
   const handleSelectStep = (step) => {
-    // If navigating forward, validate current
     if (step > currentStep && !validateStep(currentStep)) {
       return;
     }
@@ -112,10 +177,11 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
   };
 
   const handleResetForm = () => {
-    // Revoke any preview URLs
     (formValues.imagePreviews || []).forEach((p) => {
       try {
-        URL.revokeObjectURL(p.url);
+        if (!p.id?.startsWith("existing")) {
+          URL.revokeObjectURL(p.url);
+        }
       } catch {
         // ignore
       }
@@ -141,7 +207,6 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
   };
 
   const handleSubmit = async () => {
-    // Final check across steps 1 and 2
     if (!validateStep(1)) {
       setCurrentStep(1);
       return;
@@ -166,7 +231,7 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
       data.append("district", formValues.district);
       data.append("location", formValues.location.trim());
 
-      // Reorder images so cover is first if user selected one
+      // If user selected new images, append them
       const orderedImages = [...formValues.images];
       const coverIdx = formValues.coverIndex ?? 0;
       if (coverIdx > 0 && coverIdx < orderedImages.length) {
@@ -178,15 +243,29 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
         data.append("images", image);
       });
 
-      if (formData.type === "lost") {
-        data.append("lostDate", combinedDate.toISOString());
-        await createLostItem(data);
-      } else {
-        data.append("foundDate", combinedDate.toISOString());
-        if (formValues.custodyStatus) {
-          data.append("custodyStatus", formValues.custodyStatus);
+      if (isEdit) {
+        const itemId = editItem.id || editItem._id;
+        if (formData.type === "lost") {
+          data.append("lostDate", combinedDate.toISOString());
+          await updateLostItem(itemId, data);
+        } else {
+          data.append("foundDate", combinedDate.toISOString());
+          if (formValues.custodyStatus) {
+            data.append("custodyStatus", formValues.custodyStatus);
+          }
+          await updateFoundItem(itemId, data);
         }
-        await createFoundItem(data);
+      } else {
+        if (formData.type === "lost") {
+          data.append("lostDate", combinedDate.toISOString());
+          await createLostItem(data);
+        } else {
+          data.append("foundDate", combinedDate.toISOString());
+          if (formValues.custodyStatus) {
+            data.append("custodyStatus", formValues.custodyStatus);
+          }
+          await createFoundItem(data);
+        }
       }
 
       setIsSuccess(true);
@@ -215,12 +294,18 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
         </div>
 
         <h3 className="text-2xl font-extrabold text-slate-900">
-          Report Published Successfully!
+          {isEdit
+            ? isRejected
+              ? "Report Resubmitted for Admin Review!"
+              : "Report Updated Successfully!"
+            : "Report Published Successfully!"}
         </h3>
         <p className="text-sm text-slate-600 mt-2 max-w-md mx-auto leading-relaxed">
-          Your {isFound ? "found item" : "lost item"} report for{" "}
-          <span className="font-semibold text-slate-800">"{formValues.title}"</span> is now active.
-          We will alert you immediately if any community match is detected.
+          {isEdit
+            ? isRejected
+              ? `Your changes for "${formValues.title}" have been submitted. The report is now pending verification and our admins will review it promptly.`
+              : `Your report for "${formValues.title}" has been updated successfully.`
+            : `Your ${isFound ? "found item" : "lost item"} report for "${formValues.title}" is now active. We will alert you immediately if any community match is detected.`}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
@@ -230,20 +315,32 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
               if (onClose) onClose();
               navigate("/dashboard/my-reports");
             }}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition shadow-md shadow-blue-500/20 inline-flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition shadow-md shadow-blue-500/20 inline-flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>View in My Reports</span>
             <FiArrowRight className="w-4 h-4" />
           </button>
 
-          <button
-            type="button"
-            onClick={handleResetForm}
-            className="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition inline-flex items-center justify-center gap-2"
-          >
-            <FiRotateCcw className="w-4 h-4 text-slate-500" />
-            <span>Report Another Item</span>
-          </button>
+          {!isEdit && (
+            <button
+              type="button"
+              onClick={handleResetForm}
+              className="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition inline-flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <FiRotateCcw className="w-4 h-4 text-slate-500" />
+              <span>Report Another Item</span>
+            </button>
+          )}
+
+          {isEdit && onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition cursor-pointer"
+            >
+              Done
+            </button>
+          )}
         </div>
       </div>
     );
@@ -251,6 +348,28 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
 
   return (
     <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-5 sm:p-8 lg:p-10 transition-all">
+      {/* Rejection Alert Notice if in Resubmit mode */}
+      {isRejected && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-900 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 animate-in fade-in">
+          <div className="p-2 bg-red-100 rounded-xl text-red-600 shrink-0 mt-0.5">
+            <FiAlertCircle className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <h4 className="text-sm font-bold text-red-800">
+              Admin Rejection Notice
+            </h4>
+            <p className="text-xs sm:text-sm text-red-700 mt-1 leading-relaxed">
+              <span className="font-semibold">Reason:</span>{" "}
+              {editItem.rejectionReason ||
+                "Duplicate report / Insufficient information"}
+            </p>
+            <p className="text-xs text-red-600/90 mt-1.5 italic">
+              Please review and update the details below to resubmit this report for admin verification.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Multi-Step Stepper Header */}
       <FormStepper
         currentStep={currentStep}
@@ -327,6 +446,13 @@ const ReportForm = ({ formData, onClose, onSuccess }) => {
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         isSubmitting={isSubmitting}
+        submitLabel={
+          isEdit
+            ? isRejected
+              ? "Resubmit for Review"
+              : "Save Changes"
+            : "Publish Report"
+        }
       />
     </div>
   );

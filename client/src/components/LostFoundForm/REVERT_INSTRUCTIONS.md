@@ -24,3 +24,13 @@ To restore:
 ```powershell
 Copy-Item "client\src\components\dashboard\myReports\ReportDetailsModal.original.jsx" -Destination "client\src\components\dashboard\myReports\ReportDetailsModal.jsx" -Force
 ```
+
+### Revert My Reports Page:
+The original My Reports page is backed up at:
+`client/src/pages/MyReports.original.jsx`
+
+To restore:
+```powershell
+Copy-Item "client\src\pages\MyReports.original.jsx" -Destination "client\src\pages\MyReports.jsx" -Force
+```
+

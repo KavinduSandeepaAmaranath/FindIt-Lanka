@@ -104,10 +104,16 @@ export const getSingleLostItemController = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
+        const updateData = { ...req.body };
+
+        if (req.files && req.files.length > 0) {
+            updateData.images = req.files.map((file) => `images/${file.filename}`);
+        }
+
         const item = await updateLostItem(
             req.params.id,
             req.user.userId,
-            req.body,
+            updateData,
         );
 
         res.status(200).json({

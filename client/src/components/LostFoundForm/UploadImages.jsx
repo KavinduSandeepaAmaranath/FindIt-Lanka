@@ -30,7 +30,7 @@ const UploadImages = ({
     const newPreviews = [];
     let notice = null;
 
-    const currentCount = formValues.images.length;
+    const currentCount = previews.length;
     const remainingSlots = upload.maxImages - currentCount;
 
     if (remainingSlots <= 0) {
@@ -63,6 +63,7 @@ const UploadImages = ({
         url: URL.createObjectURL(file),
         name: file.name,
         size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+        file,
       });
     }
 
@@ -117,11 +118,12 @@ const UploadImages = ({
       }
     }
 
-    const nextImages = [...formValues.images];
-    nextImages.splice(index, 1);
-
     const nextPreviews = [...previews];
     nextPreviews.splice(index, 1);
+
+    const nextImages = previewToRemove?.file
+      ? formValues.images.filter((f) => f !== previewToRemove.file)
+      : [...formValues.images];
 
     // If removed cover index, reset cover
     let nextCoverIndex = formValues.coverIndex ?? 0;

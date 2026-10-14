@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { getDashboardStatistics, getMyLostItems, getMyFoundItems } from "../services/dashboardService.js";
 
@@ -58,83 +58,87 @@ function MyReports() {
   const [activeStat, setActiveStat] = useState("total");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [editingReport, setEditingReport] = useState(null);
 
   const [reportsList, setReportsList] = useState([]);
   const [liveStats, setLiveStats] = useState(null);
 
-  useEffect(() => {
-    const fetchBackendData = async () => {
-      try {
-        const [statsRes, lostRes, foundRes] = await Promise.all([
-          getDashboardStatistics().catch(() => null),
-          getMyLostItems().catch(() => null),
-          getMyFoundItems().catch(() => null),
-        ]);
+  const fetchBackendData = useCallback(async () => {
+    try {
+      const [statsRes, lostRes, foundRes] = await Promise.all([
+        getDashboardStatistics().catch(() => null),
+        getMyLostItems().catch(() => null),
+        getMyFoundItems().catch(() => null),
+      ]);
 
-        if (statsRes?.statistics) {
-          setLiveStats(statsRes.statistics);
-        }
-
-        const lostItems = lostRes?.lostItems || [];
-        const foundItems = foundRes?.foundItems || [];
-
-        const formatBackendItem = (item, type) => {
-          let statusLabel = "Under Review";
-          if (item.approvalStatus === "pending") {
-            statusLabel = "Pending";
-          } else if (item.approvalStatus === "rejected") {
-            statusLabel = "Rejected";
-          } else if (item.status === "recovered" || item.status === "returned") {
-            statusLabel = "Resolved";
-          } else if (item.approvalStatus === "approved") {
-            statusLabel = "Under Review";
-          }
-
-          const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
-          let imageUrl = "https://via.placeholder.com/150?text=No+Image";
-          if (rawImg) {
-            imageUrl = rawImg.startsWith("http")
-              ? rawImg
-              : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
-          }
-
-          const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
-
-          return {
-            id: item._id,
-            title: item.title,
-            location: item.location || item.district || "Location not specified",
-            district: item.district || "",
-            reportType: type,
-            reportedOn: item.lostDate || item.foundDate || item.createdAt,
-            approvedOn: item.approvalStatus === "approved" ? item.updatedAt : null,
-            resolvedOn: item.status === "recovered" || item.status === "returned" ? item.updatedAt : null,
-            rejectedOn: item.approvalStatus === "rejected" ? item.updatedAt : null,
-            rejectionReason: item.rejectionReason || item.rejectReason,
-            time: item.lostTime || item.foundTime || item.time,
-            description: item.description,
-            status: statusLabel,
-            image: imageUrl,
-            category: item.category || "General",
-            referenceNo: refNum,
-            rawItem: item,
-          };
-        };
-
-        const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
-        const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
-        const allFetched = [...formattedLost, ...formattedFound];
-
-        if (allFetched.length > 0) {
-          setReportsList(allFetched);
-        }
-      } catch (err) {
-        console.warn("Could not fetch user backend items:", err);
+      if (statsRes?.statistics) {
+        setLiveStats(statsRes.statistics);
       }
-    };
 
-    fetchBackendData();
+      const lostItems = lostRes?.lostItems || [];
+      const foundItems = foundRes?.foundItems || [];
+
+      const formatBackendItem = (item, type) => {
+        let statusLabel = "Under Review";
+        if (item.approvalStatus === "pending") {
+          statusLabel = "Pending";
+        } else if (item.approvalStatus === "rejected") {
+          statusLabel = "Rejected";
+        } else if (item.status === "recovered" || item.status === "returned") {
+          statusLabel = "Resolved";
+        } else if (item.approvalStatus === "approved") {
+          statusLabel = "Under Review";
+        }
+
+        const rawImg = item.images && item.images.length > 0 ? item.images[0] : null;
+        let imageUrl = "https://via.placeholder.com/150?text=No+Image";
+        if (rawImg) {
+          imageUrl = rawImg.startsWith("http")
+            ? rawImg
+            : `http://localhost:5000${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+        }
+
+        const refNum = item._id ? `FL-2026-${item._id.slice(-4).toUpperCase()}` : "FL-2026-0000";
+
+        return {
+          id: item._id,
+          title: item.title,
+          location: item.location || item.district || "Location not specified",
+          district: item.district || "",
+          reportType: type,
+          reportedOn: item.lostDate || item.foundDate || item.createdAt,
+          approvedOn: item.approvalStatus === "approved" ? item.updatedAt : null,
+          resolvedOn: item.status === "recovered" || item.status === "returned" ? item.updatedAt : null,
+          rejectedOn: item.approvalStatus === "rejected" ? item.updatedAt : null,
+          rejectionReason: item.rejectionReason || item.rejectReason,
+          time: item.lostTime || item.foundTime || item.time,
+          description: item.description,
+          status: statusLabel,
+          approvalStatus: item.approvalStatus,
+          image: imageUrl,
+          images: item.images || (rawImg ? [rawImg] : []),
+          custodyStatus: item.custodyStatus || "with_me",
+          category: item.category || "General",
+          referenceNo: refNum,
+          rawItem: item,
+        };
+      };
+
+      const formattedLost = lostItems.map((item) => formatBackendItem(item, "Lost Item"));
+      const formattedFound = foundItems.map((item) => formatBackendItem(item, "Found Item"));
+      const allFetched = [...formattedLost, ...formattedFound];
+
+      if (allFetched.length > 0) {
+        setReportsList(allFetched);
+      }
+    } catch (err) {
+      console.warn("Could not fetch user backend items:", err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchBackendData();
+  }, [fetchBackendData]);
 
   const dynamicReportStats = useMemo(() => {
     const total = liveStats?.totalReports ?? reportsList.length;
@@ -424,6 +428,31 @@ function MyReports() {
         <ReportDetailsModal
           report={selectedReport}
           onClose={() => setSelectedReport(null)}
+          onEdit={(report) => {
+            setSelectedReport(null);
+            setEditingReport(report);
+          }}
+        />
+      )}
+
+      {/*edit report modal*/}
+      {editingReport && (
+        <ReportModal
+          header={
+            (editingReport.reportType || "").toLowerCase().includes("lost")
+              ? lostHeader
+              : foundHeader
+          }
+          formData={
+            (editingReport.reportType || "").toLowerCase().includes("lost")
+              ? lostForm
+              : foundForm
+          }
+          editItem={editingReport}
+          onClose={() => setEditingReport(null)}
+          onSuccess={() => {
+            fetchBackendData();
+          }}
         />
       )}
 
@@ -433,6 +462,9 @@ function MyReports() {
           header={lostHeader}
           formData={lostForm}
           onClose={() => setOpenLostReport(false)}
+          onSuccess={() => {
+            fetchBackendData();
+          }}
         />
       )}
 
@@ -441,6 +473,9 @@ function MyReports() {
           header={foundHeader}
           formData={foundForm}
           onClose={() => setOpenFoundReport(false)}
+          onSuccess={() => {
+            fetchBackendData();
+          }}
         />
       )}
     </div>

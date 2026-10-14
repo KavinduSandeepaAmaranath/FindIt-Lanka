@@ -6,7 +6,9 @@ import ReportForm from "./ReportForm";
 const ReportModal = ({
   header,
   formData,
+  editItem,
   onClose,
+  onSuccess,
 }) => {
   return (
     <div
@@ -74,13 +76,28 @@ const ReportModal = ({
         >
           {/* Header */}
           <ReportHeader
-            header={header}
+            header={
+              editItem
+                ? {
+                    ...header,
+                    title:
+                      (editItem.status?.toLowerCase().includes("reject") ||
+                      editItem.approvalStatus === "rejected")
+                        ? "Edit & Resubmit Report"
+                        : "Edit Report Details",
+                    subtitle:
+                      "Update any information and resubmit this report for admin verification.",
+                  }
+                : header
+            }
           />
 
           {/* Form */}
           <ReportForm
             formData={formData}
+            editItem={editItem}
             onClose={onClose}
+            onSuccess={onSuccess}
           />
         </div>
       </div>

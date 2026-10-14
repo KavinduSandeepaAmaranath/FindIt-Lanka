@@ -58,6 +58,22 @@ export const getSingleFoundItem = async (itemId, userId) => {
 };
 
 export const updateFoundItem = async (itemId, userId, updateData) => {
+    const existing = await FoundItem.findOne({
+        _id: itemId,
+        userId,
+    });
+
+    if (!existing) {
+        throw new Error("Found item not found or unauthorized");
+    }
+
+    // If item was rejected or pending, reset approvalStatus to "pending" and clear rejectionReason
+    const wasRejected = existing.approvalStatus === "rejected";
+    if (wasRejected || existing.approvalStatus === "pending") {
+        updateData.approvalStatus = "pending";
+        updateData.rejectionReason = "";
+    }
+
     const foundItem = await FoundItem.findOneAndUpdate({
         _id: itemId,
         userId,            
@@ -67,10 +83,6 @@ export const updateFoundItem = async (itemId, userId, updateData) => {
         new: true,
         runValidators: true,
     });
-
-    if (!foundItem) {
-        throw new Error("Found item not found");
-    }
 
     return foundItem;
 };

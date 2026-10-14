@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import DashboardSidebar from "../components/dashboard/DashBoardSidebar";
@@ -12,6 +13,20 @@ import {
 
 const ReportFoundItem = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const editItem = location.state?.editReport || null;
+
+  const dynamicHeader = editItem
+    ? {
+        ...reportHeader,
+        title:
+          (editItem.status?.toLowerCase().includes("reject") ||
+          editItem.approvalStatus === "rejected")
+            ? "Edit & Resubmit Found Report"
+            : "Edit Found Item Report",
+        subtitle: "Update any information and resubmit this report for admin verification.",
+      }
+    : reportHeader;
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -34,13 +49,14 @@ const ReportFoundItem = () => {
 
           {/* Header */}
           <ReportHeader
-            header={reportHeader}
+            header={dynamicHeader}
             setIsOpen={setIsSidebarOpen}
           />
 
           {/* Form */}
           <ReportForm
             formData={reportForm}
+            editItem={editItem}
           />
 
         </motion.main>
