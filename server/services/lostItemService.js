@@ -86,6 +86,10 @@ export const updateLostItem = async (itemId, userId, updateData) => {
         runValidators: true,
     });
 
+    if (lostItem) {
+        lostItem._wasRejected = wasRejected;
+    }
+
     return lostItem;
 };
 

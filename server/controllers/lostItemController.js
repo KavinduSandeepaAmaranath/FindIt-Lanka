@@ -9,7 +9,7 @@ import {
     updateLostItem,
     getRecentLostItems, 
 } from "../services/lostItemService.js";
-import { notifyAdminNewReport } from "../services/notificationService.js";
+import { notifyAdminNewReport, notifyAdminReportUpdate } from "../services/notificationService.js";
 
 export const create = async (req, res) => {
     try {
@@ -115,6 +115,13 @@ export const update = async (req, res) => {
             req.user.userId,
             updateData,
         );
+
+        // Notify admins about the updated or resubmitted report (safely non-blocking)
+        try {
+            await notifyAdminReportUpdate(item, "lost");
+        } catch (notifErr) {
+            console.error("Failed to notify admin on report update:", notifErr);
+        }
 
         res.status(200).json({
             success: true,

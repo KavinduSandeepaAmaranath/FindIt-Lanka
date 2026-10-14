@@ -84,6 +84,10 @@ export const updateFoundItem = async (itemId, userId, updateData) => {
         runValidators: true,
     });
 
+    if (foundItem) {
+        foundItem._wasRejected = wasRejected;
+    }
+
     return foundItem;
 };
 

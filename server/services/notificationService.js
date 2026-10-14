@@ -430,6 +430,55 @@ export const notifyAdminNewReport = async (item, itemType = "lost") => {
   }
 };
 
+export const notifyAdminReportUpdate = async (item, itemType = "lost") => {
+  try {
+    if (!item) return;
+
+    const isLost = itemType === "lost";
+    const typeLabel = isLost ? "Lost" : "Found";
+    const wasRejected = Boolean(item._wasRejected);
+
+    const title = wasRejected
+      ? `Resubmitted ${typeLabel} Item Report: ${item.title}`
+      : `Updated ${typeLabel} Item Report: ${item.title}`;
+
+    const message = wasRejected
+      ? `User updated and resubmitted previously rejected ${itemType} report '${item.title}' (${item.category}) in ${item.district}. Review required.`
+      : `User updated details for pending ${itemType} report '${item.title}' (${item.category}) in ${item.district}. Review required.`;
+
+    // Try finding existing admin notification for this item
+    const existing = await Notification.findOne({
+      targetRole: "admin",
+      ...(isLost ? { lostItemId: item._id } : { foundItemId: item._id }),
+    });
+
+    if (existing) {
+      existing.title = title;
+      existing.message = message;
+      existing.isRead = false;
+      existing.type = isLost ? "report" : "found";
+      existing.category = "reports";
+      existing.createdAt = new Date();
+      await existing.save();
+    } else {
+      await Notification.create({
+        userId: item.userId,
+        targetRole: "admin",
+        lostItemId: isLost ? item._id : null,
+        foundItemId: !isLost ? item._id : null,
+        type: isLost ? "report" : "found",
+        category: "reports",
+        title,
+        message,
+        isRead: false,
+        createdAt: new Date(),
+      });
+    }
+  } catch (err) {
+    console.error("Error creating admin report update notification:", err);
+  }
+};
+
 export const notifyAdminNewClaim = async (claim, itemTitle = "Item") => {
   try {
     await Notification.create({
